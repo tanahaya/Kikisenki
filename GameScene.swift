@@ -145,7 +145,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                         print((nodeB.userData?["count"])!)
                         if nodeB.userData?["count"] as! Int == 4 {
                             nodeB.removeFromParent()
-                            //hello
+                            
                         }
                     }
                     
