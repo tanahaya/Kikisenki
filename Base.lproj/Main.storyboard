@@ -22,12 +22,6 @@
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
-                <panGestureRecognizer minimumNumberOfTouches="1" id="Vb3-tA-DEK">
-                    <connections>
-                        <action selector="didPanWithSender:" destination="BYZ-38-t0r" id="RxK-cg-7Oh"/>
-                        <outlet property="delegate" destination="BYZ-38-t0r" id="3Vk-q1-9Zx"/>
-                    </connections>
-                </panGestureRecognizer>
             </objects>
         </scene>
     </scenes>
