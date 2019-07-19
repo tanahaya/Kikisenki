@@ -28,6 +28,10 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     
     var ButtonFlag:Bool = false
     
+    var timer:Timer?//enegy
+    var enegy:Int = 0//enegy
+    let enegyLabel = SKLabelNode()//enegy
+    
     override func didMove(to view: SKView) {
         
         self.size = CGSize(width: 414, height: 896)//414x896が最適。これはiphoneXRの画面サイズ
@@ -65,6 +69,15 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         Button.position = CGPoint(x: 207,y: 240)//207,140が中心に相当近い
         self.addChild(Button)
         
+        self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.timerupdate), userInfo: nil, repeats: true)
+        
+        enegyLabel.text = "0"// Labelに文字列を設定.
+        enegyLabel.fontSize = 45// フォントサイズを設定.
+        enegyLabel.fontColor = UIColor.red// 色を指定(赤).
+        enegyLabel.position = CGPoint(x: 100, y: 100)// 表示するポジションを指定.
+        self.addChild(enegyLabel)//シーンに追加
+        
+        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -76,7 +89,6 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             originalPoint.x = location.y
             
             if self.atPoint(location).name == "Button" {
-                //print("button tapped")
                 ButtonFlag = true
             }
         }
@@ -91,7 +103,11 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                 let location = touch.location(in: self)
                 aimPoint.x = location.x
                 aimPoint.y = location.y
-                self.MakeBall()
+                if enegy >= 3 {//エネルギー減らす分を確保。
+                    enegy = enegy - 3//エネルギーを減らす。
+                    self.enegyLabel.text = "\(enegy)"
+                    self.MakeBall()
+                }
                 
                 ButtonFlag = false
                 
@@ -134,7 +150,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                         var plusone:Int = nodeA.userData?["count"] as! Int
                         plusone = plusone + 1
                         nodeA.userData?.setValue( plusone, forKey: "count")
-                        print((nodeA.userData?["count"])!)
+                        //print((nodeA.userData?["count"])!)
                         if nodeA.userData?["count"] as! Int == 4 {
                             nodeA.removeFromParent()
                         }
@@ -142,13 +158,12 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                         var plusone:Int = nodeB.userData?["count"] as! Int
                         plusone = plusone + 1
                         nodeB.userData?.setValue( plusone, forKey: "count")
-                        print((nodeB.userData?["count"])!)
+                        //print((nodeB.userData?["count"])!)
                         if nodeB.userData?["count"] as! Int == 4 {
                             nodeB.removeFromParent()
                             
                         }
                     }
-                    
                 }
             }
         }
@@ -170,6 +185,13 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             let angle = CGFloat(atan(t))
             return angle + CGFloat(0 < vector.x ? Double.pi : 0.0)
         }
+        
+    }
+    
+    @objc func timerupdate(){
+        
+        self.enegy = self.enegy + 1
+        enegyLabel.text = "\(self.enegy)"//enegyをラベルに表示
         
     }
     
