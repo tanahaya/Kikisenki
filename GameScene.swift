@@ -18,8 +18,6 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     
     var Back = SKSpriteNode(imageNamed: "Back")
     
-    var count:Int = 0
-    
     var enemyLifeGuage = SKSpriteNode()
     var enemyLifeGuageBase = SKSpriteNode()
     
@@ -29,16 +27,23 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     var ButtonFlag:Bool = false
     
     var timer:Timer?//enegy
-    var enegy:Double = 0.0//enegy
+    var enegy:Double = 10.0//enegy
     let enegyLabel = SKLabelNode()//enegy
-    var enegyBar = SKSpriteNode(color: SKColor.blue, size: CGSize(width: 7.0, height: 30.0))//エナジーの量を表示
+    var enegyBar = SKSpriteNode(color: SKColor.blue, size: CGSize(width: 5.0, height: 50.0))//エナジーの量を表示
+    
+    //衝突判定のためのビットマスク作成
+    struct PhysicsCategory {
+        static let Emeny: UInt32 = 1
+        static let Ball: UInt32 = 2
+        static let Player: UInt32 = 3
+        static let Wall: UInt32 = 4
+    }
     
     override func didMove(to view: SKView) {
         
         self.size = CGSize(width: 414, height: 896)//414x896が最適。これはiphoneXRの画面サイズ
         self.physicsWorld.gravity = CGVector(dx: 0.0, dy: 0.0)
         self.physicsWorld.contactDelegate = self //didBeginCOntactに必要
-        
         
         Back.position = CGPoint(x: 0,y: 0)
         Back.anchorPoint = CGPoint(x: 0,y: 0)//ノードの位置配置などの起点を設定。
@@ -51,6 +56,10 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         WallLeft.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
         WallLeft.physicsBody?.contactTestBitMask = 1//次元を1に設定(次元1の物体と反応)
         WallLeft.position = CGPoint(x:103.5,y:448)
+        WallLeft.physicsBody?.categoryBitMask = PhysicsCategory.Wall
+        WallLeft.userData = NSMutableDictionary()
+        WallLeft.userData?.setValue( 0, forKey: "count")
+        WallLeft.userData?.setValue( PhysicsCategory.Wall, forKey: "category")
         self.addChild(WallLeft)
         
         WallRight.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "WallRight.png"), size: WallRight.size)
@@ -59,8 +68,10 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         WallRight.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
         WallRight.physicsBody?.contactTestBitMask = 1//次元を1に設定(次元1の物体と反応)
         WallRight.position = CGPoint(x:310.5,y:448)
+        WallRight.physicsBody?.categoryBitMask = PhysicsCategory.Wall
+        WallRight.userData = NSMutableDictionary()
+        WallRight.userData?.setValue( PhysicsCategory.Wall, forKey: "category")
         self.addChild(WallRight)
-        
         
         Button.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Button.png"), size: Button.size)
         Button.name = "Button"
@@ -75,11 +86,12 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         enegyLabel.text = "0.0"// Labelに文字列を設定.
         enegyLabel.fontSize = 45// フォントサイズを設定.
         enegyLabel.fontColor = UIColor.red// 色を指定(赤).
-        enegyLabel.position = CGPoint(x: 70, y: 100)// 表示するポジションを指定.
+        enegyLabel.position = CGPoint(x: 100, y: 100)// 表示するポジションを指定.
+        enegyLabel.text = "\(CGFloat(enegy))"
         self.addChild(enegyLabel)//シーンに追加
         
         enegyBar.anchorPoint = CGPoint(x: 0, y: 0)
-        enegyBar.position = CGPoint(x: 130, y: 100)
+        enegyBar.position = CGPoint(x: 150, y: 100)
         enegyBar.zPosition = 1
         enegyBar.xScale = CGFloat(enegy)//x方向の倍率
         self.addChild(enegyBar)
@@ -138,7 +150,8 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         Ball.physicsBody?.contactTestBitMask = 1//次元を1に設定(次元1の物体と反応)
         Ball.position = CGPoint(x:165,y:500)//初期位置
         Ball.userData = NSMutableDictionary()
-        Ball.userData = ["count":0] as NSMutableDictionary
+        Ball.userData?.setValue( 0, forKey: "count")
+        Ball.userData?.setValue( PhysicsCategory.Ball, forKey: "category")
         
         self.addChild(Ball)//Ballを追加
         let pi:CGFloat = vector2radian(vector: CGPoint(x: originalPoint.x - aimPoint.x, y: originalPoint.y - aimPoint.y))
@@ -151,9 +164,11 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         
         if let nodeA = contact.bodyA.node {
             if let nodeB = contact.bodyB.node{
-                if nodeA.name == "WallRight" || nodeA.name == "WallLeft" || nodeB.name == "WallRight" || nodeB.name == "WallLeft" {
-                    count += 1
-                    if nodeA.name == "Ball"{
+                
+                print(nodeA.userData?.value(forKey: "category") as! UInt32)
+                if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Wall && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball || nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Wall {
+                    
+                    if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball {
                         var plusone:Int = nodeA.userData?["count"] as! Int
                         plusone = plusone + 1
                         nodeA.userData?.setValue( plusone, forKey: "count")
@@ -161,7 +176,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                         if nodeA.userData?["count"] as! Int == 4 {
                             nodeA.removeFromParent()
                         }
-                    }else if nodeB.name == "Ball"{
+                    }else if nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball{
                         var plusone:Int = nodeB.userData?["count"] as! Int
                         plusone = plusone + 1
                         nodeB.userData?.setValue( plusone, forKey: "count")
