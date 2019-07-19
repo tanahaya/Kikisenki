@@ -29,8 +29,9 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     var ButtonFlag:Bool = false
     
     var timer:Timer?//enegy
-    var enegy:Int = 0//enegy
+    var enegy:Double = 0.0//enegy
     let enegyLabel = SKLabelNode()//enegy
+    var enegyBar = SKSpriteNode(color: SKColor.blue, size: CGSize(width: 7.0, height: 30.0))//エナジーの量を表示
     
     override func didMove(to view: SKView) {
         
@@ -71,12 +72,17 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         
         self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.timerupdate), userInfo: nil, repeats: true)
         
-        enegyLabel.text = "0"// Labelに文字列を設定.
+        enegyLabel.text = "0.0"// Labelに文字列を設定.
         enegyLabel.fontSize = 45// フォントサイズを設定.
         enegyLabel.fontColor = UIColor.red// 色を指定(赤).
-        enegyLabel.position = CGPoint(x: 100, y: 100)// 表示するポジションを指定.
+        enegyLabel.position = CGPoint(x: 70, y: 100)// 表示するポジションを指定.
         self.addChild(enegyLabel)//シーンに追加
         
+        enegyBar.anchorPoint = CGPoint(x: 0, y: 0)
+        enegyBar.position = CGPoint(x: 130, y: 100)
+        enegyBar.zPosition = 1
+        enegyBar.xScale = CGFloat(enegy)//x方向の倍率
+        self.addChild(enegyBar)
         
     }
     
@@ -103,9 +109,10 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                 let location = touch.location(in: self)
                 aimPoint.x = location.x
                 aimPoint.y = location.y
-                if enegy >= 3 {//エネルギー減らす分を確保。
-                    enegy = enegy - 3//エネルギーを減らす。
+                if enegy >= 3.0 {//エネルギー減らす分を確保。
+                    enegy = enegy - 3.0//エネルギーを減らす。
                     self.enegyLabel.text = "\(enegy)"
+                    self.enegyBar.xScale = CGFloat(enegy)//x方向の倍率
                     self.MakeBall()
                 }
                 
@@ -190,8 +197,14 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     
     @objc func timerupdate(){
         
-        self.enegy = self.enegy + 1
+        if self.enegy < 30.0 {
+            self.enegy = self.enegy + 1.0
+            if enegy > 30.0 {
+                enegy = 30.0
+            }
+        }
         enegyLabel.text = "\(self.enegy)"//enegyをラベルに表示
+        enegyBar.xScale = CGFloat(enegy)//x方向の倍率
         
     }
     
