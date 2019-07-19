@@ -31,11 +31,13 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     let enegyLabel = SKLabelNode()//enegy
     var enegyBar = SKSpriteNode(color: SKColor.blue, size: CGSize(width: 5.0, height: 50.0))//エナジーの量を表示
     
+    var ally1  = SKSpriteNode(imageNamed: "monster3a")//allyの追加
+    
     //衝突判定のためのビットマスク作成
     struct PhysicsCategory {
         static let Emeny: UInt32 = 1
         static let Ball: UInt32 = 2
-        static let Player: UInt32 = 3
+        static let Ally: UInt32 = 3
         static let Wall: UInt32 = 4
     }
     
@@ -60,6 +62,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         WallLeft.userData = NSMutableDictionary()
         WallLeft.userData?.setValue( 0, forKey: "count")
         WallLeft.userData?.setValue( PhysicsCategory.Wall, forKey: "category")
+        WallLeft.physicsBody?.categoryBitMask = 1
         self.addChild(WallLeft)
         
         WallRight.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "WallRight.png"), size: WallRight.size)
@@ -71,6 +74,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         WallRight.physicsBody?.categoryBitMask = PhysicsCategory.Wall
         WallRight.userData = NSMutableDictionary()
         WallRight.userData?.setValue( PhysicsCategory.Wall, forKey: "category")
+        WallRight.physicsBody?.categoryBitMask = 1
         self.addChild(WallRight)
         
         Button.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Button.png"), size: Button.size)
@@ -96,6 +100,17 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         enegyBar.xScale = CGFloat(enegy)//x方向の倍率
         self.addChild(enegyBar)
         
+        ally1.name = "ally1"
+        ally1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "monster3a"), size: ally1.size)
+        ally1.physicsBody?.isDynamic = false
+        ally1.physicsBody?.contactTestBitMask = 2
+        ally1.position = CGPoint(x: 207,y: 500)
+        ally1.userData = NSMutableDictionary()
+        ally1.userData?.setValue( PhysicsCategory.Ally, forKey: "category")
+        ally1.userData?.setValue( 0, forKey: "level")//levelを追加
+        ally1.physicsBody?.categoryBitMask = 2
+        self.addChild(ally1)
+        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -116,8 +131,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         
         if let touch = touches.first as UITouch? {
             
-            if ButtonFlag{
-                
+            if ButtonFlag {
                 let location = touch.location(in: self)
                 aimPoint.x = location.x
                 aimPoint.y = location.y
@@ -127,9 +141,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     self.enegyBar.xScale = CGFloat(enegy)//x方向の倍率
                     self.MakeBall()
                 }
-                
                 ButtonFlag = false
-                
             }
         }
     }
@@ -148,12 +160,14 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         Ball.physicsBody = SKPhysicsBody(circleOfRadius: 20)
         Ball.color = UIColor.red
         Ball.physicsBody?.contactTestBitMask = 1//次元を1に設定(次元1の物体と反応)
-        Ball.position = CGPoint(x:165,y:500)//初期位置
+        Ball.position = CGPoint(x: 207,y: 320)//初期位置
         Ball.userData = NSMutableDictionary()
         Ball.userData?.setValue( 0, forKey: "count")
         Ball.userData?.setValue( PhysicsCategory.Ball, forKey: "category")
+        Ball.physicsBody?.categoryBitMask = 1
         
         self.addChild(Ball)//Ballを追加
+        
         let pi:CGFloat = vector2radian(vector: CGPoint(x: originalPoint.x - aimPoint.x, y: originalPoint.y - aimPoint.y))
         
         Ball.physicsBody?.velocity = CGVector(dx: -500 * cos(Double(pi)),dy: -500 * sin(Double(pi)))//500の速さで球を飛ばす。
@@ -165,7 +179,6 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         if let nodeA = contact.bodyA.node {
             if let nodeB = contact.bodyB.node{
                 
-                print(nodeA.userData?.value(forKey: "category") as! UInt32)
                 if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Wall && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball || nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Wall {
                     
                     if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball {
@@ -183,9 +196,9 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                         //print((nodeB.userData?["count"])!)
                         if nodeB.userData?["count"] as! Int == 4 {
                             nodeB.removeFromParent()
-                            
                         }
                     }
+                    
                 }
             }
         }
