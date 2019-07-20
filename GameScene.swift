@@ -25,6 +25,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     var aimPoint:CGPoint = CGPoint(x: 0.0,y: 0.0)
     
     var ButtonFlag:Bool = false
+    var AllyFlag:Bool = false
     
     var timer:Timer?//enegy
     var enegy:Double = 10.0//enegy
@@ -39,6 +40,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         static let Ball: UInt32 = 2
         static let Ally: UInt32 = 3
         static let Wall: UInt32 = 4
+        static let Button: UInt32 = 5
     }
     
     override func didMove(to view: SKView) {
@@ -83,6 +85,8 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         Button.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
         Button.physicsBody?.contactTestBitMask = 1//次元を1に設定(次元1の物体と反応)
         Button.position = CGPoint(x: 207,y: 240)//207,140が中心に相当近い
+        Button.userData = NSMutableDictionary()
+        Button.userData?.setValue( PhysicsCategory.Button, forKey: "category")
         self.addChild(Button)
         
         self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.timerupdate), userInfo: nil, repeats: true)
@@ -100,10 +104,10 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         enegyBar.xScale = CGFloat(enegy)//x方向の倍率
         self.addChild(enegyBar)
         
-        ally1.name = "ally1"
+        ally1.name = "Ally1"
         ally1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "monster3a"), size: ally1.size)
         ally1.physicsBody?.isDynamic = false
-        ally1.physicsBody?.contactTestBitMask = 2
+        ally1.physicsBody?.contactTestBitMask = 1
         ally1.position = CGPoint(x: 207,y: 500)
         ally1.userData = NSMutableDictionary()
         ally1.userData?.setValue( PhysicsCategory.Ally, forKey: "category")
@@ -124,15 +128,18 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             if self.atPoint(location).name == "Button" {
                 ButtonFlag = true
             }
+            if self.atPoint(location).name == "Ally1"{
+                
+                AllyFlag = true
+            }
         }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         
         if let touch = touches.first as UITouch? {
-            
+            let location = touch.location(in: self)
             if ButtonFlag {
-                let location = touch.location(in: self)
                 aimPoint.x = location.x
                 aimPoint.y = location.y
                 if enegy >= 3.0 {//エネルギー減らす分を確保。
@@ -143,6 +150,13 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                 }
                 ButtonFlag = false
             }
+            if AllyFlag {
+                ally1.position = location
+                AllyFlag = false
+                print("position:\(ally1.position)")
+                print("locaton:\(location)")
+            }
+            
         }
     }
     
