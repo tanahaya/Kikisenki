@@ -32,6 +32,9 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     let enegyLabel = SKLabelNode()//enegy
     var enegyBar = SKSpriteNode(color: SKColor.blue, size: CGSize(width: 5.0, height: 50.0))//エナジーの量を表示
     
+    let levelLabel = SKLabelNode()
+    var level:Int = 0
+    
     var ally1  = SKSpriteNode(imageNamed: "monster3a")//allyの追加
     
     //衝突判定のためのビットマスク作成
@@ -60,11 +63,9 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         WallLeft.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
         WallLeft.physicsBody?.contactTestBitMask = 1//次元を1に設定(次元1の物体と反応)
         WallLeft.position = CGPoint(x:103.5,y:448)
-        WallLeft.physicsBody?.categoryBitMask = PhysicsCategory.Wall
         WallLeft.userData = NSMutableDictionary()
         WallLeft.userData?.setValue( 0, forKey: "count")
         WallLeft.userData?.setValue( PhysicsCategory.Wall, forKey: "category")
-        WallLeft.physicsBody?.categoryBitMask = 1
         self.addChild(WallLeft)
         
         WallRight.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "WallRight.png"), size: WallRight.size)
@@ -73,10 +74,8 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         WallRight.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
         WallRight.physicsBody?.contactTestBitMask = 1//次元を1に設定(次元1の物体と反応)
         WallRight.position = CGPoint(x:310.5,y:448)
-        WallRight.physicsBody?.categoryBitMask = PhysicsCategory.Wall
         WallRight.userData = NSMutableDictionary()
         WallRight.userData?.setValue( PhysicsCategory.Wall, forKey: "category")
-        WallRight.physicsBody?.categoryBitMask = 1
         self.addChild(WallRight)
         
         Button.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Button.png"), size: Button.size)
@@ -107,13 +106,19 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         ally1.name = "Ally1"
         ally1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "monster3a"), size: ally1.size)
         ally1.physicsBody?.isDynamic = false
-        ally1.physicsBody?.contactTestBitMask = 1
         ally1.position = CGPoint(x: 207,y: 500)
         ally1.userData = NSMutableDictionary()
         ally1.userData?.setValue( PhysicsCategory.Ally, forKey: "category")
         ally1.userData?.setValue( 0, forKey: "level")//levelを追加
-        ally1.physicsBody?.categoryBitMask = 2
+        ally1.physicsBody?.contactTestBitMask = 2
         self.addChild(ally1)
+        
+        levelLabel.text = "0.0"// Labelに文字列を設定.
+        levelLabel.fontSize = 20// フォントサイズを設定.
+        levelLabel.fontColor = UIColor.red// 色を指定(赤).
+        levelLabel.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 40)// 表示するポジションを指定.
+        levelLabel.text = "level: \(CGFloat(level))"
+        self.addChild(levelLabel)//シーンに追加
         
     }
     
@@ -152,6 +157,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             }
             if AllyFlag {
                 ally1.position = location
+                levelLabel.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 40)// 表示するポジションを指定.
                 AllyFlag = false
                 print("position:\(ally1.position)")
                 print("locaton:\(location)")
@@ -178,7 +184,6 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         Ball.userData = NSMutableDictionary()
         Ball.userData?.setValue( 0, forKey: "count")
         Ball.userData?.setValue( PhysicsCategory.Ball, forKey: "category")
-        Ball.physicsBody?.categoryBitMask = 1
         
         self.addChild(Ball)//Ballを追加
         
@@ -212,8 +217,15 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                             nodeB.removeFromParent()
                         }
                     }
-                    
                 }
+                if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ally && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball || nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ally {
+                    print("hello&&ally")
+                    //ボールと味方が衝突した時の処理。本当は衝突処理だけして、すり抜けさせたい。
+                    level = level + 1
+                    levelLabel.text = "level: \(CGFloat(level))"
+                    levelLabel.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 40)// 表示するポジションを指定.
+                }
+                
             }
         }
         
