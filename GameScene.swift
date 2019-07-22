@@ -34,6 +34,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     
     let levelLabel = SKLabelNode()
     var level:Int = 0
+    var exp:Int = 0
     
     var ally1  = SKSpriteNode(imageNamed: "monster3a")//allyの追加
     
@@ -106,6 +107,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         ally1.name = "Ally1"
         ally1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "monster3a"), size: ally1.size)
         ally1.physicsBody?.isDynamic = false
+        ally1.physicsBody?.restitution = 1.0//反発値
         ally1.position = CGPoint(x: 207,y: 500)
         ally1.userData = NSMutableDictionary()
         ally1.userData?.setValue( PhysicsCategory.Ally, forKey: "category")
@@ -174,7 +176,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         Ball.physicsBody?.friction = 0//摩擦係数を0にする
         Ball.name = "Ball"
         Ball.physicsBody?.isDynamic = true
-        Ball.physicsBody?.restitution = 0.1 // 1.0にしたい。
+        Ball.physicsBody?.restitution = 0.8 // 1.0にしたい。
         
         Ball.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "tama2.png"), size: Ball.size)//Ball.size CGSize(width: 0,height: 30)
         Ball.physicsBody = SKPhysicsBody(circleOfRadius: 20)
@@ -189,7 +191,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         
         let pi:CGFloat = vector2radian(vector: CGPoint(x: originalPoint.x - aimPoint.x, y: originalPoint.y - aimPoint.y))
         
-        Ball.physicsBody?.velocity = CGVector(dx: -500 * cos(Double(pi)),dy: -500 * sin(Double(pi)))//500の速さで球を飛ばす。
+        Ball.physicsBody?.velocity = CGVector(dx: -1000 * cos(Double(pi)),dy: -1000 * sin(Double(pi)))//800の速さで球を飛ばす。
         
     }
     
@@ -219,9 +221,40 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     }
                 }
                 if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ally && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball || nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ally {
-                    print("hello&&ally")
                     //ボールと味方が衝突した時の処理。本当は衝突処理だけして、すり抜けさせたい。
-                    level = level + 1
+                    exp = exp + 1//可変経験値レベル
+                    if level == 0 {
+                        if exp == 1 {
+                            level = level + 1
+                        }
+                    }else if level == 1{
+                        if exp == 3 {
+                            level = level + 1
+                        }
+                    }else if level == 2{
+                        if exp == 6 {
+                            level = level + 1
+                        }
+                    }else if level == 3{
+                        if exp == 10 {
+                            level = level + 1
+                        }
+                    }else if level == 4{
+                        if exp == 15 {
+                            level = level + 1
+                        }
+                    }else if level == 5{
+                        if exp == 21 {
+                            level = level + 1
+                        }
+                    }else if level == 6{
+                        if exp == 28 {
+                            level = level + 1
+                        }
+                    }else if level == 7{
+                        //最大レベル
+                    }
+                    
                     levelLabel.text = "level: \(CGFloat(level))"
                     levelLabel.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 40)// 表示するポジションを指定.
                 }
