@@ -203,13 +203,33 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     if enemyHp <= 0 {
                         enemyHp = 0
                     }
-                    enemyHpBar.xScale = CGFloat(enemyHp)//x方向の倍率
-                    enemyHpLabel.text = "\(enemyHp) / 250"
+                    enemyHpBar.xScale = CGFloat(enemyHp)//x方向の倍率hpゲージ
+                    enemyHpLabel.text = "\(enemyHp) / \(enemyMaxHp)"
+                    
+                    switch level  {//可変レベル
+                    case 0:
+                        level = 0
+                    case 1://123(3)
+                        exp = exp - 1
+                    case 2://4567(4)
+                        exp = exp - 4
+                    case 3://89101112(5)
+                        exp = exp - 8
+                    case 4://121314151617(6)
+                        exp = exp - 12
+                    case 5://18192021222324(7)
+                        exp = exp - 18
+                    case 6://2526272829303132(8)
+                        exp = exp - 25
+                    case 7://~max
+                        exp = exp - 33
+                    default:
+                        print("default")
+                    }
                     level = 0//レベルを０に戻す
-                    exp = 0
                     levelLabel.text = "level: \(level)"
+                    
                 }
-                
             }
             
         }
@@ -233,14 +253,14 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         Ball.physicsBody?.collisionBitMask = PhysicsCategory.Wall //PhysicsCategory.Ball //衝突させたい物体＝＞なし
         Ball.position = CGPoint(x: 207,y: 320)//初期位置
         Ball.userData = NSMutableDictionary()
-        Ball.userData?.setValue( 0, forKey: "count")
+        Ball.userData?.setValue( 1, forKey: "count")
         Ball.userData?.setValue( PhysicsCategory.Ball, forKey: "category")
         
         self.addChild(Ball)//Ballを追加
         
         let pi:CGFloat = vector2radian(vector: CGPoint(x: originalPoint.x - aimPoint.x, y: originalPoint.y - aimPoint.y))
         
-        let speed:Double = 1500.0 // 速さを設定
+        let speed:Double = 2000.0 // 速さを設定
         Ball.physicsBody?.velocity = CGVector(dx: -speed * cos(Double(pi)),dy: -speed * sin(Double(pi)))//800の速さで球を飛ばす。
         
     }
@@ -257,7 +277,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                         plusone = plusone + 1
                         nodeA.userData?.setValue( plusone, forKey: "count")
                         //print((nodeA.userData?["count"])!)
-                        if nodeA.userData?["count"] as! Int == 4 {
+                        if nodeA.userData?["count"] as! Int == 10 {
                             nodeA.removeFromParent()
                         }
                     }else if nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball{
@@ -265,51 +285,42 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                         plusone = plusone + 1
                         nodeB.userData?.setValue( plusone, forKey: "count")
                         //print((nodeB.userData?["count"])!)
-                        if nodeB.userData?["count"] as! Int == 4 {
+                        if nodeB.userData?["count"] as! Int == 10 {
                             nodeB.removeFromParent()
                         }
                     }
                 }
                 if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ally && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball || nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ally {
-                    //ボールと味方が衝突した時の処理。本当は衝突処理だけして、すり抜けさせたい。
-                    exp = exp + 1//可変経験値レベル
-                    if level == 0 {
-                        if exp == 1 {
-                            level = level + 1
-                            exp = 0
-                        }
-                    }else if level == 1{
-                        if exp == 2 {
-                            level = level + 1
-                            exp = 0
-                        }
-                    }else if level == 2{
-                        if exp == 3 {
-                            level = level + 1
-                            exp = 0
-                        }
-                    }else if level == 3{
-                        if exp == 4 {
-                            level = level + 1
-                            exp = 0
-                        }
-                    }else if level == 4{
-                        if exp == 5 {
-                            level = level + 1
-                            exp = 0
-                        }
-                    }else if level == 5{
-                        if exp == 6 {
-                            level = level + 1
-                            exp = 0
-                        }
-                    }else if level == 6{
-                        if exp == 7 {
-                            level = level + 1
-                            exp = 0
-                        }
-                    }else if level == 7{
-                        //最大レベル
+                    //ボールと味方が衝突した時の処理。本当は衝突処理だけして、すり抜けさせたい。=>できた。
+                    if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball  {
+                        let plusexp:Int = nodeB.userData?["count"] as! Int
+                        exp = exp + plusexp//可変経験値
+                        nodeA.removeFromParent()
+                    }else if nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball {
+                        let plusexp:Int = nodeB.userData?["count"] as! Int
+                        exp = exp + plusexp//可変経験値
+                        nodeB.removeFromParent()
+                    }
+                    
+                    switch exp {//可変レベル制
+                    case 0:
+                        level = 0
+                    case 1 ..< 4://123(3)
+                        level = 1
+                    case 4 ..< 8://4567(4)
+                        level = 2
+                    case 8 ..< 12://89101112(5)
+                        level = 3
+                    case 12 ..< 18://121314151617(6)
+                        level = 4
+                    case 18 ..< 25://18192021222324(7)
+                        level = 5
+                    case 21 ..< 28://2526272829303132(8)
+                        level = 6
+                    case 28 ..< 1000://~max
+                        level = 7
+                    default:
+                        print("default")
                     }
                     
                     levelLabel.text = "level: \(level)"
