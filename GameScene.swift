@@ -66,7 +66,9 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         WallLeft.name = "WallLeft"
         WallLeft.physicsBody?.restitution = 1.0//反発値
         WallLeft.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
-        WallLeft.physicsBody?.contactTestBitMask = 1//次元を1に設定(次元1の物体と反応)
+        WallLeft.physicsBody?.categoryBitMask = PhysicsCategory.Wall //物体のカテゴリ次元をwall(4)
+        WallLeft.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
+        WallLeft.physicsBody?.collisionBitMask = PhysicsCategory.Ball //衝突させたい物体Ball
         WallLeft.position = CGPoint(x:103.5,y:448)
         WallLeft.userData = NSMutableDictionary()
         WallLeft.userData?.setValue( 0, forKey: "count")
@@ -77,7 +79,9 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         WallRight.name = "WallRight"
         WallRight.physicsBody?.restitution = 1.0//反発値
         WallRight.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
-        WallRight.physicsBody?.contactTestBitMask = 1//次元を1に設定(次元1の物体と反応)
+        WallRight.physicsBody?.categoryBitMask = PhysicsCategory.Wall //物体のカテゴリ次元をwall(4)
+        WallRight.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
+        WallRight.physicsBody?.collisionBitMask = PhysicsCategory.Ball //衝突させたい物体Ball
         WallRight.position = CGPoint(x:310.5,y:448)
         WallRight.userData = NSMutableDictionary()
         WallRight.userData?.setValue( PhysicsCategory.Wall, forKey: "category")
@@ -116,7 +120,9 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         ally1.userData = NSMutableDictionary()
         ally1.userData?.setValue( PhysicsCategory.Ally, forKey: "category")
         ally1.userData?.setValue( 0, forKey: "level")//levelを追加
-        ally1.physicsBody?.contactTestBitMask = 2
+        ally1.physicsBody?.categoryBitMask = PhysicsCategory.Ally //物体のカテゴリ次元をally
+        ally1.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
+        ally1.physicsBody?.collisionBitMask = 0 //PhysicsCategory.Ball //衝突させたい物体＝＞なし
         self.addChild(ally1)
         
         levelLabel.text = "0.0"// Labelに文字列を設定.
@@ -134,7 +140,9 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         enemy1.userData = NSMutableDictionary()
         enemy1.userData?.setValue( PhysicsCategory.Emeny, forKey: "category")
         enemy1.userData?.setValue( 0, forKey: "level")//levelを追加
-        enemy1.physicsBody?.contactTestBitMask = 2
+        enemy1.physicsBody?.categoryBitMask = PhysicsCategory.Emeny //物体のカテゴリ次元をally
+        enemy1.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
+        enemy1.physicsBody?.collisionBitMask = 0 //PhysicsCategory.Ball //衝突させたい物体＝＞なし
         self.addChild(enemy1)
         
         enemyHpLabel.text = "0.0"// Labelに文字列を設定.
@@ -189,8 +197,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                 if self.atPoint(location).name == "WallRight" || self.atPoint(location).name == "WallLeft" {
                     ally1.position = location
                     levelLabel.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 40)// 表示するポジションを指定.
-                    print("position:\(ally1.position)")
-                    print("locaton:\(location)")
+                    
                 }else if self.self.atPoint(location).name == "Enemy1" {
                     enemyHp = enemyHp - 10 * level * level
                     if enemyHp <= 0 {
@@ -217,11 +224,13 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         Ball.name = "Ball"
         Ball.physicsBody?.isDynamic = true
         Ball.physicsBody?.restitution = 0.8 // 1.0にしたい。
-        
+        Ball.physicsBody?.allowsRotation = false
         Ball.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "tama2.png"), size: Ball.size)//Ball.size CGSize(width: 0,height: 30)
         Ball.physicsBody = SKPhysicsBody(circleOfRadius: 20)
         Ball.color = UIColor.red
-        Ball.physicsBody?.contactTestBitMask = 1//次元を1に設定(次元1の物体と反応)
+        Ball.physicsBody?.categoryBitMask = PhysicsCategory.Ball //物体のカテゴリ次元をBall
+        Ball.physicsBody?.contactTestBitMask = PhysicsCategory.Wall //衝突を検知するカテゴリWall
+        Ball.physicsBody?.collisionBitMask = PhysicsCategory.Wall //PhysicsCategory.Ball //衝突させたい物体＝＞なし
         Ball.position = CGPoint(x: 207,y: 320)//初期位置
         Ball.userData = NSMutableDictionary()
         Ball.userData?.setValue( 0, forKey: "count")
