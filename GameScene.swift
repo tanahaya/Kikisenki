@@ -18,9 +18,6 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     
     var Back = SKSpriteNode(imageNamed: "Back")
     
-    var enemyLifeGuage = SKSpriteNode()
-    var enemyLifeGuageBase = SKSpriteNode()
-    
     var originalPoint:CGPoint = CGPoint(x: 0.0,y: 0.0)
     var aimPoint:CGPoint = CGPoint(x: 0.0,y: 0.0)
     
@@ -37,6 +34,12 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     var exp:Int = 0
     
     var ally1  = SKSpriteNode(imageNamed: "monster3a")//allyの追加
+    
+    var enemy1 = SKSpriteNode(imageNamed: "monster2a")
+    
+    let enemyHPLabel = SKLabelNode()//enegy
+    var enemyHPBar = SKSpriteNode(color: SKColor.red, size: CGSize(width: 1.0, height: 25.0))//エナジーの量を表示
+    var enemyHP:Int = 250
     
     //衝突判定のためのビットマスク作成
     struct PhysicsCategory {
@@ -93,7 +96,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         
         enegyLabel.text = "0.0"// Labelに文字列を設定.
         enegyLabel.fontSize = 45// フォントサイズを設定.
-        enegyLabel.fontColor = UIColor.red// 色を指定(赤).
+        enegyLabel.fontColor = UIColor.blue// 色を指定(赤).
         enegyLabel.position = CGPoint(x: 100, y: 100)// 表示するポジションを指定.
         enegyLabel.text = "\(CGFloat(enegy))"
         self.addChild(enegyLabel)//シーンに追加
@@ -119,8 +122,32 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         levelLabel.fontSize = 20// フォントサイズを設定.
         levelLabel.fontColor = UIColor.red// 色を指定(赤).
         levelLabel.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 40)// 表示するポジションを指定.
-        levelLabel.text = "level: \(CGFloat(level))"
+        levelLabel.text = "level: \(level)"
         self.addChild(levelLabel)//シーンに追加
+        
+        enemy1.name = "Enemy1"
+        enemy1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "monster2a"), size: enemy1.size)
+        enemy1.physicsBody?.isDynamic = false
+        enemy1.physicsBody?.restitution = 1.0//反発値
+        enemy1.position = CGPoint(x: 207,y: 750)
+        enemy1.userData = NSMutableDictionary()
+        enemy1.userData?.setValue( PhysicsCategory.Emeny, forKey: "category")
+        enemy1.userData?.setValue( 0, forKey: "level")//levelを追加
+        enemy1.physicsBody?.contactTestBitMask = 2
+        self.addChild(enemy1)
+        
+        enemyHPLabel.text = "0.0"// Labelに文字列を設定.
+        enemyHPLabel.fontSize = 25// フォントサイズを設定.
+        enemyHPLabel.fontColor = UIColor.red// 色を指定(赤).
+        enemyHPLabel.position = CGPoint(x: 75, y: 830)// 表示するポジションを指定.
+        enemyHPLabel.text = "\(enemyHP) / 250"
+        self.addChild(enemyHPLabel)//シーンに追加
+        
+        enemyHPBar.anchorPoint = CGPoint(x: 0, y: 0)
+        enemyHPBar.position = CGPoint(x: 145, y: 830)
+        enemyHPBar.zPosition = 1
+        enemyHPBar.xScale = CGFloat(enemyHP)//x方向の倍率
+        self.addChild(enemyHPBar)
         
     }
     
@@ -136,7 +163,6 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                 ButtonFlag = true
             }
             if self.atPoint(location).name == "Ally1"{
-                
                 AllyFlag = true
             }
         }
@@ -158,11 +184,22 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                 ButtonFlag = false
             }
             if AllyFlag {
-                ally1.position = location
-                levelLabel.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 40)// 表示するポジションを指定.
                 AllyFlag = false
-                print("position:\(ally1.position)")
-                print("locaton:\(location)")
+                if self.atPoint(location).name == "Back" {
+                    ally1.position = location
+                    levelLabel.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 40)// 表示するポジションを指定.
+                    print("position:\(ally1.position)")
+                    print("locaton:\(location)")
+                }else if self.self.atPoint(location).name == "Enemy1" {
+                    enemyHP = enemyHP - 10 * level * level
+                    if enemyHP <= 0 {
+                        enemyHP = 0
+                    }
+                    enemyHPBar.xScale = CGFloat(enemyHP)//x方向の倍率
+                    enemyHPLabel.text = "\(enemyHP) / 250"
+                    print("helloenemy")
+                }
+                
             }
             
         }
@@ -191,7 +228,8 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         
         let pi:CGFloat = vector2radian(vector: CGPoint(x: originalPoint.x - aimPoint.x, y: originalPoint.y - aimPoint.y))
         
-        Ball.physicsBody?.velocity = CGVector(dx: -1000 * cos(Double(pi)),dy: -1000 * sin(Double(pi)))//800の速さで球を飛ばす。
+        let speed:Double = 1500.0 // 速さを設定
+        Ball.physicsBody?.velocity = CGVector(dx: -speed * cos(Double(pi)),dy: -speed * sin(Double(pi)))//800の速さで球を飛ばす。
         
     }
     
