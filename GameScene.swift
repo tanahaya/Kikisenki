@@ -37,9 +37,10 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     
     var enemy1 = SKSpriteNode(imageNamed: "monster2a")
     
-    let enemyHPLabel = SKLabelNode()//enegy
-    var enemyHPBar = SKSpriteNode(color: SKColor.red, size: CGSize(width: 1.0, height: 25.0))//エナジーの量を表示
-    var enemyHP:Int = 250
+    let enemyHpLabel = SKLabelNode()//enegy
+    var enemyHpBar = SKSpriteNode(color: SKColor.red, size: CGSize(width: 0.5, height: 25.0))//エナジーの量を表示
+    var enemyHp:Int = 500
+    var enemyMaxHp:Int = 500
     
     //衝突判定のためのビットマスク作成
     struct PhysicsCategory {
@@ -98,7 +99,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         enegyLabel.fontSize = 45// フォントサイズを設定.
         enegyLabel.fontColor = UIColor.blue// 色を指定(赤).
         enegyLabel.position = CGPoint(x: 100, y: 100)// 表示するポジションを指定.
-        enegyLabel.text = "\(CGFloat(enegy))"
+        enegyLabel.text = "\(enegy)"
         self.addChild(enegyLabel)//シーンに追加
         
         enegyBar.anchorPoint = CGPoint(x: 0, y: 0)
@@ -136,18 +137,18 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         enemy1.physicsBody?.contactTestBitMask = 2
         self.addChild(enemy1)
         
-        enemyHPLabel.text = "0.0"// Labelに文字列を設定.
-        enemyHPLabel.fontSize = 25// フォントサイズを設定.
-        enemyHPLabel.fontColor = UIColor.red// 色を指定(赤).
-        enemyHPLabel.position = CGPoint(x: 75, y: 830)// 表示するポジションを指定.
-        enemyHPLabel.text = "\(enemyHP) / 250"
-        self.addChild(enemyHPLabel)//シーンに追加
+        enemyHpLabel.text = "0.0"// Labelに文字列を設定.
+        enemyHpLabel.fontSize = 25// フォントサイズを設定.
+        enemyHpLabel.fontColor = UIColor.red// 色を指定(赤).
+        enemyHpLabel.position = CGPoint(x: 75, y: 830)// 表示するポジションを指定.
+        enemyHpLabel.text = "\(enemyHp) / \(enemyMaxHp)"
+        self.addChild(enemyHpLabel)//シーンに追加
         
-        enemyHPBar.anchorPoint = CGPoint(x: 0, y: 0)
-        enemyHPBar.position = CGPoint(x: 145, y: 830)
-        enemyHPBar.zPosition = 1
-        enemyHPBar.xScale = CGFloat(enemyHP)//x方向の倍率
-        self.addChild(enemyHPBar)
+        enemyHpBar.anchorPoint = CGPoint(x: 0, y: 0)
+        enemyHpBar.position = CGPoint(x: 145, y: 830)
+        enemyHpBar.zPosition = 1
+        enemyHpBar.xScale = CGFloat(enemyHp)//x方向の倍率
+        self.addChild(enemyHpBar)
         
     }
     
@@ -185,19 +186,21 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             }
             if AllyFlag {
                 AllyFlag = false
-                if self.atPoint(location).name == "Back" {
+                if self.atPoint(location).name == "WallRight" || self.atPoint(location).name == "WallLeft" {
                     ally1.position = location
                     levelLabel.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 40)// 表示するポジションを指定.
                     print("position:\(ally1.position)")
                     print("locaton:\(location)")
                 }else if self.self.atPoint(location).name == "Enemy1" {
-                    enemyHP = enemyHP - 10 * level * level
-                    if enemyHP <= 0 {
-                        enemyHP = 0
+                    enemyHp = enemyHp - 10 * level * level
+                    if enemyHp <= 0 {
+                        enemyHp = 0
                     }
-                    enemyHPBar.xScale = CGFloat(enemyHP)//x方向の倍率
-                    enemyHPLabel.text = "\(enemyHP) / 250"
-                    print("helloenemy")
+                    enemyHpBar.xScale = CGFloat(enemyHp)//x方向の倍率
+                    enemyHpLabel.text = "\(enemyHp) / 250"
+                    level = 0//レベルを０に戻す
+                    exp = 0
+                    levelLabel.text = "level: \(level)"
                 }
                 
             }
@@ -264,36 +267,43 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     if level == 0 {
                         if exp == 1 {
                             level = level + 1
+                            exp = 0
                         }
                     }else if level == 1{
-                        if exp == 3 {
+                        if exp == 2 {
                             level = level + 1
+                            exp = 0
                         }
                     }else if level == 2{
-                        if exp == 6 {
+                        if exp == 3 {
                             level = level + 1
+                            exp = 0
                         }
                     }else if level == 3{
-                        if exp == 10 {
+                        if exp == 4 {
                             level = level + 1
+                            exp = 0
                         }
                     }else if level == 4{
-                        if exp == 15 {
+                        if exp == 5 {
                             level = level + 1
+                            exp = 0
                         }
                     }else if level == 5{
-                        if exp == 21 {
+                        if exp == 6 {
                             level = level + 1
+                            exp = 0
                         }
                     }else if level == 6{
-                        if exp == 28 {
+                        if exp == 7 {
                             level = level + 1
+                            exp = 0
                         }
                     }else if level == 7{
                         //最大レベル
                     }
                     
-                    levelLabel.text = "level: \(CGFloat(level))"
+                    levelLabel.text = "level: \(level)"
                     levelLabel.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 40)// 表示するポジションを指定.
                 }
                 
@@ -323,7 +333,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     @objc func timerupdate(){
         
         if self.enegy < 30.0 {
-            self.enegy = self.enegy + 1.0
+            self.enegy = self.enegy + 2.0
             if enegy > 30.0 {
                 enegy = 30.0
             }
