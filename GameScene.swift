@@ -27,8 +27,10 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     
     var ButtonFlag:Bool = false
     var AllyFlag:Bool = false
+    var MoveMakerFlag:Bool = false
     
-    var timer:Timer?//enegy
+    var MainTimer:Timer?//enegyと移動に使用
+    
     var enegy:Double = 10.0//enegy
     let enegyLabel = SKLabelNode()//enegy
     var enegyBar = SKSpriteNode(color: SKColor.blue, size: CGSize(width: 7.0, height: 30.0))//エナジーの量を表示
@@ -38,6 +40,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     var exp:Int = 0
     
     var ally1  = SKSpriteNode(imageNamed: "monster3a")//allyの追加
+    var MoveMaker1 = SKSpriteNode(imageNamed: "movemaker")//ally1のmovemader
     
     var enemy1 = SKSpriteNode(imageNamed: "monster2a")
     
@@ -106,7 +109,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         Button.userData?.setValue( PhysicsCategory.Button, forKey: "category")
         self.addChild(Button)
         
-        self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.timerupdate), userInfo: nil, repeats: true)
+        self.MainTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.timerupdate), userInfo: nil, repeats: true)
         
         enegyLabel.text = "0.0"// Labelに文字列を設定.
         enegyLabel.fontSize = 30// フォントサイズを設定.
@@ -133,6 +136,11 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         ally1.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
         ally1.physicsBody?.collisionBitMask = 0 //PhysicsCategory.Ball //衝突させたい物体＝＞なし
         self.addChild(ally1)
+        
+        MoveMaker1.position = ally1.position
+        MoveMaker1.alpha = 0.0
+        MoveMaker1.name = "MoveMaker1"
+        self.addChild(MoveMaker1)
         
         levelLabel.text = "0.0"// Labelに文字列を設定.
         levelLabel.fontSize = 20// フォントサイズを設定.
@@ -188,6 +196,9 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             if self.atPoint(location).name == "Ally1"{
                 AllyFlag = true
             }
+            if self.atPoint(location).name == "MoveMaker1"{
+                MoveMakerFlag = true
+            }
         }
     }
     
@@ -197,8 +208,12 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         //print("hello")
         if let touch = touches.first as UITouch? {
             let location = touch.location(in: self)
-                if ButtonFlag {
-                    aimmingPoint = location
+            if ButtonFlag {
+                aimmingPoint = location
+            }
+            if AllyFlag || MoveMakerFlag {
+                MoveMaker1.alpha = 1.0
+                MoveMaker1.position = location
             }
         }
     }
@@ -221,8 +236,6 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                 
                 if enegy >= 3.0 {//エネルギー減らす分を確保。
                     enegy = enegy - 3.0//エネルギーを減らす。
-                    self.enegyLabel.text = "\(enegy)"
-                    self.enegyBar.xScale = CGFloat(enegy)//x方向の倍率
                     self.MakeBall(origin: ButtonPosition, aim: location)
                 }
                 ButtonFlag = false
@@ -230,10 +243,14 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             if AllyFlag {
                 AllyFlag = false
                 if self.atPoint(location).name == "Background"{
-                    ally1.position = location
-                    levelLabel.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 40)// 表示するポジションを指定.
+                    
+                    MoveMaker1.position = location
                     
                 }else if self.self.atPoint(location).name == "Enemy1" {
+                    
+                    MoveMaker1.alpha = 0.0
+                    MoveMaker1.position = ally1.position
+                    
                     enemyHp = enemyHp - 10 * level * level
                     if enemyHp <= 0 {
                         enemyHp = 0
@@ -265,6 +282,10 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     levelLabel.text = "level: \(level)"
                     
                 }
+            }
+            if MoveMakerFlag {
+                MoveMakerFlag = false
+                MoveMaker1.position = location
             }
             
         }
@@ -327,7 +348,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         let speed:Double = 1000.0 // 速さを設定
         SmallBall.physicsBody?.velocity = CGVector(dx: -speed * cos(Double(pi)),dy: speed * sin(Double(pi)))//800の速さで球を飛ばす。
         
-        let wait = SKAction.wait(forDuration: 1.2)
+        let wait = SKAction.wait(forDuration: 0.6)
         let remove = SKAction.removeFromParent()
         SmallBall.run(SKAction.sequence([wait,remove]))
         
@@ -400,10 +421,6 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         
     }
     
-    func length(v: CGPoint) -> CGFloat {
-        return sqrt(v.x * v.x + v.y * v.y)//長さを測る。
-    }
-    
     func vector2radian(vector: CGPoint) -> CGFloat {
         
         let len = length(v: vector)
@@ -418,24 +435,58 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         
     }
     
+    func length(v: CGPoint) -> CGFloat {
+        return sqrt(v.x * v.x + v.y * v.y)//長さを測る。
+    }
+    
     @objc func timerupdate(){
         
         if self.enegy < 30.0 {
-            self.enegy = self.enegy + 2.0
+            self.enegy = self.enegy + 0.2
             if enegy > 30.0 {
                 enegy = 30.0
             }
         }
-        enegyLabel.text = "\(enegy)"//enegyをラベルに表示
-        enegyBar.xScale = CGFloat(enegy)//x方向の倍率
+        
+        //ally1.position.y = ally1.position.y + 1はできる
+        if ally1.position == MoveMaker1.position {
+            MoveMaker1.alpha = 0.0
+            
+        }else{
+            
+            let relativepostion:CGPoint = CGPoint(x: MoveMaker1.position.x - ally1.position.x, y:  MoveMaker1.position.y - ally1.position.y)
+            let direction :CGFloat = vector2radian(vector: relativepostion)
+            if AllyFlag || MoveMakerFlag {
+                
+            }else{
+                if enegy >= 0.2 {
+                    if length(v: relativepostion) <= 6 {//相対位置の距離が6以下の場合、位置を同じにする。
+                        
+                        ally1.position = MoveMaker1.position
+                        MoveMaker1.alpha = 0.0
+                        
+                    }else{//違う場合距離にして3づつ近づく
+                        ally1.position.x = ally1.position.x - CGFloat( 3 * cos(Double(direction)))
+                        ally1.position.y = ally1.position.y + CGFloat( 3 * sin(Double(direction)))
+                        
+                        enegy = enegy - 0.2
+                        
+                    }
+                    
+                    levelLabel.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 40)// 表示するポジションを指定.
+                    
+            }
+            
+            }
+            
+            let enegy1f = floor(enegy*10)/10//少数第一位まで
+            
+            self.enegyLabel.text = "\(enegy1f)"
+            self.enegyBar.xScale = CGFloat(enegy1f)//x方向の倍率
+            
+        }
         
     }
-    func DegreeToRadian(Degree : Double!)-> CGFloat{//度をラジアンに変えてくれる関数
-        
-        return CGFloat(Degree) / CGFloat(180.0 * M_1_PI)
-        
-    }
-    
 
     
 }
