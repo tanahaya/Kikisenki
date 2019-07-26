@@ -14,13 +14,14 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     var WallLeft = SKSpriteNode(imageNamed: "WallLeft")
     var WallRight = SKSpriteNode(imageNamed: "WallRight")
     var Button = SKSpriteNode(imageNamed: "smallbutton")
-    var Arrow = SKSpriteNode(imageNamed: "Arrow")
+    let ButtonPosition = CGPoint(x: 207,y: 200)
     
     var Back = SKSpriteNode(imageNamed: "Back")
     var Background = SKSpriteNode(imageNamed: "Background")
     
     var originalPoint:CGPoint = CGPoint(x: 0.0,y: 0.0)
     var aimPoint:CGPoint = CGPoint(x: 0.0,y: 0.0)
+    var aimmingPoint:CGPoint = CGPoint(x: 0.0,y: 0.0)
     
     var ButtonFlag:Bool = false
     var AllyFlag:Bool = false
@@ -50,6 +51,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         static let Ally: UInt32 = 3
         static let Wall: UInt32 = 4
         static let Button: UInt32 = 5
+        static let SmallBall: UInt32 = 6
     }
     
     override func didMove(to view: SKView) {
@@ -96,7 +98,8 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         Button.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "smallbutton.png"), size: Button.size)
         Button.name = "Button"
         Button.physicsBody?.restitution = 1.0//反発値
-        Button.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない        Button.position = CGPoint(x: 207,y: 200)//207,が中心に相当近い
+        Button.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
+        Button.position = CGPoint(x: 207,y: 200)//207,が中心に相当近い
         Button.userData = NSMutableDictionary()
         Button.userData?.setValue( PhysicsCategory.Button, forKey: "category")
         self.addChild(Button)
@@ -162,10 +165,6 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         enemyHpBar.xScale = CGFloat(enemyHp)//x方向の倍率
         self.addChild(enemyHpBar)
         
-        Arrow.position = CGPoint(x: 207,y: 275)
-        Arrow.alpha = 0.0//透明度0
-        self.addChild(Arrow)
-        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -188,7 +187,16 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         
         //print("hello")
-        
+        if let touch = touches.first as UITouch? {
+            let location = touch.location(in: self)
+                if ButtonFlag {
+                    MakeSmallBall(origin: ButtonPosition, aim: location)
+                    //矢印移動のコードだけどうまく働かない。経路予想の方がフレンドリーかもしれん。意外と行けそう
+                    
+                    
+            }
+            
+        }
         
     }
     
@@ -203,7 +211,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     enegy = enegy - 3.0//エネルギーを減らす。
                     self.enegyLabel.text = "\(enegy)"
                     self.enegyBar.xScale = CGFloat(enegy)//x方向の倍率
-                    self.MakeBall()
+                    self.MakeBall(origin: ButtonPosition, aim: location)
                 }
                 ButtonFlag = false
             }
@@ -250,7 +258,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         }
     }
     
-    func MakeBall(){
+    func MakeBall(origin: CGPoint,aim: CGPoint){
         
         let Ball = SKSpriteNode(imageNamed: "tama2")
         
@@ -273,10 +281,43 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         
         self.addChild(Ball)//Ballを追加
         
-        let pi:CGFloat = vector2radian(vector: CGPoint(x: originalPoint.x - aimPoint.x, y: originalPoint.y - aimPoint.y))
+        let pi:CGFloat = vector2radian(vector: CGPoint(x: origin.x - aim.x, y: origin.y - aim.y))
         
-        let speed:Double = 3000.0 // 速さを設定
-        Ball.physicsBody?.velocity = CGVector(dx: -speed * cos(Double(pi)),dy: -speed * sin(Double(pi)))//800の速さで球を飛ばす。
+        let speed:Double = 1500.0 // 速さを設定
+        Ball.physicsBody?.velocity = CGVector(dx: -speed * cos(Double(pi)),dy: speed * sin(Double(pi)))//800の速さで球を飛ばす。
+        
+    }
+    
+    func MakeSmallBall(origin: CGPoint,aim: CGPoint){
+        
+        let SmallBall = SKSpriteNode(imageNamed: "smallball")
+        
+        SmallBall.physicsBody?.usesPreciseCollisionDetection = true//精度の高い衝突判定を行う。
+        SmallBall.physicsBody?.friction = 0//摩擦係数を0にする
+        SmallBall.name = "SmallBall"
+        SmallBall.physicsBody?.isDynamic = true
+        SmallBall.physicsBody?.restitution = 1.0 // 1.0にしたい。
+        SmallBall.physicsBody?.allowsRotation = false
+        SmallBall.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "smallball.png"), size: SmallBall.size)//Ball.size CGSize(width: 0,height: 30)
+        SmallBall.physicsBody = SKPhysicsBody(circleOfRadius: 10)
+        SmallBall.color = UIColor.red
+        SmallBall.physicsBody?.categoryBitMask = 0//PhysicsCategory.SmallBall //物体のカテゴリ次元をBall
+        SmallBall.physicsBody?.contactTestBitMask = 0//PhysicsCategory.Wall //衝突を検知するカテゴリWall
+        SmallBall.physicsBody?.collisionBitMask = PhysicsCategory.Wall //PhysicsCategory.Ball //衝突させたい物体＝＞なし
+        SmallBall.position = CGPoint(x: 207,y: 275)//初期位置
+        SmallBall.userData = NSMutableDictionary()
+        SmallBall.userData?.setValue( 0, forKey: "count")
+        SmallBall.userData?.setValue( PhysicsCategory.SmallBall, forKey: "category")
+        
+        self.addChild(SmallBall)//Ballを追加
+        
+        let pi:CGFloat = vector2radian(vector: CGPoint(x: origin.x - aim.x, y: origin.y - aim.y))
+        let speed:Double = 1000.0 // 速さを設定
+        SmallBall.physicsBody?.velocity = CGVector(dx: -speed * cos(Double(pi)),dy: speed * sin(Double(pi)))//800の速さで球を飛ばす。
+        
+        let wait = SKAction.wait(forDuration: 0.5)
+        let remove = SKAction.removeFromParent()
+        SmallBall.run(SKAction.sequence([wait,remove]))
         
     }
     
@@ -377,7 +418,13 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         enegyBar.xScale = CGFloat(enegy)//x方向の倍率
         
     }
+    func DegreeToRadian(Degree : Double!)-> CGFloat{//度をラジアンに変えてくれる関数
+        
+        return CGFloat(Degree) / CGFloat(180.0 * M_1_PI)
+        
+    }
     
+
     
 }
 
