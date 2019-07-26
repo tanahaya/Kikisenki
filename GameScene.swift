@@ -14,7 +14,9 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     var WallLeft = SKSpriteNode(imageNamed: "WallLeft")
     var WallRight = SKSpriteNode(imageNamed: "WallRight")
     var Button = SKSpriteNode(imageNamed: "smallbutton")
+    
     let ButtonPosition = CGPoint(x: 207,y: 200)
+    var AimTimer:Timer?
     
     var Back = SKSpriteNode(imageNamed: "Back")
     var Background = SKSpriteNode(imageNamed: "Background")
@@ -175,8 +177,13 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             originalPoint.x = location.x
             originalPoint.x = location.y
             
+            
             if self.atPoint(location).name == "Button" {
                 ButtonFlag = true
+                
+                self.AimTimer = Timer.scheduledTimer(timeInterval: 0.05, target: self, selector: #selector(self.aimupdate), userInfo: nil, repeats: true)
+                //タイマーをここで開始して話した時に終了にして、movedで常に位置の新しい情報を入れ続けてもらえばいんじゃね
+                
             }
             if self.atPoint(location).name == "Ally1"{
                 AllyFlag = true
@@ -184,20 +191,20 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         }
     }
     
+    
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         
         //print("hello")
         if let touch = touches.first as UITouch? {
             let location = touch.location(in: self)
                 if ButtonFlag {
-                    MakeSmallBall(origin: ButtonPosition, aim: location)
-                    //矢印移動のコードだけどうまく働かない。経路予想の方がフレンドリーかもしれん。意外と行けそう
-                    
-                    
+                    aimmingPoint = location
             }
-            
         }
-        
+    }
+    
+    @objc func aimupdate(){
+        MakeSmallBall(origin: ButtonPosition, aim: aimmingPoint)//経路予想のためのボールを作る。
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -207,6 +214,11 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             if ButtonFlag {
                 aimPoint.x = location.x
                 aimPoint.y = location.y
+                
+                if AimTimer!.isValid == true {
+                    AimTimer?.invalidate()//AimTimerを破棄する.
+                }
+                
                 if enegy >= 3.0 {//エネルギー減らす分を確保。
                     enegy = enegy - 3.0//エネルギーを減らす。
                     self.enegyLabel.text = "\(enegy)"
@@ -315,7 +327,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         let speed:Double = 1000.0 // 速さを設定
         SmallBall.physicsBody?.velocity = CGVector(dx: -speed * cos(Double(pi)),dy: speed * sin(Double(pi)))//800の速さで球を飛ばす。
         
-        let wait = SKAction.wait(forDuration: 0.5)
+        let wait = SKAction.wait(forDuration: 1.2)
         let remove = SKAction.removeFromParent()
         SmallBall.run(SKAction.sequence([wait,remove]))
         
