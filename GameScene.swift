@@ -13,10 +13,11 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     
     var WallLeft = SKSpriteNode(imageNamed: "WallLeft")
     var WallRight = SKSpriteNode(imageNamed: "WallRight")
-    var Button = SKSpriteNode(imageNamed: "Button")
+    var Button = SKSpriteNode(imageNamed: "smallbutton")
     var Arrow = SKSpriteNode(imageNamed: "Arrow")
     
     var Back = SKSpriteNode(imageNamed: "Back")
+    var Background = SKSpriteNode(imageNamed: "Background")
     
     var originalPoint:CGPoint = CGPoint(x: 0.0,y: 0.0)
     var aimPoint:CGPoint = CGPoint(x: 0.0,y: 0.0)
@@ -27,7 +28,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     var timer:Timer?//enegy
     var enegy:Double = 10.0//enegy
     let enegyLabel = SKLabelNode()//enegy
-    var enegyBar = SKSpriteNode(color: SKColor.blue, size: CGSize(width: 5.0, height: 50.0))//エナジーの量を表示
+    var enegyBar = SKSpriteNode(color: SKColor.blue, size: CGSize(width: 7.0, height: 30.0))//エナジーの量を表示
     
     let levelLabel = SKLabelNode()
     var level:Int = 0
@@ -87,12 +88,15 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         WallRight.userData?.setValue( PhysicsCategory.Wall, forKey: "category")
         self.addChild(WallRight)
         
-        Button.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Button.png"), size: Button.size)
+        Background.anchorPoint = CGPoint(x: 0,y: 0)//ノードの位置配置などの起点を設定。
+        Background.position = CGPoint(x: 10,y: 250)
+        Background.name = "Background"
+        self.addChild(Background)
+        
+        Button.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "smallbutton.png"), size: Button.size)
         Button.name = "Button"
         Button.physicsBody?.restitution = 1.0//反発値
-        Button.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
-        Button.physicsBody?.contactTestBitMask = 1//次元を1に設定(次元1の物体と反応)
-        Button.position = CGPoint(x: 207,y: 240)//207,140が中心に相当近い
+        Button.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない        Button.position = CGPoint(x: 207,y: 200)//207,が中心に相当近い
         Button.userData = NSMutableDictionary()
         Button.userData?.setValue( PhysicsCategory.Button, forKey: "category")
         self.addChild(Button)
@@ -100,14 +104,14 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.timerupdate), userInfo: nil, repeats: true)
         
         enegyLabel.text = "0.0"// Labelに文字列を設定.
-        enegyLabel.fontSize = 45// フォントサイズを設定.
+        enegyLabel.fontSize = 30// フォントサイズを設定.
         enegyLabel.fontColor = UIColor.blue// 色を指定(赤).
-        enegyLabel.position = CGPoint(x: 100, y: 100)// 表示するポジションを指定.
+        enegyLabel.position = CGPoint(x: 50, y: 80)// 表示するポジションを指定.
         enegyLabel.text = "\(enegy)"
         self.addChild(enegyLabel)//シーンに追加
         
         enegyBar.anchorPoint = CGPoint(x: 0, y: 0)
-        enegyBar.position = CGPoint(x: 150, y: 100)
+        enegyBar.position = CGPoint(x: 100, y: 80)
         enegyBar.zPosition = 1
         enegyBar.xScale = CGFloat(enegy)//x方向の倍率
         self.addChild(enegyBar)
@@ -158,6 +162,10 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         enemyHpBar.xScale = CGFloat(enemyHp)//x方向の倍率
         self.addChild(enemyHpBar)
         
+        Arrow.position = CGPoint(x: 207,y: 275)
+        Arrow.alpha = 0.0//透明度0
+        self.addChild(Arrow)
+        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -177,6 +185,13 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         }
     }
     
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        //print("hello")
+        
+        
+    }
+    
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         
         if let touch = touches.first as UITouch? {
@@ -194,7 +209,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             }
             if AllyFlag {
                 AllyFlag = false
-                if self.atPoint(location).name == "WallRight" || self.atPoint(location).name == "WallLeft" {
+                if self.atPoint(location).name == "Background"{
                     ally1.position = location
                     levelLabel.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 40)// 表示するポジションを指定.
                     
@@ -243,7 +258,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         Ball.physicsBody?.friction = 0//摩擦係数を0にする
         Ball.name = "Ball"
         Ball.physicsBody?.isDynamic = true
-        Ball.physicsBody?.restitution = 0.8 // 1.0にしたい。
+        Ball.physicsBody?.restitution = 1.0 // 1.0にしたい。
         Ball.physicsBody?.allowsRotation = false
         Ball.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "tama2.png"), size: Ball.size)//Ball.size CGSize(width: 0,height: 30)
         Ball.physicsBody = SKPhysicsBody(circleOfRadius: 20)
@@ -251,7 +266,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         Ball.physicsBody?.categoryBitMask = PhysicsCategory.Ball //物体のカテゴリ次元をBall
         Ball.physicsBody?.contactTestBitMask = PhysicsCategory.Wall //衝突を検知するカテゴリWall
         Ball.physicsBody?.collisionBitMask = PhysicsCategory.Wall //PhysicsCategory.Ball //衝突させたい物体＝＞なし
-        Ball.position = CGPoint(x: 207,y: 320)//初期位置
+        Ball.position = CGPoint(x: 207,y: 275)//初期位置
         Ball.userData = NSMutableDictionary()
         Ball.userData?.setValue( 1, forKey: "count")
         Ball.userData?.setValue( PhysicsCategory.Ball, forKey: "category")
@@ -260,7 +275,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         
         let pi:CGFloat = vector2radian(vector: CGPoint(x: originalPoint.x - aimPoint.x, y: originalPoint.y - aimPoint.y))
         
-        let speed:Double = 2000.0 // 速さを設定
+        let speed:Double = 3000.0 // 速さを設定
         Ball.physicsBody?.velocity = CGVector(dx: -speed * cos(Double(pi)),dy: -speed * sin(Double(pi)))//800の速さで球を飛ばす。
         
     }
@@ -358,7 +373,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                 enegy = 30.0
             }
         }
-        enegyLabel.text = "\(self.enegy)"//enegyをラベルに表示
+        enegyLabel.text = "\(enegy)"//enegyをラベルに表示
         enegyBar.xScale = CGFloat(enegy)//x方向の倍率
         
     }
