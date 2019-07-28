@@ -9,7 +9,7 @@
 import UIKit
 import SpriteKit
 
-class ViewController: UIViewController, UIGestureRecognizerDelegate{
+class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     let Scene = GameScene()
     
@@ -25,6 +25,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate{
         View.showsPhysics = true//物体の輪郭表示
         
         View.presentScene(Scene)
+        
         // Do any additional setup after loading the view.
         
     }

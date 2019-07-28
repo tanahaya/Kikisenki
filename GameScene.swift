@@ -29,10 +29,10 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     var AllyFlag:Bool = false
     var MoveMakerFlag:Bool = false
     
-    var MainTimer:Timer?//enegyと移動に使用
+    var MainTimer:Timer?//enegyと移動と敵の攻撃に使用
     
-    var enegy:Double = 10.0//enegy
-    let enegyLabel = SKLabelNode()//enegy
+    var enegy:Double = 10.0//enegyの値
+    let enegyLabel = SKLabelNode()//enegyを表示
     var enegyBar = SKSpriteNode(color: SKColor.blue, size: CGSize(width: 7.0, height: 30.0))//エナジーの量を表示
     
     let levelLabel = SKLabelNode()
@@ -42,7 +42,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     var ally1  = SKSpriteNode(imageNamed: "monster3a")//allyの追加
     var MoveMaker1 = SKSpriteNode(imageNamed: "movemaker")//ally1のmovemader
     
-    let allyHpLabel = SKLabelNode()//e
+    let allyHpLabel = SKLabelNode()//allyのhpを表示する。
     var allyHpBar = SKSpriteNode(color: SKColor.green, size: CGSize(width: 0.25, height: 25.0))//味方のhpの量を表示
     var allyHp:Int = 1000
     var allyMaxHp:Int = 1000
@@ -204,6 +204,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         allyHpBar.xScale = CGFloat(allyHp)//x方向の倍率
         self.addChild(allyHpBar)
         
+        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -233,7 +234,6 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         
-        //print("hello")
         if let touch = touches.first as UITouch? {
             let location = touch.location(in: self)
             if ButtonFlag {
@@ -246,7 +246,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         }
     }
     
-    @objc func aimupdate(){
+    @objc func aimupdate() {
         MakeSmallBall(origin: ButtonPosition, aim: aimmingPoint)//経路予想のためのボールを作る。
     }
     
@@ -254,7 +254,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         
         if let touch = touches.first as UITouch? {
             let location = touch.location(in: self)
-            if ButtonFlag {
+            if ButtonFlag { //発射ボタンを最初に触った時。
                 aimPoint.x = location.x
                 aimPoint.y = location.y
                 
@@ -268,7 +268,8 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                 }
                 ButtonFlag = false
             }
-            if AllyFlag {
+            
+            if AllyFlag {//味方を最初に触った時。
                 AllyFlag = false
                 if self.atPoint(location).name == "Background"{
                     
@@ -344,7 +345,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         
     }
     
-    func MakeSmallBall(origin: CGPoint,aim: CGPoint){
+    func MakeSmallBall(origin: CGPoint,aim: CGPoint) {
         
         let SmallBall = SKSpriteNode(imageNamed: "smallball")
         
@@ -402,6 +403,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                         }
                     }
                 }
+                
                 if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ally && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball || nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ally {
                     //ボールと味方が衝突した時の処理。本当は衝突処理だけして、すり抜けさせたい。=>できた。
                     if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball  {
@@ -437,9 +439,11 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     
                     levelLabel.text = "level: \(level)"
                     levelLabel.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 40)// 表示するポジションを指定.
+                    
                 }
                 
             }
+            
         }
         
     }
@@ -449,6 +453,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         let len = length(v: vector)
         let t = -vector.y / vector.x
         let c = vector.x / len
+        
         if vector.x == 0 {
             return acos(c)
         } else {
@@ -458,7 +463,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         
     }
     
-    func length(v: CGPoint) -> CGFloat {
+    func length(v: CGPoint) -> CGFloat {//相対位置の長さを測る。
         return sqrt(v.x * v.x + v.y * v.y)//長さを測る。
     }
     
@@ -469,13 +474,15 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             if enegy > 30.0 {
                 enegy = 30.0
             }
+            
         }
         
         //ally1.position.y = ally1.position.y + 1はできる
         if ally1.position == MoveMaker1.position {//移動系の処理
+            
             MoveMaker1.alpha = 0.0
             
-        }else{
+        } else {
             
             let relativepostion:CGPoint = CGPoint(x: MoveMaker1.position.x - ally1.position.x, y:  MoveMaker1.position.y - ally1.position.y)
             let direction :CGFloat = vector2radian(vector: relativepostion)
@@ -498,11 +505,11 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     
                     levelLabel.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 40)// 表示するポジションを指定.
                     
-            }
+                    }
             
             }
             
-            let enegy1f = floor(enegy*10)/10//少数第一位まで
+            let enegy1f = floor(enegy*10) / 10//少数第一位まで
             
             self.enegyLabel.text = "\(enegy1f)"
             self.enegyBar.xScale = CGFloat(enegy1f)//x方向の倍率
@@ -523,9 +530,10 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         
         
     }
-    func changeEnemyHp(change:Int){//渡された値が正なら回復。負ならダメージを与える。敵のhpを変動させる。
+    
+    func changeEnemyHp(change:Int) {//渡された値が正なら回復。負ならダメージを与える。敵のhpを変動させる。
         
-        enemyHp = enemyHp - change
+        enemyHp = enemyHp + change
         
         if enemyHp <= 0 {
             enemyHp = 0
@@ -536,9 +544,9 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         
     }
     
-    func changeAllyHp(change:Int){//渡された値が正なら回復。負ならダメージを与える。味方のhpを変動させる。
+    func changeAllyHp(change:Int) {//渡された値が正なら回復。負ならダメージを与える。味方のhpを変動させる。
         
-        allyHp = allyHp - change
+        allyHp = allyHp + change
         
         if allyHp <= 0 {
             allyHp = 0
@@ -548,7 +556,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         allyHpLabel.text = "\(allyHp) / \(allyMaxHp)"
         
     }
-
+    
     
 }
 
