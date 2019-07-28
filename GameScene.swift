@@ -42,12 +42,21 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     var ally1  = SKSpriteNode(imageNamed: "monster3a")//allyの追加
     var MoveMaker1 = SKSpriteNode(imageNamed: "movemaker")//ally1のmovemader
     
-    var enemy1 = SKSpriteNode(imageNamed: "monster2a")
+    let allyHpLabel = SKLabelNode()//e
+    var allyHpBar = SKSpriteNode(color: SKColor.green, size: CGSize(width: 0.25, height: 25.0))//味方のhpの量を表示
+    var allyHp:Int = 1000
+    var allyMaxHp:Int = 1000
     
-    let enemyHpLabel = SKLabelNode()//enegy
-    var enemyHpBar = SKSpriteNode(color: SKColor.red, size: CGSize(width: 0.5, height: 25.0))//エナジーの量を表示
+    
+    var enemy1 = SKSpriteNode(imageNamed: "monster2a")
+    var enemy1AttackLabel = SKLabelNode()
+    var enemy1AttackCount:Int = 50//mainTimerの感覚が0.1秒ごとのため10バイしております。そのため攻撃感覚は5秒です。
+    
+    let enemyHpLabel = SKLabelNode()//
+    var enemyHpBar = SKSpriteNode(color: SKColor.red, size: CGSize(width: 0.5, height: 25.0))//敵のhpの量を表示
     var enemyHp:Int = 500
     var enemyMaxHp:Int = 500
+    
     
     //衝突判定のためのビットマスク作成
     struct PhysicsCategory {
@@ -109,17 +118,16 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         Button.userData?.setValue( PhysicsCategory.Button, forKey: "category")
         self.addChild(Button)
         
-        self.MainTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.timerupdate), userInfo: nil, repeats: true)
+        self.MainTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.mainTimerupdate), userInfo: nil, repeats: true)
         
-        enegyLabel.text = "0.0"// Labelに文字列を設定.
         enegyLabel.fontSize = 30// フォントサイズを設定.
         enegyLabel.fontColor = UIColor.blue// 色を指定(赤).
-        enegyLabel.position = CGPoint(x: 50, y: 80)// 表示するポジションを指定.
+        enegyLabel.position = CGPoint(x: 50, y: 120)// 表示するポジションを指定.
         enegyLabel.text = "\(enegy)"
         self.addChild(enegyLabel)//シーンに追加
         
         enegyBar.anchorPoint = CGPoint(x: 0, y: 0)
-        enegyBar.position = CGPoint(x: 100, y: 80)
+        enegyBar.position = CGPoint(x: 100, y: 120)
         enegyBar.zPosition = 1
         enegyBar.xScale = CGFloat(enegy)//x方向の倍率
         self.addChild(enegyBar)
@@ -129,6 +137,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         ally1.physicsBody?.isDynamic = false
         ally1.physicsBody?.restitution = 1.0//反発値
         ally1.position = CGPoint(x: 207,y: 500)
+        ally1.zPosition = 1 //movermakerより上に来るようにz=1
         ally1.userData = NSMutableDictionary()
         ally1.userData?.setValue( PhysicsCategory.Ally, forKey: "category")
         ally1.userData?.setValue( 0, forKey: "level")//levelを追加
@@ -162,6 +171,12 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         enemy1.physicsBody?.collisionBitMask = 0 //PhysicsCategory.Ball //衝突させたい物体＝＞なし
         self.addChild(enemy1)
         
+        enemy1AttackLabel.fontSize = 30// フォントサイズを設定.
+        enemy1AttackLabel.fontColor = UIColor.red// 色を指定(赤).
+        enemy1AttackLabel.position = CGPoint(x: enemy1.position.x, y: enemy1.position.y - 60)// 表示するポジションを指定.
+        enemy1AttackLabel.text = "\(enemy1AttackCount / 10)"//mainTimerの感覚が0.1秒ごとのため10バイしております。
+        self.addChild(enemy1AttackLabel)//シーンに追加
+        
         enemyHpLabel.text = "0.0"// Labelに文字列を設定.
         enemyHpLabel.fontSize = 25// フォントサイズを設定.
         enemyHpLabel.fontColor = UIColor.red// 色を指定(赤).
@@ -175,6 +190,20 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         enemyHpBar.xScale = CGFloat(enemyHp)//x方向の倍率
         self.addChild(enemyHpBar)
         
+        allyHpLabel.text = "0.0"// Labelに文字列を設定.
+        allyHpLabel.fontSize = 25// フォントサイズを設定.
+        allyHpLabel.fontColor = UIColor.green// 色を指定(赤).
+        allyHpLabel.position = CGPoint(x: 75, y: 70)// 表示するポジションを指定.
+        allyHpLabel.text = "\(allyHp) / \(allyMaxHp)"
+        self.addChild(allyHpLabel)//シーンに追加
+        
+        
+        allyHpBar.anchorPoint = CGPoint(x: 0, y: 0)
+        allyHpBar.position = CGPoint(x: 145, y: 70)
+        allyHpBar.zPosition = 1
+        allyHpBar.xScale = CGFloat(allyHp)//x方向の倍率
+        self.addChild(allyHpBar)
+        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -185,11 +214,10 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             originalPoint.x = location.x
             originalPoint.x = location.y
             
-            
             if self.atPoint(location).name == "Button" {
                 ButtonFlag = true
                 
-                self.AimTimer = Timer.scheduledTimer(timeInterval: 0.05, target: self, selector: #selector(self.aimupdate), userInfo: nil, repeats: true)
+                self.AimTimer = Timer.scheduledTimer(timeInterval: 0.001, target: self, selector: #selector(self.aimupdate), userInfo: nil, repeats: true)
                 //タイマーをここで開始して話した時に終了にして、movedで常に位置の新しい情報を入れ続けてもらえばいんじゃね
                 
             }
@@ -251,12 +279,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     MoveMaker1.alpha = 0.0
                     MoveMaker1.position = ally1.position
                     
-                    enemyHp = enemyHp - 10 * level * level
-                    if enemyHp <= 0 {
-                        enemyHp = 0
-                    }
-                    enemyHpBar.xScale = CGFloat(enemyHp)//x方向の倍率hpゲージ
-                    enemyHpLabel.text = "\(enemyHp) / \(enemyMaxHp)"
+                    self.changeEnemyHp(change: -10 * level * level)
                     
                     switch level  {//可変レベル
                     case 0:
@@ -345,10 +368,10 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         self.addChild(SmallBall)//Ballを追加
         
         let pi:CGFloat = vector2radian(vector: CGPoint(x: origin.x - aim.x, y: origin.y - aim.y))
-        let speed:Double = 1000.0 // 速さを設定
+        let speed:Double = 1200.0 // 速さを設定
         SmallBall.physicsBody?.velocity = CGVector(dx: -speed * cos(Double(pi)),dy: speed * sin(Double(pi)))//800の速さで球を飛ばす。
         
-        let wait = SKAction.wait(forDuration: 0.6)
+        let wait = SKAction.wait(forDuration: 0.5)
         let remove = SKAction.removeFromParent()
         SmallBall.run(SKAction.sequence([wait,remove]))
         
@@ -439,9 +462,9 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         return sqrt(v.x * v.x + v.y * v.y)//長さを測る。
     }
     
-    @objc func timerupdate(){
+    @objc func mainTimerupdate(){
         
-        if self.enegy < 30.0 {
+        if self.enegy < 30.0 {//エナジー系の処理
             self.enegy = self.enegy + 0.2
             if enegy > 30.0 {
                 enegy = 30.0
@@ -449,7 +472,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         }
         
         //ally1.position.y = ally1.position.y + 1はできる
-        if ally1.position == MoveMaker1.position {
+        if ally1.position == MoveMaker1.position {//移動系の処理
             MoveMaker1.alpha = 0.0
             
         }else{
@@ -485,6 +508,44 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             self.enegyBar.xScale = CGFloat(enegy1f)//x方向の倍率
             
         }
+        
+        enemy1AttackCount = enemy1AttackCount - 1//敵の攻撃に関する処理
+        if enemy1AttackCount == -10 {
+            
+            enemy1AttackCount = 50//攻撃間隔 ＊ 10
+            self.changeAllyHp(change: -100)
+            
+        }
+        
+        if enemy1AttackCount % 10 == 0 {
+            enemy1AttackLabel.text = "\(enemy1AttackCount / 10)"//mainTimerの感覚が0.1秒ごとのため10バイしております。
+        }
+        
+        
+    }
+    func changeEnemyHp(change:Int){//渡された値が正なら回復。負ならダメージを与える。敵のhpを変動させる。
+        
+        enemyHp = enemyHp - change
+        
+        if enemyHp <= 0 {
+            enemyHp = 0
+        }
+        
+        enemyHpBar.xScale = CGFloat(enemyHp)
+        enemyHpLabel.text = "\(enemyHp) / \(enemyMaxHp)"
+        
+    }
+    
+    func changeAllyHp(change:Int){//渡された値が正なら回復。負ならダメージを与える。味方のhpを変動させる。
+        
+        allyHp = allyHp - change
+        
+        if allyHp <= 0 {
+            allyHp = 0
+        }
+        
+        allyHpBar.xScale = CGFloat(allyHp)
+        allyHpLabel.text = "\(allyHp) / \(allyMaxHp)"
         
     }
 
