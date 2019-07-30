@@ -11,25 +11,24 @@ import SpriteKit
 
 class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
-    let Scene = GameScene()
+    
+    let startScene = StartScene()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         let View = self.view as! SKView
         
         View.showsFPS = true
         View.showsNodeCount = true
-        Scene.size = View.frame.size
         View.isMultipleTouchEnabled = false
         View.showsPhysics = true//物体の輪郭表示
         
-        View.presentScene(Scene)
+        View.presentScene(startScene)
         
         // Do any additional setup after loading the view.
         
     }
-    
     
     
 }

@@ -537,6 +537,26 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         
         if enemyHp <= 0 {
             enemyHp = 0
+            
+            let alertController0 = UIAlertController(title: "GameClear", message: "貴方の勝利", preferredStyle: .alert)
+            let gotoStartAction = UIAlertAction(title: "了解", style: .default) {
+                action in
+                print("勝利")
+                
+                let Scene = StartScene()
+                Scene.size = self.size
+                let transition = SKTransition.crossFade(withDuration: 1.0)
+                
+                self.view?.presentScene(Scene, transition: transition)
+                
+            }
+            
+            alertController0.addAction(gotoStartAction)
+            
+            let currentViewController : UIViewController? = UIApplication.shared.keyWindow?.rootViewController!
+            //SKSceneと言えど、Viewの最も最前面にはUIViewContollerが存在しており、それを取得してきて、そこから使用するというもの。
+            currentViewController?.present(alertController0, animated: true, completion: nil)
+            
         }
         
         enemyHpBar.xScale = CGFloat(enemyHp)
@@ -550,6 +570,26 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         
         if allyHp <= 0 {
             allyHp = 0
+            
+            let alertController0 = UIAlertController(title: "GameOver", message: "貴方の敗北", preferredStyle: .alert)
+            let gotoStartAction = UIAlertAction(title: "了解", style: .default) {
+                action in
+                print("敗北")
+                
+                let Scene = StartScene()
+                Scene.size = self.size
+                let transition = SKTransition.crossFade(withDuration: 1.0)
+                
+                self.view?.presentScene(Scene, transition: transition)
+                
+            }
+            
+            alertController0.addAction(gotoStartAction)
+            
+            let currentViewController : UIViewController? = UIApplication.shared.keyWindow?.rootViewController!
+            //SKSceneと言えど、Viewの最も最前面にはUIViewContollerが存在しており、それを取得してきて、そこから使用するというもの。
+            currentViewController?.present(alertController0, animated: true, completion: nil)
+            
         }
         
         allyHpBar.xScale = CGFloat(allyHp)
