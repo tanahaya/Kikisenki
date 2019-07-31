@@ -57,6 +57,9 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     var enemyHp:Int = 500
     var enemyMaxHp:Int = 500
     
+    var lifeTimerCount:Int = 0
+    var HeartCount:Int = 1
+    
     
     //衝突判定のためのビットマスク作成
     struct PhysicsCategory {
@@ -66,6 +69,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         static let Wall: UInt32 = 4
         static let Button: UInt32 = 5
         static let SmallBall: UInt32 = 6
+        static let Heart: UInt32 = 7
     }
     
     override func didMove(to view: SKView) {
@@ -146,6 +150,20 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         ally1.physicsBody?.collisionBitMask = 0 //PhysicsCategory.Ball //衝突させたい物体＝＞なし
         self.addChild(ally1)
         
+        allyHpLabel.text = "0.0"// Labelに文字列を設定.
+        allyHpLabel.fontSize = 25// フォントサイズを設定.
+        allyHpLabel.fontColor = UIColor.green// 色を指定(赤).
+        allyHpLabel.position = CGPoint(x: 75, y: 70)// 表示するポジションを指定.
+        allyHpLabel.text = "\(allyHp) / \(allyMaxHp)"
+        self.addChild(allyHpLabel)//シーンに追加
+        
+        
+        allyHpBar.anchorPoint = CGPoint(x: 0, y: 0)
+        allyHpBar.position = CGPoint(x: 145, y: 70)
+        allyHpBar.zPosition = 1
+        allyHpBar.xScale = CGFloat(allyHp)//x方向の倍率
+        self.addChild(allyHpBar)
+        
         MoveMaker1.position = ally1.position
         MoveMaker1.alpha = 0.0
         MoveMaker1.name = "MoveMaker1"
@@ -158,6 +176,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         levelLabel.text = "level: \(level)"
         self.addChild(levelLabel)//シーンに追加
         
+        
         enemy1.name = "Enemy1"
         enemy1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "monster2a"), size: enemy1.size)
         enemy1.physicsBody?.isDynamic = false
@@ -166,7 +185,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         enemy1.userData = NSMutableDictionary()
         enemy1.userData?.setValue( PhysicsCategory.Emeny, forKey: "category")
         enemy1.userData?.setValue( 0, forKey: "level")//levelを追加
-        enemy1.physicsBody?.categoryBitMask = PhysicsCategory.Emeny //物体のカテゴリ次元をally
+        enemy1.physicsBody?.categoryBitMask = PhysicsCategory.Emeny //物体のカテゴリ次元をEnemy
         enemy1.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
         enemy1.physicsBody?.collisionBitMask = 0 //PhysicsCategory.Ball //衝突させたい物体＝＞なし
         self.addChild(enemy1)
@@ -189,20 +208,6 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         enemyHpBar.zPosition = 1
         enemyHpBar.xScale = CGFloat(enemyHp)//x方向の倍率
         self.addChild(enemyHpBar)
-        
-        allyHpLabel.text = "0.0"// Labelに文字列を設定.
-        allyHpLabel.fontSize = 25// フォントサイズを設定.
-        allyHpLabel.fontColor = UIColor.green// 色を指定(赤).
-        allyHpLabel.position = CGPoint(x: 75, y: 70)// 表示するポジションを指定.
-        allyHpLabel.text = "\(allyHp) / \(allyMaxHp)"
-        self.addChild(allyHpLabel)//シーンに追加
-        
-        
-        allyHpBar.anchorPoint = CGPoint(x: 0, y: 0)
-        allyHpBar.position = CGPoint(x: 145, y: 70)
-        allyHpBar.zPosition = 1
-        allyHpBar.xScale = CGFloat(allyHp)//x方向の倍率
-        self.addChild(allyHpBar)
         
         
     }
@@ -271,11 +276,13 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             
             if AllyFlag {//味方を最初に触った時。
                 AllyFlag = false
+                print(self.atPoint(location).name)
                 if self.atPoint(location).name == "Background"{
                     
                     MoveMaker1.position = location
                     
-                }else if self.self.atPoint(location).name == "Enemy1" {
+                }
+                if self.self.atPoint(location).name == "Enemy1" {
                     
                     MoveMaker1.alpha = 0.0
                     MoveMaker1.position = ally1.position
@@ -307,6 +314,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     
                 }
             }
+            
             if MoveMakerFlag {
                 MoveMakerFlag = false
                 MoveMaker1.position = location
@@ -442,8 +450,20 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     
                 }
                 
+                if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Heart && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ally || nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Heart && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ally {
+                    
+                    if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Heart {
+                        print("hello")
+                        nodeA.removeFromParent()
+                        
+                    }else if nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Heart {
+                        print("hello")
+                        nodeB.removeFromParent()
+                        
+                    }
+                    
+                }
             }
-            
         }
         
     }
@@ -496,8 +516,10 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                         MoveMaker1.alpha = 0.0
                         
                     }else{//違う場合距離にして3づつ近づく
-                        ally1.position.x = ally1.position.x - CGFloat( 3 * cos(Double(direction)))
-                        ally1.position.y = ally1.position.y + CGFloat( 3 * sin(Double(direction)))
+                        
+                        
+                        let travelTime = SKAction.move( to: CGPoint(x: ally1.position.x - CGFloat( 3 * cos(Double(direction))),y: ally1.position.y + CGFloat( 3 * sin(Double(direction)))), duration: 0.01)
+                        ally1.run(travelTime)
                         
                         enegy = enegy - 0.2
                         
@@ -528,6 +550,33 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             enemy1AttackLabel.text = "\(enemy1AttackCount / 10)"//mainTimerの感覚が0.1秒ごとのため10バイしております。
         }
         
+        lifeTimerCount = lifeTimerCount + 1
+        
+        if lifeTimerCount % 50 == 0 && HeartCount <= 2 { //ハートの数は2コまで
+            
+            let Heart = SKSpriteNode(imageNamed: "heart")
+            
+            Heart.physicsBody?.usesPreciseCollisionDetection = true//精度の高い衝突判定を行う。
+            Heart.physicsBody?.friction = 0//摩擦係数を0にする
+            Heart.name = "haert"
+            Heart.physicsBody?.isDynamic = false
+            Heart.physicsBody?.restitution = 1.0 // 1.0にしたい。
+            Heart.physicsBody?.allowsRotation = false
+            Heart.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "heart.png"), size: Heart.size)
+            Heart.color = UIColor.red
+            Heart.physicsBody?.categoryBitMask = 0//物体のカテゴリ次元をHeart
+            Heart.physicsBody?.contactTestBitMask = 0 //衝突を検知するカテゴリWall
+            Heart.physicsBody?.collisionBitMask = 0 //衝突させたい物体＝＞なし
+            Heart.position = CGPoint(x: 50 + Int.random(in: 0 ..< 294) ,y: 300 + Int.random(in: 0 ..< 416))
+            //初期位置、414*896 100 + 20 + 294 300 + 80 + 100 + 416
+            Heart.userData = NSMutableDictionary()
+            Heart.userData?.setValue( PhysicsCategory.Heart, forKey: "category")
+            
+            self.addChild(Heart)//Ballを追加
+            
+            HeartCount = HeartCount + 1
+            
+        }
         
     }
     
@@ -599,6 +648,5 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     
     
 }
-
 
 
