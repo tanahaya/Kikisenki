@@ -11,8 +11,10 @@ import SpriteKit
 
 class GameScene : SKScene, SKPhysicsContactDelegate{
     
-    var WallLeft = SKSpriteNode(imageNamed: "WallLeft")
-    var WallRight = SKSpriteNode(imageNamed: "WallRight")
+    var LeftWall = SKSpriteNode(imageNamed: "LeftWall")
+    var RightWall = SKSpriteNode(imageNamed: "RightWall")
+    var UpperWall = SKSpriteNode(imageNamed: "UpperWall")
+    var LowerWall = SKSpriteNode(imageNamed: "LowerWall")
     var Button = SKSpriteNode(imageNamed: "smallbutton")
     
     let ButtonPosition = CGPoint(x: 207,y: 200)
@@ -83,30 +85,55 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         Back.name = "Back"
         self.addChild(Back)
         
-        WallLeft.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "WallLeft.png"), size: WallLeft.size)
-        WallLeft.name = "WallLeft"
-        WallLeft.physicsBody?.restitution = 1.0//反発値
-        WallLeft.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
-        WallLeft.physicsBody?.categoryBitMask = PhysicsCategory.Wall //物体のカテゴリ次元をwall(4)
-        WallLeft.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
-        WallLeft.physicsBody?.collisionBitMask = PhysicsCategory.Ball //衝突させたい物体Ball
-        WallLeft.position = CGPoint(x:103.5,y:448)
-        WallLeft.userData = NSMutableDictionary()
-        WallLeft.userData?.setValue( 0, forKey: "count")
-        WallLeft.userData?.setValue( PhysicsCategory.Wall, forKey: "category")
-        self.addChild(WallLeft)
+        LeftWall.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "LeftWall.png"), size: LeftWall.size)
+        LeftWall.name = "LeftWall"
+        LeftWall.physicsBody?.restitution = 1.0//反発値
+        LeftWall.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
+        LeftWall.physicsBody?.categoryBitMask = PhysicsCategory.Wall //物体のカテゴリ次元をwall(4)
+        LeftWall.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
+        LeftWall.physicsBody?.collisionBitMask = PhysicsCategory.Ball //衝突させたい物体Ball
+        LeftWall.position = CGPoint(x: 5,y: 533)
+        LeftWall.userData = NSMutableDictionary()
+        LeftWall.userData?.setValue( 0, forKey: "count")
+        LeftWall.userData?.setValue( PhysicsCategory.Wall, forKey: "category")
+        self.addChild(LeftWall)
         
-        WallRight.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "WallRight.png"), size: WallRight.size)
-        WallRight.name = "WallRight"
-        WallRight.physicsBody?.restitution = 1.0//反発値
-        WallRight.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
-        WallRight.physicsBody?.categoryBitMask = PhysicsCategory.Wall //物体のカテゴリ次元をwall(4)
-        WallRight.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
-        WallRight.physicsBody?.collisionBitMask = PhysicsCategory.Ball //衝突させたい物体Ball
-        WallRight.position = CGPoint(x:310.5,y:448)
-        WallRight.userData = NSMutableDictionary()
-        WallRight.userData?.setValue( PhysicsCategory.Wall, forKey: "category")
-        self.addChild(WallRight)
+        RightWall.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "RightWall.png"), size: RightWall.size)
+        RightWall.name = "WallRight"
+        RightWall.physicsBody?.restitution = 1.0//反発値
+        RightWall.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
+        RightWall.physicsBody?.categoryBitMask = PhysicsCategory.Wall //物体のカテゴリ次元をwall(4)
+        RightWall.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
+        RightWall.physicsBody?.collisionBitMask = PhysicsCategory.Ball //衝突させたい物体Ball
+        RightWall.position = CGPoint(x: 409,y: 533)
+        RightWall.userData = NSMutableDictionary()
+        RightWall.userData?.setValue( PhysicsCategory.Wall, forKey: "category")
+        self.addChild(RightWall)
+        
+        UpperWall.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "UpperWall.png"), size: UpperWall.size)
+        UpperWall.name = "UpperWall"
+        UpperWall.physicsBody?.restitution = 1.0//反発値
+        UpperWall.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
+        UpperWall.physicsBody?.categoryBitMask = PhysicsCategory.Wall //物体のカテゴリ次元をwall(4)
+        UpperWall.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
+        UpperWall.physicsBody?.collisionBitMask = PhysicsCategory.Ball //衝突させたい物体Ball
+        UpperWall.position = CGPoint(x: 207,y: 856)
+        UpperWall.userData = NSMutableDictionary()
+        UpperWall.userData?.setValue( PhysicsCategory.Wall, forKey: "category")
+        self.addChild(UpperWall)
+        
+        LowerWall.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "LowerWall.png"), size: LowerWall.size)
+        LowerWall.name = "LowerWall"
+        LowerWall.physicsBody?.restitution = 1.0//反発値
+        LowerWall.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
+        LowerWall.physicsBody?.categoryBitMask = PhysicsCategory.Wall //物体のカテゴリ次元をwall(4)
+        LowerWall.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
+        LowerWall.physicsBody?.collisionBitMask = PhysicsCategory.Ball //衝突させたい物体Ball
+        LowerWall.position = CGPoint(x: 207,y: 125)
+        LowerWall.userData = NSMutableDictionary()
+        LowerWall.userData?.setValue( PhysicsCategory.Wall, forKey: "category")
+        self.addChild(LowerWall)
+        
         
         Background.anchorPoint = CGPoint(x: 0,y: 0)//ノードの位置配置などの起点を設定。
         Background.position = CGPoint(x: 10,y: 250)
@@ -276,7 +303,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             
             if AllyFlag {//味方を最初に触った時。
                 AllyFlag = false
-                print(self.atPoint(location).name)
+                print(self.atPoint(location).name!)
                 if self.atPoint(location).name == "Background"{
                     
                     MoveMaker1.position = location
