@@ -34,15 +34,15 @@ class StartScene : SKScene, SKPhysicsContactDelegate{
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         /* Called wheStartSceneins */
         
-        for touch in (touches as! Set<UITouch>) {
-            
-            let Scene = GameScene()
-            Scene.size = self.size
-            let transition = SKTransition.crossFade(withDuration: 1.0)
-            
-            self.view?.presentScene(Scene, transition: transition)
-            
-        }
+        //for touch in (touches as! Set<UITouch>) {
+        
+        //}//今のところ使わないけど一応用意
+        
+        let Scene = GameScene()
+        Scene.size = self.size
+        let transition = SKTransition.crossFade(withDuration: 1.0)
+        
+        self.view?.presentScene(Scene, transition: transition)
         
     }
     
