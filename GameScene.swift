@@ -65,6 +65,8 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     var enemy1 = SKSpriteNode(imageNamed: "syatihoko")
     var enemy1AttackLabel = SKLabelNode()
     var enemy1AttackCount:Int = 50//mainTimerの感覚が0.1秒ごとのため10バイしております。そのため攻撃感覚は5秒です。
+    var enemy1Level:Int = 5
+    var enemy1LevelLabel = SKLabelNode()
     
     let enemyHpLabel = SKLabelNode()//
     var enemyHpBar = SKSpriteNode(color: SKColor.red, size: CGSize(width: 0.5, height: 25.0))//敵のhpの量を表示
@@ -93,7 +95,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         
         self.size = CGSize(width: 414, height: 896)//414x896が最適。これはiphoneXRの画面サイズ
         self.physicsWorld.gravity = CGVector(dx: 0.0, dy: 0.0)
-        self.physicsWorld.contactDelegate = self //didBeginCOntactに必要
+        self.physicsWorld.contactDelegate = self //didBeginContactに必要
         
         //四つの壁
         LeftWall.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "LeftWall.png"), size: LeftWall.size)
@@ -166,6 +168,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         
         //エネルギー管理系
         enegyLabel.fontSize = 30// フォントサイズを設定.
+        enegyLabel.name = "enegyLabel"
         enegyLabel.fontColor = UIColor.blue// 色を指定(赤).
         enegyLabel.position = CGPoint(x: 50, y: 120)// 表示するポジションを指定.
         enegyLabel.text = "\(enegy)"
@@ -174,6 +177,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         enegyBar.anchorPoint = CGPoint(x: 0, y: 0)
         enegyBar.position = CGPoint(x: 100, y: 120)
         enegyBar.zPosition = 1
+        enegyBar.name = "enegyBar"
         enegyBar.xScale = CGFloat(enegy)//x方向の倍率
         self.addChild(enegyBar)
         
@@ -196,6 +200,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         self.addChild(ally1)
         
         levelLabel1.text = "level: 0"// Labelに文字列を設定.
+        levelLabel1.name = "levelLabel1"
         levelLabel1.fontSize = 20// フォントサイズを設定.
         levelLabel1.fontColor = UIColor.green// 色を指定(赤).
         levelLabel1.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 45)// 表示するポジションを指定.
@@ -226,6 +231,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         self.addChild(ally2)
         
         levelLabel2.text = "level: 0"// Labelに文字列を設定.
+        levelLabel2.name = "levelLabel2"
         levelLabel2.fontSize = 20// フォントサイズを設定.
         levelLabel2.fontColor = UIColor.red// 色を指定(赤).
         levelLabel2.position = CGPoint(x: ally2.position.x, y: ally2.position.y - 55)// 表示するポジションを指定.
@@ -255,6 +261,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         self.addChild(ally3)
         
         levelLabel3.text = "level: 0"// Labelに文字列を設定.
+        levelLabel3.name = "levelLabel3"
         levelLabel3.fontSize = 20// フォントサイズを設定.
         levelLabel3.fontColor = UIColor.blue// 色を指定(赤).
         levelLabel3.position = CGPoint(x: ally3.position.x, y: ally3.position.y - 35)// 表示するポジションを指定.
@@ -294,15 +301,25 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         enemy1.physicsBody?.categoryBitMask = PhysicsCategory.Emeny //物体のカテゴリ次元をEnemy
         enemy1.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
         enemy1.physicsBody?.collisionBitMask = 0 //PhysicsCategory.Ball //衝突させたい物体＝＞なし
-        enemy1.xScale = 0.5
-        enemy1.yScale = 0.5
+        enemy1.xScale = 0.7
+        enemy1.yScale = 0.7
         self.addChild(enemy1)
         
         enemy1AttackLabel.fontSize = 30// フォントサイズを設定.
         enemy1AttackLabel.fontColor = UIColor.yellow// 色を指定(赤).
-        enemy1AttackLabel.position = CGPoint(x: enemy1.position.x, y: enemy1.position.y - 130)// 表示するポジションを指定.
+        enemy1AttackLabel.position = CGPoint(x: enemy1.position.x - 60,y: enemy1.position.y - 100)// 表示するポジションを指定.
         enemy1AttackLabel.text = "\(enemy1AttackCount / 10)"//mainTimerの感覚が0.1秒ごとのため10バイしております。
+        enemy1AttackLabel.name = "enemy1AttackLabel"
         self.addChild(enemy1AttackLabel)//シーンに追加
+        
+        
+        enemy1LevelLabel.fontSize = 30// フォントサイズを設定.
+        enemy1LevelLabel.fontColor = UIColor.yellow// 色を指定(赤).
+        enemy1LevelLabel.position = CGPoint(x: enemy1.position.x, y: enemy1.position.y - 100)// 表示するポジションを指定.
+        enemy1LevelLabel.text = "level: \(enemy1Level)"//mainTimerの感覚が0.1秒ごとのため10バイしております。
+        enemy1LevelLabel.name = "enemy1LevelLabel"
+        self.addChild(enemy1LevelLabel)//シーンに追加
+        
         
         //敵のhp
         enemyHpLabel.text = "0.0"// Labelに文字列を設定.
@@ -420,7 +437,9 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     MoveMaker1.alpha = 0.0
                     MoveMaker1.position = ally1.position
                     
-                    self.changeEnemyHp(change: -10 * level1 * level1)
+                    self.changeEnemyHp(change: -10 * level1 * level1)//hpを減らす。
+                    
+                    self.changeenemylevel(change: -1 )//レベルを減らす
                     
                     switch level1  {//可変レベル
                     case 0:
@@ -442,6 +461,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     default:
                         print("default")
                     }
+                    
                     level1 = 0//レベルを０に戻す
                     levelLabel1.text = "level: \(level1)"
                     
@@ -468,6 +488,8 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     MoveMaker2.position = ally2.position
                     
                     self.changeEnemyHp(change: -10 * level2 * level2)
+                    
+                    self.changeenemylevel(change: -1 )//レベルを減らす
                     
                     switch level2  {//可変レベル
                     case 0:
@@ -516,6 +538,8 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     MoveMaker3.position = ally3.position
                     
                     self.changeEnemyHp(change: -10 * level3 * level3)
+                    
+                    self.changeenemylevel(change: -1 )//レベルを減らす
                     
                     switch level3 {//可変レベル
                     case 0:
@@ -786,34 +810,43 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             
             if allyposition == movemakerposition {//移動系の処理
                 
-                if i == 1 {
+                switch i {
+                case 1:
                     MoveMaker1.alpha = 0.0
-                }else if i == 2 {
+                case 2:
                     MoveMaker2.alpha = 0.0
-                }else if i == 3 {
+                case 3:
                     MoveMaker3.alpha = 0.0
+                default:
+                    print("defalt")
                 }
             
             } else {
             
                 var relativepostion:CGPoint = CGPoint(x: 0,y: 0)
                 
-                if i == 1 {
+                switch i {
+                    
+                case 1:
                     relativepostion.x = MoveMaker1.position.x - ally1.position.x
                     relativepostion.y = MoveMaker1.position.y - ally1.position.y
-                }else if i == 2 {
+                case 2:
                     relativepostion.x = MoveMaker2.position.x - ally2.position.x
                     relativepostion.y = MoveMaker2.position.y - ally2.position.y
-                }else if i == 3 {
+                case 3:
                     relativepostion.x = MoveMaker3.position.x - ally3.position.x
                     relativepostion.y = MoveMaker3.position.y - ally3.position.y
+                default:
+                    print("defalt")
+                    
                 }
                 
                 
                 let direction :CGFloat = vector2radian(vector: relativepostion)
                 
-                if i == 1 {
+                switch i {
                     
+                case 1:
                     if Ally1Flag || MoveMaker1Flag {} else {
                         if enegy >= 0.2 {
                             if length(v: relativepostion) <= 6 {//相対位置の距離が6以下の場合、位置を同じにする。
@@ -836,7 +869,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                         }
                     }
                     
-                }else if i == 2 {
+                case 2:
                     
                     if Ally2Flag || MoveMaker2Flag {} else {
                         if enegy >= 0.2 {
@@ -860,7 +893,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                         }
                     }
                     
-                }else if i == 3 {
+                case 3:
                     
                     if Ally3Flag || MoveMaker3Flag {} else {
                         if enegy >= 0.2 {
@@ -883,10 +916,11 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                             
                         }
                     }
-                }
-                
-            }
-            
+                default:
+                    print("default")
+                    
+                }//switch分の終わり
+            }//movemakerとallyの位置が違う時のif分の終わり
         }//for分の終わり
         
         //以下は移動のエネルギー処理
@@ -901,7 +935,26 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         if enemy1AttackCount == -10 {
             
             enemy1AttackCount = 50//攻撃間隔 ＊ 10
-            self.changeAllyHp(change: -100)
+            
+            switch enemy1Level {//敵の攻撃力に応じて与えるダメージを変化。
+            case 0:
+                self.changeAllyHp(change: -10)
+            case 1:
+                self.changeAllyHp(change: -40)
+            case 2:
+                self.changeAllyHp(change: -50)
+            case 3:
+                self.changeAllyHp(change: -70)
+            case 4:
+                self.changeAllyHp(change: -100)
+            case 5 :
+                self.changeAllyHp(change: -120)
+            default:
+                print("defalut")
+            }
+            
+            enemy1Level = 5
+            enemy1LevelLabel.text = "level: \(enemy1Level)"
             
         }
         
@@ -938,6 +991,8 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         //初期位置、414*896 100 + 20 + 294 300 + 80 + 100 + 416
         Heart.userData = NSMutableDictionary()
         Heart.userData?.setValue( PhysicsCategory.Heart, forKey: "category")
+        Heart.xScale = 0.7
+        Heart.yScale = 0.7
         
         if self.atPoint(Heart.position).name == "Background" { //ハートと他のオブジェクトが被らないようにできる場所に他のオブジェクトがなかったらハートができるように変更。
             
@@ -1039,6 +1094,16 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         
     }
     
+    func changeenemylevel(change: Int){
+        
+        enemy1Level = enemy1Level + change//レベルを減らす
+        
+        if enemy1Level <= 0 {
+            enemy1Level = 0
+        }
+        enemy1LevelLabel.text = "level: \(enemy1Level)"
+        
+    }
 }
 
 
