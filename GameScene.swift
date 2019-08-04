@@ -97,7 +97,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         self.physicsWorld.gravity = CGVector(dx: 0.0, dy: 0.0)
         self.physicsWorld.contactDelegate = self //didBeginCOntactに必要
         
-        //壁
+        //四つの壁
         LeftWall.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "LeftWall.png"), size: LeftWall.size)
         LeftWall.name = "LeftWall"
         LeftWall.physicsBody?.restitution = 1.0//反発値
@@ -615,6 +615,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         if let nodeA = contact.bodyA.node {
             if let nodeB = contact.bodyB.node{
                 
+                //壁とボールの接触判定。カウントを増やす。
                 if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Wall && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball || nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Wall {
                     
                     if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball {
@@ -636,6 +637,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     }
                 }
                 
+                //ボールと味方の接触。これをallyごとにやる必要あり。
                 if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ally && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball || nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ally {
                     //ボールと味方が衝突した時の処理。本当は衝突処理だけして、すり抜けさせたい。=>できた。
                     if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball  {
@@ -674,6 +676,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     
                 }
                 
+                //以下のコードはハートとキャラクターが接触したら呼ばれるコードですが、なぜか呼ばれません。これを改善する必要があります。
                 if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Heart && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ally || nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Heart && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ally {
                     
                     if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Heart {
@@ -685,8 +688,8 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                         nodeB.removeFromParent()
                         
                     }
-                    
                 }
+                
             }
         }
         
@@ -722,6 +725,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         }
         
         //ally1.position.y = ally1.position.y + 1はできる
+        //ally1の移動処理
         if ally1.position == MoveMaker1.position {//移動系の処理
             
             MoveMaker1.alpha = 0.0
@@ -755,12 +759,87 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             
             }
             
-            let enegy1f = floor(enegy*10) / 10//少数第一位まで
+        }
+        
+        //ally2の移動処理
+        if ally2.position == MoveMaker2.position {//移動系の処理
             
-            self.enegyLabel.text = "\(enegy1f)"
-            self.enegyBar.xScale = CGFloat(enegy1f)//x方向の倍率
+            MoveMaker2.alpha = 0.0
+            
+        } else {
+            
+            let relativepostion:CGPoint = CGPoint(x: MoveMaker2.position.x - ally2.position.x, y:  MoveMaker2.position.y - ally2.position.y)
+            let direction :CGFloat = vector2radian(vector: relativepostion)
+            if Ally2Flag || MoveMaker2Flag {
+                
+            }else{
+                if enegy >= 0.2 {
+                    if length(v: relativepostion) <= 6 {//相対位置の距離が6以下の場合、位置を同じにする。
+                        
+                        ally2.position = MoveMaker2.position
+                        MoveMaker2.alpha = 0.0
+                        
+                    }else{//違う場合距離にして3づつ近づく
+                        
+                        
+                        let travelTime = SKAction.move( to: CGPoint(x: ally2.position.x - CGFloat( 3 * cos(Double(direction))),y: ally2.position.y + CGFloat( 3 * sin(Double(direction)))), duration: 0.01)
+                        ally2.run(travelTime)
+                        
+                        enegy = enegy - 0.2
+                        
+                    }
+                    
+                    levelLabel2.position = CGPoint(x: ally2.position.x, y: ally2.position.y - 65)// 表示するポジションを指定.
+                    
+                }
+                
+            }
             
         }
+        
+        //ally3の移動処理
+        if ally3.position == MoveMaker3.position {//移動系の処理
+            
+            MoveMaker3.alpha = 0.0
+            
+        } else {
+            
+            let relativepostion:CGPoint = CGPoint(x: MoveMaker3.position.x - ally3.position.x, y:  MoveMaker3.position.y - ally3.position.y)
+            let direction :CGFloat = vector2radian(vector: relativepostion)
+            if Ally3Flag || MoveMaker3Flag {
+                
+            }else{
+                if enegy >= 0.2 {
+                    if length(v: relativepostion) <= 6 {//相対位置の距離が6以下の場合、位置を同じにする。
+                        
+                        ally3.position = MoveMaker3.position
+                        MoveMaker3.alpha = 0.0
+                        
+                    }else{//違う場合距離にして3づつ近づく
+                        
+                        
+                        let travelTime = SKAction.move( to: CGPoint(x: ally3.position.x - CGFloat( 3 * cos(Double(direction))),y: ally3.position.y + CGFloat( 3 * sin(Double(direction)))), duration: 0.01)
+                        ally3.run(travelTime)
+                        
+                        enegy = enegy - 0.2
+                        
+                    }
+                    
+                    levelLabel3.position = CGPoint(x: ally3.position.x, y: ally3.position.y - 40)// 表示するポジションを指定.
+                    
+                }
+                
+            }
+        }
+        
+        //以下は移動のエネルギー処理
+        let enegy1f = floor(enegy*10) / 10//少数第一位まで
+        
+        self.enegyLabel.text = "\(enegy1f)"
+        self.enegyBar.xScale = CGFloat(enegy1f)//x方向の倍率
+        
+        
+        
         
         enemy1AttackCount = enemy1AttackCount - 1//敵の攻撃に関する処理
         if enemy1AttackCount == -10 {
@@ -778,31 +857,35 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         
         if lifeTimerCount % 50 == 0 && HeartCount <= 2 { //ハートの数は2コまで
             
+            self.makeHeart()//ハートを作る関数
             
+        }
+        
+    }
+    
+    func makeHeart() {//ハートを作る関数
+        
+        let Heart = SKSpriteNode(imageNamed: "heart")
+        
+        Heart.physicsBody?.usesPreciseCollisionDetection = true//精度の高い衝突判定を行う。
+        Heart.physicsBody?.friction = 0//摩擦係数を0にする
+        Heart.name = "haert"
+        Heart.physicsBody?.isDynamic = false
+        Heart.physicsBody?.restitution = 1.0 // 1.0にしたい。
+        Heart.physicsBody?.allowsRotation = false
+        Heart.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "heart.png"), size: Heart.size)
+        Heart.physicsBody?.categoryBitMask = 0//物体のカテゴリ次元をHeart
+        Heart.physicsBody?.contactTestBitMask = 0 //衝突を検知するカテゴリWall
+        Heart.physicsBody?.collisionBitMask = 0 //衝突させたい物体＝＞なし
+        Heart.position = CGPoint(x: 50 + Int.random(in: 0 ..< 294) ,y: 300 + Int.random(in: 0 ..< 416))
+        //初期位置、414*896 100 + 20 + 294 300 + 80 + 100 + 416
+        Heart.userData = NSMutableDictionary()
+        Heart.userData?.setValue( PhysicsCategory.Heart, forKey: "category")
+        
+        if self.atPoint(Heart.position).name == "Background" { //ハートと他のオブジェクトが被らないようにできる場所に他のオブジェクトがなかったらハートができるように変更。
             
-            let Heart = SKSpriteNode(imageNamed: "heart")
-            
-            Heart.physicsBody?.usesPreciseCollisionDetection = true//精度の高い衝突判定を行う。
-            Heart.physicsBody?.friction = 0//摩擦係数を0にする
-            Heart.name = "haert"
-            Heart.physicsBody?.isDynamic = false
-            Heart.physicsBody?.restitution = 1.0 // 1.0にしたい。
-            Heart.physicsBody?.allowsRotation = false
-            Heart.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "heart.png"), size: Heart.size)
-            Heart.physicsBody?.categoryBitMask = 0//物体のカテゴリ次元をHeart
-            Heart.physicsBody?.contactTestBitMask = 0 //衝突を検知するカテゴリWall
-            Heart.physicsBody?.collisionBitMask = 0 //衝突させたい物体＝＞なし
-            Heart.position = CGPoint(x: 50 + Int.random(in: 0 ..< 294) ,y: 300 + Int.random(in: 0 ..< 416))
-            //初期位置、414*896 100 + 20 + 294 300 + 80 + 100 + 416
-            Heart.userData = NSMutableDictionary()
-            Heart.userData?.setValue( PhysicsCategory.Heart, forKey: "category")
-            
-            if self.atPoint(Heart.position).name == "Background" { //ハートと他のオブジェクトが被らないようにできる場所に他のオブジェクトがなかったらハートができるように変更。
-                
-                self.addChild(Heart)//Ballを追加
-                HeartCount = HeartCount + 1
-                
-            }
+            self.addChild(Heart)//Ballを追加
+            HeartCount = HeartCount + 1
             
         }
         
