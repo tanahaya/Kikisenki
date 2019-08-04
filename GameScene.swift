@@ -724,124 +724,138 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             
         }
         
-        //ally1.position.y = ally1.position.y + 1はできる
-        //ally1の移動処理
-        if ally1.position == MoveMaker1.position {//移動系の処理
+        
+        //全てのallyの移動処理
+        for i in 1 ..< 4 { //allyの123
             
-            MoveMaker1.alpha = 0.0
+            var allyposition:CGPoint = CGPoint(x: 0.0,y: 0.0)
+            var movemakerposition:CGPoint = CGPoint(x: 0.0,y: 0.0)
             
-        } else {
-            
-            let relativepostion:CGPoint = CGPoint(x: MoveMaker1.position.x - ally1.position.x, y:  MoveMaker1.position.y - ally1.position.y)
-            let direction :CGFloat = vector2radian(vector: relativepostion)
-            if Ally1Flag || MoveMaker1Flag {
-                
-            }else{
-                if enegy >= 0.2 {
-                    if length(v: relativepostion) <= 6 {//相対位置の距離が6以下の場合、位置を同じにする。
-                        
-                        ally1.position = MoveMaker1.position
-                        MoveMaker1.alpha = 0.0
-                        
-                    }else{//違う場合距離にして3づつ近づく
-                        
-                        
-                        let travelTime = SKAction.move( to: CGPoint(x: ally1.position.x - CGFloat( 3 * cos(Double(direction))),y: ally1.position.y + CGFloat( 3 * sin(Double(direction)))), duration: 0.01)
-                        ally1.run(travelTime)
-                        
-                        enegy = enegy - 0.2
-                        
-                    }
-                    
-                    levelLabel1.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 55)// 表示するポジションを指定.
-                    
-                    }
-            
+            if i == 1 {
+                allyposition = ally1.position
+                movemakerposition = MoveMaker1.position
+            }else if i == 2 {
+                allyposition = ally2.position
+                movemakerposition = MoveMaker2.position
+            }else if i == 3 {
+                allyposition = ally3.position
+                movemakerposition = MoveMaker3.position
             }
             
-        }
-        
-        //ally2の移動処理
-        if ally2.position == MoveMaker2.position {//移動系の処理
-            
-            MoveMaker2.alpha = 0.0
-            
-        } else {
-            
-            let relativepostion:CGPoint = CGPoint(x: MoveMaker2.position.x - ally2.position.x, y:  MoveMaker2.position.y - ally2.position.y)
-            let direction :CGFloat = vector2radian(vector: relativepostion)
-            if Ally2Flag || MoveMaker2Flag {
+            if allyposition == movemakerposition {//移動系の処理
                 
-            }else{
-                if enegy >= 0.2 {
-                    if length(v: relativepostion) <= 6 {//相対位置の距離が6以下の場合、位置を同じにする。
-                        
-                        ally2.position = MoveMaker2.position
-                        MoveMaker2.alpha = 0.0
-                        
-                    }else{//違う場合距離にして3づつ近づく
-                        
-                        
-                        let travelTime = SKAction.move( to: CGPoint(x: ally2.position.x - CGFloat( 3 * cos(Double(direction))),y: ally2.position.y + CGFloat( 3 * sin(Double(direction)))), duration: 0.01)
-                        ally2.run(travelTime)
-                        
-                        enegy = enegy - 0.2
-                        
+                if i == 1 {
+                    MoveMaker1.alpha = 0.0
+                }else if i == 2 {
+                    MoveMaker2.alpha = 0.0
+                }else if i == 3 {
+                    MoveMaker3.alpha = 0.0
+                }
+            
+            } else {
+            
+                var relativepostion:CGPoint = CGPoint(x: 0,y: 0)
+                
+                if i == 1 {
+                    relativepostion.x = MoveMaker1.position.x - ally1.position.x
+                    relativepostion.y = MoveMaker1.position.y - ally1.position.y
+                }else if i == 2 {
+                    relativepostion.x = MoveMaker2.position.x - ally2.position.x
+                    relativepostion.y = MoveMaker2.position.y - ally2.position.y
+                }else if i == 3 {
+                    relativepostion.x = MoveMaker3.position.x - ally3.position.x
+                    relativepostion.y = MoveMaker3.position.y - ally3.position.y
+                }
+                
+                
+                let direction :CGFloat = vector2radian(vector: relativepostion)
+                
+                if i == 1 {
+                    
+                    if Ally1Flag || MoveMaker1Flag {} else {
+                        if enegy >= 0.2 {
+                            if length(v: relativepostion) <= 6 {//相対位置の距離が6以下の場合、位置を同じにする。
+                                
+                                ally1.position = MoveMaker1.position
+                                MoveMaker1.alpha = 0.0
+                                
+                            }else{//違う場合距離にして3づつ近づく
+                                
+                                
+                                let travelTime = SKAction.move( to: CGPoint(x: ally1.position.x - CGFloat( 3 * cos(Double(direction))),y: ally1.position.y + CGFloat( 3 * sin(Double(direction)))), duration: 0.01)
+                                ally1.run(travelTime)
+                                
+                                enegy = enegy - 0.2
+                                
+                            }
+                            
+                            levelLabel1.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 55)// 表示するポジションを指定.
+                            
+                        }
                     }
                     
-                    levelLabel2.position = CGPoint(x: ally2.position.x, y: ally2.position.y - 65)// 表示するポジションを指定.
+                }else if i == 2 {
                     
+                    if Ally2Flag || MoveMaker2Flag {} else {
+                        if enegy >= 0.2 {
+                            if length(v: relativepostion) <= 6 {//相対位置の距離が6以下の場合、位置を同じにする。
+                                
+                                ally2.position = MoveMaker2.position
+                                MoveMaker2.alpha = 0.0
+                                
+                            }else{//違う場合距離にして3づつ近づく
+                                
+                                
+                                let travelTime = SKAction.move( to: CGPoint(x: ally2.position.x - CGFloat( 3 * cos(Double(direction))),y: ally2.position.y + CGFloat( 3 * sin(Double(direction)))), duration: 0.01)
+                                ally2.run(travelTime)
+                                
+                                enegy = enegy - 0.2
+                                
+                            }
+                            
+                            levelLabel2.position = CGPoint(x: ally2.position.x, y: ally2.position.y - 65)// 表示するポジションを指定.
+                            
+                        }
+                    }
+                    
+                }else if i == 3 {
+                    
+                    if Ally3Flag || MoveMaker3Flag {} else {
+                        if enegy >= 0.2 {
+                            if length(v: relativepostion) <= 6 {//相対位置の距離が6以下の場合、位置を同じにする。
+                                
+                                ally3.position = MoveMaker3.position
+                                MoveMaker3.alpha = 0.0
+                                
+                            }else{//違う場合距離にして3づつ近づく
+                                
+                                
+                                let travelTime = SKAction.move( to: CGPoint(x: ally3.position.x - CGFloat( 3 * cos(Double(direction))),y: ally3.position.y + CGFloat( 3 * sin(Double(direction)))), duration: 0.01)
+                                ally3.run(travelTime)
+                                
+                                enegy = enegy - 0.2
+                                
+                            }
+                            
+                            levelLabel3.position = CGPoint(x: ally3.position.x, y: ally3.position.y - 40 )// 表示するポジションを指定.
+                            
+                        }
+                    }
                 }
                 
             }
             
-        }
-        
-        //ally3の移動処理
-        if ally3.position == MoveMaker3.position {//移動系の処理
-            
-            MoveMaker3.alpha = 0.0
-            
-        } else {
-            
-            let relativepostion:CGPoint = CGPoint(x: MoveMaker3.position.x - ally3.position.x, y:  MoveMaker3.position.y - ally3.position.y)
-            let direction :CGFloat = vector2radian(vector: relativepostion)
-            if Ally3Flag || MoveMaker3Flag {
-                
-            }else{
-                if enegy >= 0.2 {
-                    if length(v: relativepostion) <= 6 {//相対位置の距離が6以下の場合、位置を同じにする。
-                        
-                        ally3.position = MoveMaker3.position
-                        MoveMaker3.alpha = 0.0
-                        
-                    }else{//違う場合距離にして3づつ近づく
-                        
-                        
-                        let travelTime = SKAction.move( to: CGPoint(x: ally3.position.x - CGFloat( 3 * cos(Double(direction))),y: ally3.position.y + CGFloat( 3 * sin(Double(direction)))), duration: 0.01)
-                        ally3.run(travelTime)
-                        
-                        enegy = enegy - 0.2
-                        
-                    }
-                    
-                    levelLabel3.position = CGPoint(x: ally3.position.x, y: ally3.position.y - 40)// 表示するポジションを指定.
-                    
-                }
-                
-            }
-        }
+        }//for分の終わり
         
         //以下は移動のエネルギー処理
-        let enegy1f = floor(enegy*10) / 10//少数第一位まで
+        let enegy1f = floor(enegy * 10) / 10//少数第一位まで
         
         self.enegyLabel.text = "\(enegy1f)"
         self.enegyBar.xScale = CGFloat(enegy1f)//x方向の倍率
         
         
-        
-        
         enemy1AttackCount = enemy1AttackCount - 1//敵の攻撃に関する処理
+        
         if enemy1AttackCount == -10 {
             
             enemy1AttackCount = 50//攻撃間隔 ＊ 10
@@ -853,6 +867,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             enemy1AttackLabel.text = "\(enemy1AttackCount / 10)"//mainTimerの感覚が0.1秒ごとのため10バイしております。
         }
         
+        //ハートの生成に関する処理
         lifeTimerCount = lifeTimerCount + 1
         
         if lifeTimerCount % 50 == 0 && HeartCount <= 2 { //ハートの数は2コまで
@@ -966,6 +981,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         allyHpLabel.text = "\(allyHp) / \(allyMaxHp)"
         
     }
+    
     func start(){
         
         endFlag = false
