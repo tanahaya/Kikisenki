@@ -15,6 +15,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     var RightWall = SKSpriteNode(imageNamed: "RightWall")
     var UpperWall = SKSpriteNode(imageNamed: "UpperWall")
     var LowerWall = SKSpriteNode(imageNamed: "LowerWall")
+    
     var Button = SKSpriteNode(imageNamed: "smallbutton")
     
     let ButtonPosition = CGPoint(x: 207,y: 200)
@@ -44,19 +45,16 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     var MoveMaker1 = SKSpriteNode(imageNamed: "movemaker1")//ally1のmovemader
     let levelLabel1 = SKLabelNode()
     var level1:Int = 0
-    var exp1:Int = 0
     
     var ally2  = SKSpriteNode(imageNamed: "monster2a")//allyの追加
     var MoveMaker2 = SKSpriteNode(imageNamed: "movemaker2")//ally2のmovemader
     let levelLabel2 = SKLabelNode()
     var level2:Int = 0
-    var exp2:Int = 0
     
     var ally3  = SKSpriteNode(imageNamed: "monster3a")//allyの追加
     var MoveMaker3 = SKSpriteNode(imageNamed: "movemaker3")//ally3のmovemader
     let levelLabel3 = SKLabelNode()
     var level3:Int = 0
-    var exp3:Int = 0
     
     let allyHpLabel = SKLabelNode()//allyのhpを表示する。
     var allyHpBar = SKSpriteNode(color: SKColor.green, size: CGSize(width: 0.25, height: 25.0))//味方のhpの量を表示
@@ -193,12 +191,14 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         ally1.physicsBody?.categoryBitMask = PhysicsCategory.Ally //物体のカテゴリ次元をally
         ally1.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
         ally1.physicsBody?.collisionBitMask = 0 //PhysicsCategory.Ball //衝突させたい物体＝＞なし
+        ally1.xScale = 0.7
+        ally1.yScale = 0.7
         self.addChild(ally1)
         
         levelLabel1.text = "level: 0"// Labelに文字列を設定.
         levelLabel1.fontSize = 20// フォントサイズを設定.
         levelLabel1.fontColor = UIColor.green// 色を指定(赤).
-        levelLabel1.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 55)// 表示するポジションを指定.
+        levelLabel1.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 45)// 表示するポジションを指定.
         levelLabel1.text = "level: \(level1)"
         self.addChild(levelLabel1)//シーンに追加
         
@@ -221,12 +221,14 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         ally2.physicsBody?.categoryBitMask = PhysicsCategory.Ally //物体のカテゴリ次元をally
         ally2.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
         ally2.physicsBody?.collisionBitMask = 0 //PhysicsCategory.Ball //衝突させたい物体＝＞なし
+        ally2.xScale = 0.7
+        ally2.yScale = 0.7
         self.addChild(ally2)
         
         levelLabel2.text = "level: 0"// Labelに文字列を設定.
         levelLabel2.fontSize = 20// フォントサイズを設定.
         levelLabel2.fontColor = UIColor.red// 色を指定(赤).
-        levelLabel2.position = CGPoint(x: ally2.position.x, y: ally2.position.y - 65)// 表示するポジションを指定.
+        levelLabel2.position = CGPoint(x: ally2.position.x, y: ally2.position.y - 55)// 表示するポジションを指定.
         levelLabel2.text = "level: \(level2)"
         self.addChild(levelLabel2)//シーンに追加
         
@@ -248,12 +250,14 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         ally3.physicsBody?.categoryBitMask = PhysicsCategory.Ally //物体のカテゴリ次元をally
         ally3.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
         ally3.physicsBody?.collisionBitMask = 0 //PhysicsCategory.Ball //衝突させたい物体＝＞なし
+        ally3.xScale = 0.7
+        ally3.yScale = 0.7
         self.addChild(ally3)
         
         levelLabel3.text = "level: 0"// Labelに文字列を設定.
         levelLabel3.fontSize = 20// フォントサイズを設定.
         levelLabel3.fontColor = UIColor.blue// 色を指定(赤).
-        levelLabel3.position = CGPoint(x: ally3.position.x, y: ally3.position.y - 40)// 表示するポジションを指定.
+        levelLabel3.position = CGPoint(x: ally3.position.x, y: ally3.position.y - 35)// 表示するポジションを指定.
         levelLabel3.text = "level: \(level3)"
         self.addChild(levelLabel3)//シーンに追加
         
@@ -290,6 +294,8 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         enemy1.physicsBody?.categoryBitMask = PhysicsCategory.Emeny //物体のカテゴリ次元をEnemy
         enemy1.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
         enemy1.physicsBody?.collisionBitMask = 0 //PhysicsCategory.Ball //衝突させたい物体＝＞なし
+        enemy1.xScale = 0.5
+        enemy1.yScale = 0.5
         self.addChild(enemy1)
         
         enemy1AttackLabel.fontSize = 30// フォントサイズを設定.
@@ -418,21 +424,21 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     
                     switch level1  {//可変レベル
                     case 0:
-                        level1 = 0
-                    case 1://123(3)
-                        exp1 = exp1 - 1
-                    case 2://4567(4)
-                        exp1 = exp1 - 4
-                    case 3://89101112(5)
-                        exp1 = exp1 - 8
-                    case 4://121314151617(6)
-                        exp1 = exp1 - 12
-                    case 5://18192021222324(7)
-                        exp1 = exp1 - 18
-                    case 6://2526272829303132(8)
-                        exp1 = exp1 - 25
-                    case 7://~max
-                        exp1 = exp1 - 33
+                        print("level0")
+                    case 1:
+                        print("level1")
+                    case 2:
+                        print("level2")
+                    case 3:
+                        print("level3")
+                    case 4:
+                        print("level4")
+                    case 5:
+                        print("level5")
+                    case 6:
+                        print("level6")
+                    case 7:
+                        print("level7")
                     default:
                         print("default")
                     }
@@ -455,6 +461,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     MoveMaker2.position = location
                     
                 }
+                
                 if self.self.atPoint(location).name == "Enemy1" {
                     
                     MoveMaker2.alpha = 0.0
@@ -464,24 +471,25 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     
                     switch level2  {//可変レベル
                     case 0:
-                        level2 = 0
-                    case 1://123(3)
-                        exp2 = exp2 - 1
-                    case 2://4567(4)
-                        exp2 = exp2 - 4
-                    case 3://89101112(5)
-                        exp2 = exp2 - 8
-                    case 4://121314151617(6)
-                        exp2 = exp2 - 12
-                    case 5://18192021222324(7)
-                        exp2 = exp2 - 18
-                    case 6://2526272829303132(8)
-                        exp2 = exp2 - 25
-                    case 7://~max
-                        exp2 = exp2 - 33
+                        print("level0")
+                    case 1:
+                        print("level1")
+                    case 2:
+                        print("level2")
+                    case 3:
+                        print("level3")
+                    case 4:
+                        print("level4")
+                    case 5:
+                        print("level5")
+                    case 6:
+                        print("level6")
+                    case 7:
+                        print("level7")
                     default:
                         print("default")
                     }
+                    
                     level2 = 0//レベルを０に戻す
                     levelLabel2.text = "level: \(level2)"
                     
@@ -501,6 +509,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     MoveMaker3.position = location
                     
                 }
+                
                 if self.self.atPoint(location).name == "Enemy1" {
                     
                     MoveMaker3.alpha = 0.0
@@ -508,26 +517,27 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     
                     self.changeEnemyHp(change: -10 * level3 * level3)
                     
-                    switch level3  {//可変レベル
+                    switch level3 {//可変レベル
                     case 0:
-                        level3 = 0
-                    case 1://123(3)
-                        exp3 = exp3 - 1
-                    case 2://4567(4)
-                        exp3 = exp3 - 4
-                    case 3://89101112(5)
-                        exp3 = exp3 - 8
-                    case 4://121314151617(6)
-                        exp3 = exp3 - 12
-                    case 5://18192021222324(7)
-                        exp3 = exp3 - 18
-                    case 6://2526272829303132(8)
-                        exp3 = exp3 - 25
-                    case 7://~max
-                        exp3 = exp3 - 33
+                        print("level0")
+                    case 1:
+                        print("level1")
+                    case 2:
+                        print("level2")
+                    case 3:
+                        print("level3")
+                    case 4:
+                        print("level4")
+                    case 5:
+                        print("level5")
+                    case 6:
+                        print("level6")
+                    case 7:
+                        print("level7")
                     default:
                         print("default")
                     }
+                    
                     level3 = 0//レベルを０に戻す
                     levelLabel3.text = "level: \(level3)"
                     
@@ -641,38 +651,70 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                 if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ally && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball || nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ally {
                     //ボールと味方が衝突した時の処理。本当は衝突処理だけして、すり抜けさせたい。=>できた。
                     if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball  {
+                        
                         let plusexp:Int = nodeB.userData?["count"] as! Int
-                        exp1 = exp1 + plusexp//可変経験値
+                        
+                        switch nodeB.name {
+                            case "Ally1":
+                                level1 = level1 + plusexp
+                                if level1 >= 8 {//レベル上限
+                                    level1 = 7
+                                }
+                                levelLabel1.text = "level: \(level1)"
+                                levelLabel1.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 45)// 表示するポジションを指定.
+                            case "Ally2":
+                                level2 = level2 + plusexp
+                                if level2 >= 8 {//レベル上限
+                                    level2 = 7
+                                }
+                                levelLabel2.text = "level: \(level2)"
+                                levelLabel2.position = CGPoint(x: ally2.position.x, y: ally2.position.y - 55)// 表示するポジションを指定.
+                            case "Ally3":
+                                level3 = level3 + plusexp
+                                if level3 >= 8 {//レベル上限
+                                    level3 = 7
+                                }
+                                levelLabel3.text = "level: \(level3)"
+                                levelLabel3.position = CGPoint(x: ally3.position.x, y: ally3.position.y - 35)// 表示するポジションを指定.
+                            default:
+                                print("default")
+                        }
+                        
                         nodeA.removeFromParent()
+                        
                     }else if nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ball {
+                        
                         let plusexp:Int = nodeB.userData?["count"] as! Int
-                        exp1 = exp1 + plusexp//可変経験値
+                        
+                        switch nodeA.name {
+                        case "Ally1":
+                            level1 = level1 + plusexp
+                            if level1 >= 8 {//レベル上限
+                                level1 = 7
+                            }
+                            levelLabel1.text = "level: \(level1)"
+                            levelLabel1.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 45)// 表示するポジションを指定.
+                        case "Ally2":
+                            level2 = level2 + plusexp
+                            if level2 >= 8 {//レベル上限
+                                level2 = 7
+                            }
+                            levelLabel2.text = "level: \(level2)"
+                            levelLabel2.position = CGPoint(x: ally2.position.x, y: ally2.position.y - 55)// 表示するポジションを指定.
+                        case "Ally3":
+                            level3 = level3 + plusexp
+                            if level3 >= 8 {//レベル上限
+                                level3 = 7
+                            }
+                            levelLabel3.text = "level: \(level3)"
+                            levelLabel3.position = CGPoint(x: ally3.position.x, y: ally3.position.y - 35)// 表示するポジションを指定.
+                        default:
+                            print("default")
+                        }
+                        
                         nodeB.removeFromParent()
                     }
                     
-                    switch exp1 {//可変レベル制
-                    case 0:
-                        level1 = 0
-                    case 1 ..< 4://123(3)
-                        level1 = 1
-                    case 4 ..< 8://4567(4)
-                        level1 = 2
-                    case 8 ..< 12://89101112(5)
-                        level1 = 3
-                    case 12 ..< 18://121314151617(6)
-                        level1 = 4
-                    case 18 ..< 25://18192021222324(7)
-                        level1 = 5
-                    case 21 ..< 28://2526272829303132(8)
-                        level1 = 6
-                    case 28 ..< 1000://~max
-                        level1 = 7
-                    default:
-                        print("default")
-                    }
-                    
-                    levelLabel1.text = "level: \(level1)"
-                    levelLabel1.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 55)// 表示するポジションを指定.
                     
                 }
                 
@@ -789,7 +831,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                                 
                             }
                             
-                            levelLabel1.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 55)// 表示するポジションを指定.
+                            levelLabel1.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 45)// 表示するポジションを指定.
                             
                         }
                     }
@@ -813,7 +855,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                                 
                             }
                             
-                            levelLabel2.position = CGPoint(x: ally2.position.x, y: ally2.position.y - 65)// 表示するポジションを指定.
+                            levelLabel2.position = CGPoint(x: ally2.position.x, y: ally2.position.y - 55)// 表示するポジションを指定.
                             
                         }
                     }
@@ -837,7 +879,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                                 
                             }
                             
-                            levelLabel3.position = CGPoint(x: ally3.position.x, y: ally3.position.y - 40 )// 表示するポジションを指定.
+                            levelLabel3.position = CGPoint(x: ally3.position.x, y: ally3.position.y - 35)// 表示するポジションを指定.
                             
                         }
                     }
@@ -915,7 +957,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             
             if endFlag {
                 
-            }else {
+            } else {
                 let alertController0 = UIAlertController(title: "GameClear", message: "貴方の勝利", preferredStyle: .alert)
                 let gotoStartAction = UIAlertAction(title: "了解", style: .default) {
                     action in
