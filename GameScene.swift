@@ -31,9 +31,9 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     var Ally1Flag:Bool = false
     var Ally2Flag:Bool = false
     var Ally3Flag:Bool = false
-    var MoveMaker1Flag:Bool = false
-    var MoveMaker2Flag:Bool = false
-    var MoveMaker3Flag:Bool = false
+    var MoveMarker1Flag:Bool = false
+    var MoveMarker2Flag:Bool = false
+    var MoveMarker3Flag:Bool = false
     
     var MainTimer:Timer?//enegyと移動と敵の攻撃に使用
     
@@ -42,17 +42,17 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     var enegyBar = SKSpriteNode(color: SKColor.blue, size: CGSize(width: 7.0, height: 30.0))//エナジーの量を表示
     
     var ally1  = SKSpriteNode(imageNamed: "monster1a")//allyの追加
-    var MoveMaker1 = SKSpriteNode(imageNamed: "movemaker1")//ally1のmovemader
+    var MoveMarker1 = SKSpriteNode(imageNamed: "movemarker1")//ally1のmovemader
     let levelLabel1 = SKLabelNode()
     var level1:Int = 0
     
     var ally2  = SKSpriteNode(imageNamed: "monster2a")//allyの追加
-    var MoveMaker2 = SKSpriteNode(imageNamed: "movemaker2")//ally2のmovemader
+    var MoveMarker2 = SKSpriteNode(imageNamed: "movemarker2")//ally2のmovemader
     let levelLabel2 = SKLabelNode()
     var level2:Int = 0
     
     var ally3  = SKSpriteNode(imageNamed: "monster3a")//allyの追加
-    var MoveMaker3 = SKSpriteNode(imageNamed: "movemaker3")//ally3のmovemader
+    var MoveMarker3 = SKSpriteNode(imageNamed: "movemarker3")//ally3のmovemader
     let levelLabel3 = SKLabelNode()
     var level3:Int = 0
     
@@ -188,7 +188,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         ally1.physicsBody?.isDynamic = false
         ally1.physicsBody?.restitution = 1.0//反発値
         ally1.position = CGPoint(x: 207,y: 500)
-        ally1.zPosition = 1 //movermakerより上に来るようにz=1
+        ally1.zPosition = 1 //movermarkerより上に来るようにz=1
         ally1.userData = NSMutableDictionary()
         ally1.userData?.setValue( PhysicsCategory.Ally, forKey: "category")
         ally1.userData?.setValue( 0, forKey: "level")//levelを追加
@@ -207,10 +207,10 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         levelLabel1.text = "level: \(level1)"
         self.addChild(levelLabel1)//シーンに追加
         
-        MoveMaker1.position = ally1.position
-        MoveMaker1.alpha = 0.0
-        MoveMaker1.name = "MoveMaker1"
-        self.addChild(MoveMaker1)
+        MoveMarker1.position = ally1.position
+        MoveMarker1.alpha = 0.0
+        MoveMarker1.name = "MoveMarker1"
+        self.addChild(MoveMarker1)
         
         
         //ally2
@@ -219,7 +219,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         ally2.physicsBody?.isDynamic = false
         ally2.physicsBody?.restitution = 1.0//反発値
         ally2.position = CGPoint(x: 100,y: 400)
-        ally2.zPosition = 1 //movermakerより上に来るようにz=1
+        ally2.zPosition = 1 //movermarkerより上に来るようにz=1
         ally2.userData = NSMutableDictionary()
         ally2.userData?.setValue( PhysicsCategory.Ally, forKey: "category")
         ally2.userData?.setValue( 0, forKey: "level")//levelを追加
@@ -238,10 +238,10 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         levelLabel2.text = "level: \(level2)"
         self.addChild(levelLabel2)//シーンに追加
         
-        MoveMaker2.position = ally2.position
-        MoveMaker2.alpha = 0.0
-        MoveMaker2.name = "MoveMaker2"
-        self.addChild(MoveMaker2)
+        MoveMarker2.position = ally2.position
+        MoveMarker2.alpha = 0.0
+        MoveMarker2.name = "MoveMarker2"
+        self.addChild(MoveMarker2)
         
         //ally3
         ally3.name = "Ally3"
@@ -249,7 +249,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         ally3.physicsBody?.isDynamic = false
         ally3.physicsBody?.restitution = 1.0//反発値
         ally3.position = CGPoint(x: 300,y: 400)
-        ally3.zPosition = 1 //movermakerより上に来るようにz=1
+        ally3.zPosition = 1 //movermarkerより上に来るようにz=1
         ally3.userData = NSMutableDictionary()
         ally3.userData?.setValue( PhysicsCategory.Ally, forKey: "category")
         ally3.userData?.setValue( 0, forKey: "level")//levelを追加
@@ -268,10 +268,10 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         levelLabel3.text = "level: \(level3)"
         self.addChild(levelLabel3)//シーンに追加
         
-        MoveMaker3.position = ally3.position
-        MoveMaker3.alpha = 0.0
-        MoveMaker3.name = "MoveMaker3"
-        self.addChild(MoveMaker3)
+        MoveMarker3.position = ally3.position
+        MoveMarker3.alpha = 0.0
+        MoveMarker3.name = "MoveMarker3"
+        self.addChild(MoveMarker3)
         
         
         //味方のhp
@@ -363,14 +363,14 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                 Ally3Flag = true
             }
             
-            if self.atPoint(location).name == "MoveMaker1"{
-                MoveMaker1Flag = true
+            if self.atPoint(location).name == "MoveMarker1"{
+                MoveMarker1Flag = true
             }
-            if self.atPoint(location).name == "MoveMaker2"{
-                MoveMaker2Flag = true
+            if self.atPoint(location).name == "MoveMarker2"{
+                MoveMarker2Flag = true
             }
-            if self.atPoint(location).name == "MoveMaker3"{
-                MoveMaker3Flag = true
+            if self.atPoint(location).name == "MoveMarker3"{
+                MoveMarker3Flag = true
             }
             
         }
@@ -386,19 +386,19 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                 aimmingPoint = location
             }
             
-            if Ally1Flag || MoveMaker1Flag {
-                MoveMaker1.alpha = 1.0
-                MoveMaker1.position = location
+            if Ally1Flag || MoveMarker1Flag {
+                MoveMarker1.alpha = 1.0
+                MoveMarker1.position = location
             }
             
-            if Ally2Flag || MoveMaker2Flag {
-                MoveMaker2.alpha = 1.0
-                MoveMaker2.position = location
+            if Ally2Flag || MoveMarker2Flag {
+                MoveMarker2.alpha = 1.0
+                MoveMarker2.position = location
             }
             
-            if Ally3Flag || MoveMaker3Flag {
-                MoveMaker3.alpha = 1.0
-                MoveMaker3.position = location
+            if Ally3Flag || MoveMarker3Flag {
+                MoveMarker3.alpha = 1.0
+                MoveMarker3.position = location
             }
             
         }
@@ -429,16 +429,16 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                 Ally1Flag = false
                 
                 if self.rangeofField(minX: 10, maxX: 404, minY: 250, maxY: 816, location: location) {
-                    MoveMaker1.position = location
+                    MoveMarker1.position = location
                 } else {
-                    MoveMaker1.position = ally1.position
-                    MoveMaker1.alpha = 0.0
+                    MoveMarker1.position = ally1.position
+                    MoveMarker1.alpha = 0.0
                 }
                 
                 if self.self.atPoint(location).name == "Enemy1" {
                     
-                    MoveMaker1.alpha = 0.0
-                    MoveMaker1.position = ally1.position
+                    MoveMarker1.alpha = 0.0
+                    MoveMarker1.position = ally1.position
                     
                     self.changeEnemyHp(change: -10 * level1 * level1)//hpを減らす。
                     
@@ -471,14 +471,14 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                 }
             }
             
-            if MoveMaker1Flag {
-                MoveMaker1Flag = false
+            if MoveMarker1Flag {
+                MoveMarker1Flag = false
                 
                 if self.rangeofField(minX: 10, maxX: 404, minY: 250, maxY: 816, location: location) {
-                    MoveMaker1.position = location
+                    MoveMarker1.position = location
                 } else {
-                    MoveMaker1.position = ally1.position
-                    MoveMaker1.alpha = 0.0
+                    MoveMarker1.position = ally1.position
+                    MoveMarker1.alpha = 0.0
                 }
             }
             
@@ -487,16 +487,16 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                 Ally2Flag = false
                 
                 if self.rangeofField(minX: 10, maxX: 404, minY: 250, maxY: 816, location: location) {
-                    MoveMaker2.position = location
+                    MoveMarker2.position = location
                 } else {
-                    MoveMaker2.position = ally2.position
-                    MoveMaker2.alpha = 0.0
+                    MoveMarker2.position = ally2.position
+                    MoveMarker2.alpha = 0.0
                 }
                 
                 if self.self.atPoint(location).name == "Enemy1" {
                     
-                    MoveMaker2.alpha = 0.0
-                    MoveMaker2.position = ally2.position
+                    MoveMarker2.alpha = 0.0
+                    MoveMarker2.position = ally2.position
                     
                     self.changeEnemyHp(change: -10 * level2 * level2)
                     
@@ -529,14 +529,14 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                 }
             }
             
-            if MoveMaker2Flag {
-                MoveMaker2Flag = false
+            if MoveMarker2Flag {
+                MoveMarker2Flag = false
                 
                 if self.rangeofField(minX: 10, maxX: 404, minY: 250, maxY: 816, location: location) {
-                    MoveMaker2.position = location
+                    MoveMarker2.position = location
                 } else {
-                    MoveMaker2.position = ally2.position
-                    MoveMaker2.alpha = 0.0
+                    MoveMarker2.position = ally2.position
+                    MoveMarker2.alpha = 0.0
                 }
                 
             }
@@ -546,17 +546,17 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                 Ally3Flag = false
                 
                 if self.rangeofField(minX: 10, maxX: 404, minY: 250, maxY: 816, location: location) {
-                    MoveMaker3.position = location
+                    MoveMarker3.position = location
                 } else {
-                    MoveMaker3.position = ally3.position
-                    MoveMaker3.alpha = 0.0
+                    MoveMarker3.position = ally3.position
+                    MoveMarker3.alpha = 0.0
                 }
                 
                 
                 if self.self.atPoint(location).name == "Enemy1" {
                     
-                    MoveMaker3.alpha = 0.0
-                    MoveMaker3.position = ally3.position
+                    MoveMarker3.alpha = 0.0
+                    MoveMarker3.position = ally3.position
                     
                     self.changeEnemyHp(change: -10 * level3 * level3)
                     
@@ -589,14 +589,14 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                 }
             }
             
-            if MoveMaker3Flag {
-                MoveMaker3Flag = false
+            if MoveMarker3Flag {
+                MoveMarker3Flag = false
                 
                 if self.rangeofField(minX: 10, maxX: 404, minY: 250, maxY: 816, location: location) {
-                    MoveMaker3.position = location
+                    MoveMarker3.position = location
                 } else {
-                    MoveMaker3.position = ally3.position
-                    MoveMaker3.alpha = 0.0
+                    MoveMarker3.position = ally3.position
+                    MoveMarker3.alpha = 0.0
                 }
                 
             }
@@ -823,29 +823,29 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         for i in 1 ..< 4 { //allyの123
             
             var allyposition:CGPoint = CGPoint(x: 0.0,y: 0.0)
-            var movemakerposition:CGPoint = CGPoint(x: 0.0,y: 0.0)
+            var movemarkerposition:CGPoint = CGPoint(x: 0.0,y: 0.0)
             
             if i == 1 {
                 allyposition = ally1.position
-                movemakerposition = MoveMaker1.position
+                movemarkerposition = MoveMarker1.position
             }else if i == 2 {
                 allyposition = ally2.position
-                movemakerposition = MoveMaker2.position
+                movemarkerposition = MoveMarker2.position
             }else if i == 3 {
                 allyposition = ally3.position
-                movemakerposition = MoveMaker3.position
+                movemarkerposition = MoveMarker3.position
             }
             
-            if allyposition == movemakerposition {//移動系の処理
+            if allyposition == movemarkerposition {//移動系の処理
                 
                 switch i {
                     
                 case 1:
-                    MoveMaker1.alpha = 0.0
+                    MoveMarker1.alpha = 0.0
                 case 2:
-                    MoveMaker2.alpha = 0.0
+                    MoveMarker2.alpha = 0.0
                 case 3:
-                    MoveMaker3.alpha = 0.0
+                    MoveMarker3.alpha = 0.0
                 default:
                     print("defalt")
                 }
@@ -857,14 +857,14 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                 switch i {
                     
                 case 1:
-                    relativepostion.x = MoveMaker1.position.x - ally1.position.x
-                    relativepostion.y = MoveMaker1.position.y - ally1.position.y
+                    relativepostion.x = MoveMarker1.position.x - ally1.position.x
+                    relativepostion.y = MoveMarker1.position.y - ally1.position.y
                 case 2:
-                    relativepostion.x = MoveMaker2.position.x - ally2.position.x
-                    relativepostion.y = MoveMaker2.position.y - ally2.position.y
+                    relativepostion.x = MoveMarker2.position.x - ally2.position.x
+                    relativepostion.y = MoveMarker2.position.y - ally2.position.y
                 case 3:
-                    relativepostion.x = MoveMaker3.position.x - ally3.position.x
-                    relativepostion.y = MoveMaker3.position.y - ally3.position.y
+                    relativepostion.x = MoveMarker3.position.x - ally3.position.x
+                    relativepostion.y = MoveMarker3.position.y - ally3.position.y
                 default:
                     print("defalt")
                     
@@ -876,12 +876,12 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                 switch i {
                     
                 case 1:
-                    if Ally1Flag || MoveMaker1Flag {} else {
+                    if Ally1Flag || MoveMarker1Flag {} else {
                         if enegy >= 0.2 {
                             if length(v: relativepostion) <= 6 {//相対位置の距離が6以下の場合、位置を同じにする。
                                 
-                                ally1.position = MoveMaker1.position
-                                MoveMaker1.alpha = 0.0
+                                ally1.position = MoveMarker1.position
+                                MoveMarker1.alpha = 0.0
                                 
                             }else{//違う場合距離にして3づつ近づく
                                 
@@ -900,12 +900,12 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     
                 case 2:
                     
-                    if Ally2Flag || MoveMaker2Flag {} else {
+                    if Ally2Flag || MoveMarker2Flag {} else {
                         if enegy >= 0.2 {
                             if length(v: relativepostion) <= 6 {//相対位置の距離が6以下の場合、位置を同じにする。
                                 
-                                ally2.position = MoveMaker2.position
-                                MoveMaker2.alpha = 0.0
+                                ally2.position = MoveMarker2.position
+                                MoveMarker2.alpha = 0.0
                                 
                             }else{//違う場合距離にして3づつ近づく
                                 
@@ -924,12 +924,12 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     
                 case 3:
                     
-                    if Ally3Flag || MoveMaker3Flag {} else {
+                    if Ally3Flag || MoveMarker3Flag {} else {
                         if enegy >= 0.2 {
                             if length(v: relativepostion) <= 6 {//相対位置の距離が6以下の場合、位置を同じにする。
                                 
-                                ally3.position = MoveMaker3.position
-                                MoveMaker3.alpha = 0.0
+                                ally3.position = MoveMarker3.position
+                                MoveMarker3.alpha = 0.0
                                 
                             }else{//違う場合距離にして3づつ近づく
                                 
@@ -949,7 +949,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     print("default")
                     
                 }//switch分の終わり
-            }//movemakerとallyの位置が違う時のif分の終わり
+            }//movemarkerとallyの位置が違う時のif分の終わり
         }//for分の終わり
         
         //以下は移動のエネルギー処理
@@ -1129,9 +1129,9 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         Ally1Flag = false
         Ally2Flag = false
         Ally3Flag = false
-        MoveMaker1Flag = false
-        MoveMaker2Flag = false
-        MoveMaker3Flag = false
+        MoveMarker1Flag = false
+        MoveMarker2Flag = false
+        MoveMarker3Flag = false
         
     }
     
