@@ -336,7 +336,6 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         enemyHpBar.xScale = CGFloat(enemyHp)//x方向の倍率
         self.addChild(enemyHpBar)
         
-        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -406,7 +405,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        //allyの挙動を全て書いてるため、長くなっております。あとで関数化するかも。多分、多分そうしたほうが少なく書ける。
+        //allyの挙動を全て書いてるため、長くなっております。あとで関数化するかも。多分そうしたほうが少なく書ける。
         
         if let touch = touches.first as UITouch? {
             let location = touch.location(in: self)
@@ -424,15 +423,18 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                 }
                 ButtonFlag = false
             }
+            
             //ally1
             if Ally1Flag {//味方を最初に触った時。
                 Ally1Flag = false
-                print(self.atPoint(location).name!)
-                if self.atPoint(location).name == "Background"{
-                    
+                
+                if self.rangeofField(minX: 10, maxX: 404, minY: 250, maxY: 816, location: location) {
                     MoveMaker1.position = location
-                    
+                } else {
+                    MoveMaker1.position = ally1.position
+                    MoveMaker1.alpha = 0.0
                 }
+                
                 if self.self.atPoint(location).name == "Enemy1" {
                     
                     MoveMaker1.alpha = 0.0
@@ -471,16 +473,24 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             
             if MoveMaker1Flag {
                 MoveMaker1Flag = false
-                MoveMaker1.position = location
+                
+                if self.rangeofField(minX: 10, maxX: 404, minY: 250, maxY: 816, location: location) {
+                    MoveMaker1.position = location
+                } else {
+                    MoveMaker1.position = ally1.position
+                    MoveMaker1.alpha = 0.0
+                }
             }
+            
             //ally2
             if Ally2Flag {//味方を最初に触った時。
                 Ally2Flag = false
-                print(self.atPoint(location).name!)
-                if self.atPoint(location).name == "Background"{
-                    
+                
+                if self.rangeofField(minX: 10, maxX: 404, minY: 250, maxY: 816, location: location) {
                     MoveMaker2.position = location
-                    
+                } else {
+                    MoveMaker2.position = ally2.position
+                    MoveMaker2.alpha = 0.0
                 }
                 
                 if self.self.atPoint(location).name == "Enemy1" {
@@ -521,17 +531,27 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             
             if MoveMaker2Flag {
                 MoveMaker2Flag = false
-                MoveMaker2.position = location
+                
+                if self.rangeofField(minX: 10, maxX: 404, minY: 250, maxY: 816, location: location) {
+                    MoveMaker2.position = location
+                } else {
+                    MoveMaker2.position = ally2.position
+                    MoveMaker2.alpha = 0.0
+                }
+                
             }
+            
             //ally3
             if Ally3Flag {//味方を最初に触った時。
                 Ally3Flag = false
-                print(self.atPoint(location).name!)
-                if self.atPoint(location).name == "Background"{
-                    
+                
+                if self.rangeofField(minX: 10, maxX: 404, minY: 250, maxY: 816, location: location) {
                     MoveMaker3.position = location
-                    
+                } else {
+                    MoveMaker3.position = ally3.position
+                    MoveMaker3.alpha = 0.0
                 }
+                
                 
                 if self.self.atPoint(location).name == "Enemy1" {
                     
@@ -571,7 +591,14 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             
             if MoveMaker3Flag {
                 MoveMaker3Flag = false
-                MoveMaker3.position = location
+                
+                if self.rangeofField(minX: 10, maxX: 404, minY: 250, maxY: 816, location: location) {
+                    MoveMaker3.position = location
+                } else {
+                    MoveMaker3.position = ally3.position
+                    MoveMaker3.alpha = 0.0
+                }
+                
             }
             
         }
@@ -1116,6 +1143,18 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             enemy1Level = 0
         }
         enemy1LevelLabel.text = "level: \(enemy1Level)"
+        
+    }
+    
+    func rangeofField(minX: CGFloat,maxX: CGFloat,minY: CGFloat,maxY: CGFloat,location: CGPoint) -> Bool {
+        
+        if location.x >= minX  && location.x <= maxX && location.y >= minY && location.y <= maxY {
+            
+            return true
+            
+        }
+        
+        return false
         
     }
     
