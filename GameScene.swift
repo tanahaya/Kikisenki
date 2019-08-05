@@ -59,7 +59,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     let allyHpLabel = SKLabelNode()//allyのhpを表示する。
     var allyHpBar = SKSpriteNode(color: SKColor.green, size: CGSize(width: 0.25, height: 25.0))//味方のhpの量を表示
     var allyHp:Int = 1000
-    var allyMaxHp:Int = 1000
+    var allyMaxHp:Int = 1000//味方の最大のHP
     
     
     var enemy1 = SKSpriteNode(imageNamed: "syatihoko")
@@ -71,7 +71,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     let enemyHpLabel = SKLabelNode()//
     var enemyHpBar = SKSpriteNode(color: SKColor.red, size: CGSize(width: 0.5, height: 25.0))//敵のhpの量を表示
     var enemyHp:Int = 500
-    var enemyMaxHp:Int = 500
+    var enemyMaxHp:Int = 500//敵の最大のHP
     
     var lifeTimerCount:Int = 0
     var HeartCount:Int = 1
@@ -288,6 +288,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         allyHpBar.zPosition = 1
         allyHpBar.xScale = CGFloat(allyHp)//x方向の倍率
         self.addChild(allyHpBar)
+        
         
         //enemy1
         enemy1.name = "Enemy1"
@@ -742,18 +743,18 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     
                 }
                 
-                //以下のコードはハートとキャラクターが接触したら呼ばれるコードですが、なぜか呼ばれません。これを改善する必要があります。
-                if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Heart && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ally || nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Heart && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ally {
+                //ハートを撮るときに呼ばれるコード。haertcountを-1して、味方のhpを回復する。
+                if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Heart && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ally || nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ally && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Heart {
                     
                     if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Heart {
-                        print("hello")
                         nodeA.removeFromParent()
-                        
                     }else if nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Heart {
-                        print("hello")
                         nodeB.removeFromParent()
-                        
                     }
+                    
+                    HeartCount = HeartCount - 1
+                    self.changeAllyHp(change: 100)
+                    
                 }
                 
             }
@@ -811,6 +812,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             if allyposition == movemakerposition {//移動系の処理
                 
                 switch i {
+                    
                 case 1:
                     MoveMaker1.alpha = 0.0
                 case 2:
@@ -985,7 +987,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         Heart.physicsBody?.allowsRotation = false
         Heart.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "heart.png"), size: Heart.size)
         Heart.physicsBody?.categoryBitMask = 0//物体のカテゴリ次元をHeart
-        Heart.physicsBody?.contactTestBitMask = 0 //衝突を検知するカテゴリWall
+        Heart.physicsBody?.contactTestBitMask = PhysicsCategory.Ally //衝突を検知するカテゴリ
         Heart.physicsBody?.collisionBitMask = 0 //衝突させたい物体＝＞なし
         Heart.position = CGPoint(x: 50 + Int.random(in: 0 ..< 294) ,y: 300 + Int.random(in: 0 ..< 416))
         //初期位置、414*896 100 + 20 + 294 300 + 80 + 100 + 416
@@ -1037,6 +1039,12 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             
         }
         
+        if enemyHp >= enemyMaxHp {//全回復の時よりオーバーヒールしない。
+            
+            enemyHp = enemyMaxHp
+            
+        }
+        
         enemyHpBar.xScale = CGFloat(enemyHp)
         enemyHpLabel.text = "\(enemyHp) / \(enemyMaxHp)"
         
@@ -1074,6 +1082,12 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
             
         }
         
+        if allyHp >= allyMaxHp {//全回復の時よりオーバーヒールしない。
+            
+            allyHp = allyMaxHp
+            
+        }
+        
         allyHpBar.xScale = CGFloat(allyHp)
         allyHpLabel.text = "\(allyHp) / \(allyMaxHp)"
         
@@ -1104,6 +1118,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         enemy1LevelLabel.text = "level: \(enemy1Level)"
         
     }
+    
 }
 
 
