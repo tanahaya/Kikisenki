@@ -1048,7 +1048,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     action in
                     print("勝利")
                     
-                    let Scene = StartScene()
+                    let Scene = HomeScene()
                     Scene.size = self.size
                     let transition = SKTransition.crossFade(withDuration: 1.0)
                     
@@ -1093,7 +1093,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
                     action in
                     print("敗北")
                     
-                    let Scene = StartScene()
+                    let Scene = HomeScene()
                     Scene.size = self.size
                     let transition = SKTransition.crossFade(withDuration: 1.0)
                     

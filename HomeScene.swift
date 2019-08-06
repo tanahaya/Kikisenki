@@ -155,7 +155,6 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
         MapIcon11.physicsBody?.collisionBitMask = 0
         self.addChild(MapIcon11)
         
-        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -164,40 +163,67 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
             
             let location = touch.location(in: self)
             
-            print(self.atPoint(location).name!)
             
-            if self.atPoint(location).name == "mapIcon1" {
-                self.gotoGameScene()
+            switch self.atPoint(location).name  {//可変レベル
+                
+            case "mapIcon1":
+                self.gotoSelectScene()
+            case "mapIcon2":
+                self.gotoSelectScene()
+            case "mapIcon3":
+                self.gotoSelectScene()
+            case "mapIcon4":
+                self.gotoSelectScene()
+            case "mapIcon5":
+                self.gotoSelectScene()
+            case "mapIcon6":
+                self.gotoSelectScene()
+            case "mapIcon7":
+                self.gotoSelectScene()
+            case "mapIcon8":
+                self.gotoSelectScene()
+            case "mapIcon9":
+                self.gotoSelectScene()
+            case "mapIcon10":
+                self.gotoSelectScene()
+            case "mapIcon11":
+                self.gotoSelectScene()
+            default:
+                print("default")
             }
+            
+            
         }
+        
     }
     
     func stageFlag(){
         
-        MapIcon1.alpha = 1.0//0.0なら反応しない
-        MapIcon2.alpha = 1.0//0.0なら反応しない
-        MapIcon3.alpha = 1.0//0.0なら反応しない
-        MapIcon4.alpha = 1.0//0.0なら反応しない
-        MapIcon5.alpha = 1.0//0.0なら反応しない
-        MapIcon6.alpha = 1.0//0.0なら反応しない
-        MapIcon7.alpha = 1.0//0.0なら反応しない
-        MapIcon8.alpha = 1.0//0.0なら反応しない
-        MapIcon9.alpha = 1.0//0.0なら反応しない
-        MapIcon10.alpha = 1.0//0.0なら反応しない
-        MapIcon11.alpha = 1.0//0.0なら反応しない
+        //0.0なら反応しない
+        MapIcon1.alpha = 1.0
+        MapIcon2.alpha = 1.0
+        MapIcon3.alpha = 1.0
+        MapIcon4.alpha = 1.0
+        MapIcon5.alpha = 1.0
+        MapIcon6.alpha = 1.0
+        MapIcon7.alpha = 1.0
+        MapIcon8.alpha = 1.0
+        MapIcon9.alpha = 1.0
+        MapIcon10.alpha = 1.0
+        MapIcon11.alpha = 1.0
+        
         
     }
     
-    func gotoGameScene() {
+    func gotoSelectScene() {
         
-        let Scene = GameScene()
+        let Scene = SelectScene()
         Scene.size = self.size
-        let transition = SKTransition.crossFade(withDuration: 1.0)
+        let transition = SKTransition.crossFade(withDuration: 0.5)
         
         self.view?.presentScene(Scene, transition: transition)
         
     }
-    
     
     
     

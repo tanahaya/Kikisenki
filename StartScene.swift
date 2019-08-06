@@ -32,11 +32,11 @@ class StartScene : SKScene, SKPhysicsContactDelegate{
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        /* Called wheStartSceneins */
         
-        //for touch in (touches as! Set<UITouch>) {
-        
-        //}//今のところ使わないけど一応用意
+//        if let touch = touches.first as UITouch? {
+//
+//            let location = touch.location(in: self)
+//        }//今のところ使わないけど一応用意
         
         let Scene = HomeScene()
         Scene.size = self.size
