@@ -330,6 +330,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
         enemyHpLabel.text = "\(enemyHp) / \(enemyMaxHp)"
         self.addChild(enemyHpLabel)//シーンに追加
         
+        
         enemyHpBar.anchorPoint = CGPoint(x: 0, y: 0)
         enemyHpBar.position = CGPoint(x: 145, y: 830)
         enemyHpBar.zPosition = 1

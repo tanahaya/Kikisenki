@@ -21,10 +21,10 @@ class StartScene : SKScene, SKPhysicsContactDelegate{
         self.physicsWorld.gravity = CGVector(dx: 0.0, dy: 0.0)
         self.physicsWorld.contactDelegate = self //didBeginCOntactに必要
         
-        self.backgroundColor = UIColor.red
+        self.backgroundColor = UIColor.white
         
         StartLabel.fontSize = 60// フォントサイズを設定.
-        StartLabel.fontColor = UIColor.blue// 色を指定(青).
+        StartLabel.fontColor = UIColor.red// 色を指定(青).
         StartLabel.position = CGPoint(x: 207, y: 448)// 表示するポジションを指定.今回は中央
         StartLabel.text = "Tap to Start"
         self.addChild(StartLabel)//シーンに追加
@@ -38,7 +38,7 @@ class StartScene : SKScene, SKPhysicsContactDelegate{
         
         //}//今のところ使わないけど一応用意
         
-        let Scene = GameScene()
+        let Scene = HomeScene()
         Scene.size = self.size
         let transition = SKTransition.crossFade(withDuration: 1.0)
         
