@@ -6,7 +6,7 @@
 //  Copyright © 2019 tanahaya. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import SpriteKit
 
 class SelectScene : SKScene, SKPhysicsContactDelegate{
