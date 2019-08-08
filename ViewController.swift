@@ -13,6 +13,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     
     let startScene = StartScene()
+    let conversation = ConversationScene()
     
     override func viewDidLoad() {
         super.viewDidLoad()

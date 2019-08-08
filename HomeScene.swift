@@ -163,7 +163,6 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
             
             let location = touch.location(in: self)
             
-            
             switch self.atPoint(location).name  {//可変レベル
                 
             case "mapIcon1":
