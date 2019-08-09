@@ -188,7 +188,7 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
             case "mapIcon11":
                 self.gotoSelectScene()
             default:
-                print("default")
+                print("nomalarea")
             }
             
             

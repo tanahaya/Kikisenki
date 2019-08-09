@@ -25,7 +25,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         View.isMultipleTouchEnabled = false
         //View.showsPhysics = true//物体の輪郭表示、一時的に無効にしております。
         
-        View.presentScene(startScene)
+        //View.presentScene(startScene)
+        View.presentScene(conversation)
         
         // Do any additional setup after loading the view.
         

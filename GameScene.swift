@@ -39,7 +39,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     
     var enegy:Double = 10.0//enegyの値
     let enegyLabel = SKLabelNode()//enegyを表示
-    var enegyBar = SKSpriteNode(color: SKColor.blue, size: CGSize(width: 7.0, height: 30.0))//エナジーの量を表示
+    var enegyBar = SKSpriteNode(color: UIColor.blue, size: CGSize(width: 7.0, height: 30.0))//エナジーの量を表示
     
     var ally1  = SKSpriteNode(imageNamed: "monster1a")//allyの追加
     var MoveMarker1 = SKSpriteNode(imageNamed: "movemarker1")//ally1のmovemader
@@ -57,7 +57,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     var level3:Int = 0
     
     let allyHpLabel = SKLabelNode()//allyのhpを表示する。
-    var allyHpBar = SKSpriteNode(color: SKColor.green, size: CGSize(width: 0.25, height: 25.0))//味方のhpの量を表示
+    var allyHpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 0.25, height: 25.0))//味方のhpの量を表示
     var allyHp:Int = 1000
     var allyMaxHp:Int = 1000//味方の最大のHP
     
@@ -69,7 +69,7 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     var enemy1LevelLabel = SKLabelNode()
     
     let enemyHpLabel = SKLabelNode()//
-    var enemyHpBar = SKSpriteNode(color: SKColor.red, size: CGSize(width: 0.5, height: 25.0))//敵のhpの量を表示
+    var enemyHpBar = SKSpriteNode(color: UIColor.red, size: CGSize(width: 0.5, height: 25.0))//敵のhpの量を表示
     var enemyHp:Int = 500
     var enemyMaxHp:Int = 500//敵の最大のHP
     

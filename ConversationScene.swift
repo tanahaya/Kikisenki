@@ -13,20 +13,50 @@ class ConversationScene : SKScene, SKPhysicsContactDelegate{
     
     
     var gameTableView = GameRoomTableView()
-    private var label : SKLabelNode?
+    
+    var skipButton = SKSpriteNode(color: UIColor.red, size: CGSize(width: 50.0, height: 30.0))//エナジーの量を表示
+    
+    var Background = SKSpriteNode(imageNamed: "Background")//キャラクターの背景
     
     
     override func didMove(to view: SKView) {
-        self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
-        if let label = self.label {
-            label.alpha = 0.0
-            label.run(SKAction.fadeIn(withDuration: 2.0))
-        }
+        
+        self.size = CGSize(width: 414, height: 896)//414x896が最適。これはiphoneXRの画面サイズ。これがないと画面が(1,1)のサイズになります。
+        self.physicsWorld.gravity = CGVector(dx: 0.0, dy: 0.0)
+        self.physicsWorld.contactDelegate = self //didBeginCOntactに必要
+        
+        self.backgroundColor = UIColor.white
+        
+        
         // Table setup
         gameTableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        gameTableView.frame=CGRect(x:20,y:50,width:280,height:200)
+        gameTableView.frame=CGRect(x: 0,y: 448,width: 414,height: 448)
+        gameTableView.name = "tableview"
         self.scene?.view?.addSubview(gameTableView)
         gameTableView.reloadData()
+        
+        
+        gameTableView.items.append("Player4")
+        gameTableView.reloadData()//こんな感じでデータの追加が可能です。
+        
+        //背景。今は茶色
+        Background.size = CGSize(width: 414, height: 448)
+        Background.anchorPoint = CGPoint(x: 0,y: 0)//ノードの位置配置などの起点を設定。
+        Background.position = CGPoint(x: 0,y: 448)
+        Background.name = "Background"
+        Background.physicsBody?.categoryBitMask = 0
+        Background.physicsBody?.contactTestBitMask = 0
+        Background.physicsBody?.collisionBitMask = 0
+        self.addChild(Background)
+        
+        
+        skipButton.name = "skipButton"
+        skipButton.position = CGPoint(x: 350,y: 800)
+        skipButton.physicsBody?.categoryBitMask = 0
+        skipButton.physicsBody?.contactTestBitMask = 0
+        skipButton.physicsBody?.collisionBitMask = 0
+        self.addChild(skipButton)
+        
     }
     
     
@@ -35,15 +65,25 @@ class ConversationScene : SKScene, SKPhysicsContactDelegate{
         if let touch = touches.first as UITouch? {
                     
             let location = touch.location(in: self)
-            print(location)
+            print(self.atPoint(location))
+            
+            
+            if self.atPoint(location).name == "skipButton" {
+                
+                print("skip")
+                
+            }
+            
         }
         
+        //移動用コード。gametableviewを隠す必要あり。
+        gameTableView.isHidden =  true
         let Scene = HomeScene()
         Scene.size = self.size
         let transition = SKTransition.crossFade(withDuration: 1.0)
-        
+
         self.view?.presentScene(Scene, transition: transition)
-        
+
     }
     
 }
@@ -51,6 +91,7 @@ class ConversationScene : SKScene, SKPhysicsContactDelegate{
 class GameRoomTableView: UITableView,UITableViewDelegate,UITableViewDataSource {
     
     var items: [String] = ["Player1", "Player2", "Player3"]
+    var name:String = "tableview"
     
     override init(frame: CGRect, style: UITableView.Style) {
         
