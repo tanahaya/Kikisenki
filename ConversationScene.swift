@@ -29,15 +29,11 @@ class ConversationScene : SKScene, SKPhysicsContactDelegate{
         
         
         // Table setup
-        gameTableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        gameTableView.register (UINib(nibName: "SpeechTableviewCell", bundle: nil),forCellReuseIdentifier:"speechCell")
         gameTableView.frame=CGRect(x: 0,y: 448,width: 414,height: 448)
         gameTableView.name = "tableview"
         self.scene?.view?.addSubview(gameTableView)
         gameTableView.reloadData()
-        
-        
-        gameTableView.items.append("Player4")
-        gameTableView.reloadData()//こんな感じでデータの追加が可能です。
         
         //背景。今は茶色
         Background.size = CGSize(width: 414, height: 448)
@@ -74,6 +70,7 @@ class ConversationScene : SKScene, SKPhysicsContactDelegate{
                 
             }
             
+            
         }
         
         //移動用コード。gametableviewを隠す必要あり。
@@ -90,7 +87,9 @@ class ConversationScene : SKScene, SKPhysicsContactDelegate{
 
 class GameRoomTableView: UITableView,UITableViewDelegate,UITableViewDataSource {
     
-    var items: [String] = ["Player1", "Player2", "Player3"]
+    var items: [String] = ["Player1"]
+    var additionalitems: [String] =  ["Player2","Player3","Player4", "Player5", "Player6"]
+    var itemnumber:Int = 0
     var name:String = "tableview"
     
     override init(frame: CGRect, style: UITableView.Style) {
@@ -114,8 +113,10 @@ class GameRoomTableView: UITableView,UITableViewDelegate,UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {//cellの内容を返す
-        let cell:UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "cell")! as UITableViewCell
-        cell.textLabel?.text = self.items[indexPath.row]
+        let cell:SpeechTableviewCell = tableView.dequeueReusableCell(withIdentifier: "speechCell")! as! SpeechTableviewCell
+        cell.nameLabel.text = "名前"
+        cell.speechLabel.text = "セリフ"
+        cell.selectionStyle = UITableViewCell.SelectionStyle.none//選択不可にするためのコード。
         return cell
     }
     
@@ -124,7 +125,17 @@ class GameRoomTableView: UITableView,UITableViewDelegate,UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {//tapしたときの内容(cell)
+        
         print("You selected cell #\(indexPath.row)!")
+        
+        if itemnumber >= additionalitems.count {
+            
+        }else {
+            items.insert(additionalitems[itemnumber], at: 0)//順番を指定してarrayに追加する。
+            itemnumber = itemnumber + 1
+            self.reloadData()//こんな感じでデータの追加が可能です。
+        }
+        
     }
     
 }
