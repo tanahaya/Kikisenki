@@ -11,10 +11,10 @@ import SpriteKit
 
 class SelectScene : SKScene, SKPhysicsContactDelegate{
     
+    let battleLabel = SKLabelNode()//文字を表示する。
+    let conversationLabel = SKLabelNode()//文字を表示する。
     
-    let Label = SKLabelNode()//文字を表示する。
-    var WhiteBack = SKSpriteNode(color: SKColor.white, size: CGSize(width: 200, height: 50))
-    
+    var WhiteBack = SKSpriteNode(color: UIColor.cyan, size: CGSize(width: 200, height: 50))
     
     var BackButton = SKSpriteNode(imageNamed: "BackButton")
     
@@ -25,18 +25,25 @@ class SelectScene : SKScene, SKPhysicsContactDelegate{
         self.physicsWorld.gravity = CGVector(dx: 0.0, dy: 0.0)
         self.physicsWorld.contactDelegate = self //didBeginCOntactに必要
         
-        self.backgroundColor = UIColor.black
+        self.backgroundColor = UIColor.white
         
         WhiteBack.position = CGPoint(x: 207, y: 463)
         WhiteBack.name = "WhiteBack"
         self.addChild(WhiteBack)
         
-        Label.fontSize = 40// フォントサイズを設定.
-        Label.fontColor = UIColor.black// 色を指定(青).
-        Label.position = CGPoint(x: 207, y: 448)// 表示するポジションを指定.今回は中央
-        Label.text = "Tap to Start"
-        Label.name = "Label"
-        self.addChild(Label)//シーンに追加
+        battleLabel.fontSize = 40// フォントサイズを設定.
+        battleLabel.fontColor = UIColor.black// 色を指定(青).
+        battleLabel.position = CGPoint(x: 207, y: 448)// 表示するポジションを指定.今回は中央
+        battleLabel.text = "Tap to Start"
+        battleLabel.name = "battleLabel"
+        self.addChild(battleLabel)//シーンに追加
+        
+        conversationLabel.fontSize = 40// フォントサイズを設定.
+        conversationLabel.fontColor = UIColor.black// 色を指定(青).
+        conversationLabel.position = CGPoint(x: 207, y: 348)// 表示するポジションを指定.今回は中央
+        conversationLabel.text = "Tap to Start"
+        conversationLabel.name = "conversationLabel"
+        self.addChild(conversationLabel)//シーンに追加
         
         
         BackButton.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "BackButton.png"), size: BackButton.size)
@@ -57,8 +64,12 @@ class SelectScene : SKScene, SKPhysicsContactDelegate{
             
             let location = touch.location(in: self)
             
-            if self.atPoint(location).name == "Label" {
+            if self.atPoint(location).name == "battleLabel" {
                 self.gotoGameScene()
+            }
+            
+            if self.atPoint(location).name == "conversationLabel" {
+                self.gotoConversationScene()
             }
             
             if self.atPoint(location).name == "BackButton" {
@@ -66,7 +77,6 @@ class SelectScene : SKScene, SKPhysicsContactDelegate{
             }
             
         }
-        
         
     }
     
@@ -85,6 +95,16 @@ class SelectScene : SKScene, SKPhysicsContactDelegate{
         let Scene = GameScene()
         Scene.size = self.size
         let transition = SKTransition.crossFade(withDuration: 0.5)
+        
+        self.view?.presentScene(Scene, transition: transition)
+        
+    }
+    
+    func gotoConversationScene() {
+        
+        let Scene = ConversationScene()
+        Scene.size = self.size
+        let transition = SKTransition.crossFade(withDuration: 1.0)
         
         self.view?.presentScene(Scene, transition: transition)
         

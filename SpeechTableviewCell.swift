@@ -10,19 +10,19 @@ import UIKit
 
 class SpeechTableviewCell: UITableViewCell {
     
-    var nameLabel:UILabel = UILabel(frame: CGRect(x: 10, y: 10, width: 30, height: 80))
-    var speechLabel:UILabel = UILabel(frame: CGRect(x: 10, y: 70, width: 380, height: 100))
+    var nameLabel:UILabel = UILabel(frame: CGRect(x: 10, y: 10, width: 100, height: 30))
+    var speechLabel:UILabel = UILabel(frame: CGRect(x: 10, y: 45, width: 380, height: 100))
 
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        nameLabel.backgroundColor = UIColor.orange
-        nameLabel.textColor = UIColor.white
+        nameLabel.backgroundColor = UIColor.blue
+        nameLabel.textColor = UIColor.black
         nameLabel.text = "名前"
         self.addSubview(nameLabel)
         
         speechLabel.backgroundColor = UIColor.orange
-        speechLabel.textColor = UIColor.green
+        speechLabel.textColor = UIColor.black
         speechLabel.text = "セリフ"
         self.addSubview(speechLabel)
         

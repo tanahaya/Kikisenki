@@ -13,7 +13,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     
     let startScene = StartScene()
-    let conversation = ConversationScene()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,8 +24,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         View.isMultipleTouchEnabled = false
         //View.showsPhysics = true//物体の輪郭表示、一時的に無効にしております。
         
-        //View.presentScene(startScene)
-        View.presentScene(conversation)
+        View.presentScene(startScene)
         
         // Do any additional setup after loading the view.
         

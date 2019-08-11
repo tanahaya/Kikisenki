@@ -68,18 +68,18 @@ class ConversationScene : SKScene, SKPhysicsContactDelegate{
                 
                 print("skip")
                 
+                //移動用コード。gametableviewを隠す必要あり。
+                gameTableView.isHidden =  true
+                
+                let selectScene = SelectScene()
+                selectScene.size = self.size
+                let transition = SKTransition.crossFade(withDuration: 1.0)
+                
+                self.view?.presentScene(selectScene, transition: transition)
+                
             }
             
-            
         }
-        
-        //移動用コード。gametableviewを隠す必要あり。
-        gameTableView.isHidden =  true
-        let Scene = HomeScene()
-        Scene.size = self.size
-        let transition = SKTransition.crossFade(withDuration: 1.0)
-
-        self.view?.presentScene(Scene, transition: transition)
 
     }
     
@@ -97,6 +97,9 @@ class GameRoomTableView: UITableView,UITableViewDelegate,UITableViewDataSource {
         super.init(frame: frame, style: style)
         self.delegate = self
         self.dataSource = self
+        
+        self.estimatedRowHeight = 160
+        self.rowHeight = UITableView.automaticDimension
         
     }
     
@@ -135,6 +138,13 @@ class GameRoomTableView: UITableView,UITableViewDelegate,UITableViewDataSource {
             itemnumber = itemnumber + 1
             self.reloadData()//こんな感じでデータの追加が可能です。
         }
+        
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
+        tableView.estimatedRowHeight = 160 //セルの高さ
+        return 160
         
     }
     
