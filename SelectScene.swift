@@ -9,14 +9,17 @@
 import UIKit
 import SpriteKit
 
-class SelectScene : SKScene, SKPhysicsContactDelegate{
+class SelectScene : SKScene, SKPhysicsContactDelegate {
     
-    let battleLabel = SKLabelNode()//文字を表示する。
-    let conversationLabel = SKLabelNode()//文字を表示する。
-    
-    var WhiteBack = SKSpriteNode(color: UIColor.cyan, size: CGSize(width: 200, height: 50))
     
     var BackButton = SKSpriteNode(imageNamed: "BackButton")
+    
+    var Background = SKSpriteNode(imageNamed: "chapter0")
+    
+    var arrowtoPhaze = SKSpriteNode(imageNamed: "EnegyBattle")
+    var arrowtoEnegy = SKSpriteNode(imageNamed: "PhazeBattle")
+    var arrowtoSample = SKSpriteNode(imageNamed: "SampleStory")
+    
     
     override func didMove(to view: SKView) {
         
@@ -24,26 +27,49 @@ class SelectScene : SKScene, SKPhysicsContactDelegate{
         self.size = CGSize(width: 414, height: 896)//414x896が最適。これはiphoneXRの画面サイズ
         self.physicsWorld.gravity = CGVector(dx: 0.0, dy: 0.0)
         self.physicsWorld.contactDelegate = self //didBeginCOntactに必要
+       
         
-        self.backgroundColor = UIColor.white
         
-        WhiteBack.position = CGPoint(x: 207, y: 463)
-        WhiteBack.name = "WhiteBack"
-        self.addChild(WhiteBack)
+        Background.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "chapter0"), size: Background.size)
+        Background.name = "Background"
+        Background.position = CGPoint(x: 207,y: 448)
+        Background.physicsBody?.categoryBitMask = 0
+        Background.physicsBody?.contactTestBitMask = 0
+        Background.physicsBody?.collisionBitMask = 0
+        self.addChild(Background)
         
-        battleLabel.fontSize = 40// フォントサイズを設定.
-        battleLabel.fontColor = UIColor.black// 色を指定(青).
-        battleLabel.position = CGPoint(x: 207, y: 448)// 表示するポジションを指定.今回は中央
-        battleLabel.text = "Tap to Start"
-        battleLabel.name = "battleLabel"
-        self.addChild(battleLabel)//シーンに追加
         
-        conversationLabel.fontSize = 40// フォントサイズを設定.
-        conversationLabel.fontColor = UIColor.black// 色を指定(青).
-        conversationLabel.position = CGPoint(x: 207, y: 348)// 表示するポジションを指定.今回は中央
-        conversationLabel.text = "Tap to Start"
-        conversationLabel.name = "conversationLabel"
-        self.addChild(conversationLabel)//シーンに追加
+        arrowtoPhaze.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "PhazeBattle"), size: arrowtoPhaze.size)
+        arrowtoPhaze.name = "arrowtoPhaze"
+        arrowtoPhaze.position = CGPoint(x: 207,y: 598)
+        arrowtoPhaze.physicsBody?.categoryBitMask = 0
+        arrowtoPhaze.physicsBody?.contactTestBitMask = 0
+        arrowtoPhaze.physicsBody?.collisionBitMask = 0
+        let rotateaction1 = SKAction.rotate(toAngle: CGFloat(Double.pi / 18), duration: 0.01)
+        arrowtoPhaze.run(rotateaction1)
+        self.addChild(arrowtoPhaze)
+        
+        
+        arrowtoEnegy.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "EnegyBattle"), size: arrowtoEnegy.size)
+        arrowtoEnegy.name = "arrowtoEnegy"
+        arrowtoEnegy.position = CGPoint(x: 207,y: 448)
+        arrowtoEnegy.physicsBody?.categoryBitMask = 0
+        arrowtoEnegy.physicsBody?.contactTestBitMask = 0
+        arrowtoEnegy.physicsBody?.collisionBitMask = 0
+        let rotateaction2 = SKAction.rotate(toAngle: -CGFloat(Double.pi / 18), duration: 0.01)
+        arrowtoEnegy.run(rotateaction2)
+        self.addChild(arrowtoEnegy)
+        
+        
+        arrowtoSample.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "SampleStory"), size: arrowtoSample.size)
+        arrowtoSample.name = "arrowtoSample"
+        arrowtoSample.position = CGPoint(x: 207,y: 298)
+        arrowtoSample.physicsBody?.categoryBitMask = 0
+        arrowtoSample.physicsBody?.contactTestBitMask = 0
+        arrowtoSample.physicsBody?.collisionBitMask = 0
+        let rotateaction3 = SKAction.rotate(toAngle: CGFloat(Double.pi / 18), duration: 0.01)
+        arrowtoSample.run(rotateaction3)
+        self.addChild(arrowtoSample)
         
         
         BackButton.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "BackButton.png"), size: BackButton.size)
@@ -64,11 +90,15 @@ class SelectScene : SKScene, SKPhysicsContactDelegate{
             
             let location = touch.location(in: self)
             
-            if self.atPoint(location).name == "battleLabel" {
+            if self.atPoint(location).name == "arrowtoPhaze" {
                 self.gotoGameScene()
             }
             
-            if self.atPoint(location).name == "conversationLabel" {
+            if self.atPoint(location).name == "arrowtoEnegy" {
+                self.gotoGameScene()
+            }
+            
+            if self.atPoint(location).name == "arrowtoSample" {
                 self.gotoConversationScene()
             }
             
