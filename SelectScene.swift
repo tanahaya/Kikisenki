@@ -80,8 +80,6 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
         BackButton.physicsBody?.collisionBitMask = 0
         self.addChild(BackButton)
         
-        
-        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -95,7 +93,7 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
             }
             
             if self.atPoint(location).name == "arrowtoEnegy" {
-                self.gotoGameScene()
+                self.gotoPhazeBattleScene()
             }
             
             if self.atPoint(location).name == "arrowtoSample" {
@@ -123,6 +121,16 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
     func gotoGameScene() {
         
         let Scene = GameScene()
+        Scene.size = self.size
+        let transition = SKTransition.crossFade(withDuration: 0.5)
+        
+        self.view?.presentScene(Scene, transition: transition)
+        
+    }
+    
+    func gotoPhazeBattleScene() {
+        
+        let Scene = PhazeBattleScene()
         Scene.size = self.size
         let transition = SKTransition.crossFade(withDuration: 0.5)
         
