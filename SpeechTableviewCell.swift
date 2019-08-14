@@ -13,15 +13,22 @@ class SpeechTableviewCell: UITableViewCell {
     var nameLabel:UILabel = UILabel(frame: CGRect(x: 10, y: 10, width: 100, height: 30))
     var speechLabel:UILabel = UILabel(frame: CGRect(x: 10, y: 45, width: 380, height: 100))
 
+    var backImageview: UIImageView!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        nameLabel.backgroundColor = UIColor.blue
+        backImageview = UIImageView(frame: CGRect(x: 0, y: 0, width: 414, height: 160))
+        let backImage: UIImage = UIImage(named: "serif1.png")!
+        backImageview.image = backImage// 画像をUIImageViewに設定する
+        self.addSubview(backImageview)
+        
+        nameLabel.backgroundColor = UIColor.clear
         nameLabel.textColor = UIColor.black
         nameLabel.text = "名前"
         self.addSubview(nameLabel)
         
-        speechLabel.backgroundColor = UIColor.orange
+        speechLabel.backgroundColor = UIColor.clear
         speechLabel.textColor = UIColor.black
         speechLabel.text = "セリフ"
         self.addSubview(speechLabel)

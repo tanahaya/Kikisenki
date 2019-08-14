@@ -123,10 +123,6 @@ class GameRoomTableView: UITableView,UITableViewDelegate,UITableViewDataSource {
         return cell
     }
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {//tapしたときの内容(selection)
-        return "Section \(section)"
-    }
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {//tapしたときの内容(cell)
         
         print("You selected cell #\(indexPath.row)!")

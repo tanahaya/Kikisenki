@@ -130,7 +130,7 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
     
     func gotoPhazeBattleScene() {
         
-        let Scene = PhazeBattleScene()
+        let Scene = PhaseBattleScene()
         Scene.size = self.size
         let transition = SKTransition.crossFade(withDuration: 0.5)
         
