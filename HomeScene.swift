@@ -25,6 +25,8 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
     var MapIcon10 = SKSpriteNode(imageNamed: "mapIcon")
     var MapIcon11 = SKSpriteNode(imageNamed: "mapIcon")
     
+    var levelup = SKSpriteNode(imageNamed: "levelup")
+    
     
     override func didMove(to view: SKView) {
         
@@ -155,6 +157,16 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
         MapIcon11.physicsBody?.collisionBitMask = 0
         self.addChild(MapIcon11)
         
+        levelup.name = "levelup"
+        levelup.anchorPoint = CGPoint(x: 0,y: 0)
+        levelup.position = CGPoint(x: 274,y: 712)
+        levelup.xScale = 0.7
+        levelup.yScale = 0.7
+        levelup.physicsBody?.categoryBitMask = 0
+        levelup.physicsBody?.contactTestBitMask = 0
+        levelup.physicsBody?.collisionBitMask = 0
+        self.addChild(levelup)
+        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -187,6 +199,8 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
                 self.gotoSelectScene()
             case "mapIcon11":
                 self.gotoSelectScene()
+            case "levelup":
+                self.gotoStatesScene()
             default:
                 print("nomalarea")
             }
@@ -217,6 +231,16 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
     func gotoSelectScene() {
         
         let Scene = SelectScene()
+        Scene.size = self.size
+        let transition = SKTransition.crossFade(withDuration: 0.5)
+        
+        self.view?.presentScene(Scene, transition: transition)
+        
+    }
+    
+    func gotoStatesScene() {
+        
+        let Scene = StatesScene()
         Scene.size = self.size
         let transition = SKTransition.crossFade(withDuration: 0.5)
         
