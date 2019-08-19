@@ -18,12 +18,15 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     
     var MainTimer:Timer?
     var phasenumber:Int = 0
-    var phaseFlag = true
+    var phaseFlag = true //trueならMovePhase.falseならAttackPhase
     
     var ally1  = SKSpriteNode(imageNamed: "monster1a")//allyの追加
     var MoveMarker1 = SKSpriteNode(imageNamed: "movemarker1")//ally1のmovemader
     let levelLabel1 = SKLabelNode()
     var level1:Int = 0
+    
+    var Ally1Flag = true
+    var MoveMarker1Flag = true
     
     var LeftWall = SKSpriteNode(color: UIColor.black, size: CGSize(width: 10, height: 334))
     var RightWall = SKSpriteNode(color: UIColor.black, size: CGSize(width: 10, height: 334))
@@ -141,10 +144,13 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         MoveMarker1.name = "MoveMarker1"
         self.addChild(MoveMarker1)
         
+        self.start() //始める時の処理
+        
     }
     
     @objc func mainTimerupdate() {
         
+        //phaseの切り替えの処理。
         phasenumber = phasenumber + 1
         numberLabel.text = "\( Float(50 - phasenumber) / 10)"
         
@@ -162,10 +168,56 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             
         }
         
+        //移動の処理
+        
+        var allyposition:CGPoint = CGPoint(x: 0.0,y: 0.0)
+        var movemarkerposition:CGPoint = CGPoint(x: 0.0,y: 0.0)
+        
+        allyposition = ally1.position
+        movemarkerposition = MoveMarker1.position
+        
+        if allyposition == movemarkerposition {//移動系の処理
+            
+            MoveMarker1.alpha = 0.0
+            
+        } else {
+            
+            var relativepostion:CGPoint = CGPoint(x: 0,y: 0)
+            
+            relativepostion.x = MoveMarker1.position.x - ally1.position.x
+            relativepostion.y = MoveMarker1.position.y - ally1.position.y
+            
+            let direction :CGFloat = vector2radian(vector: relativepostion)
+            
+            if Ally1Flag || MoveMarker1Flag {} else {
+                
+                if length(v: relativepostion) <= 6 {//相対位置の距離が6以下の場合、位置を同じにする。
+                        
+                    ally1.position = MoveMarker1.position
+                    MoveMarker1.alpha = 0.0
+                            
+                }else{//違う場合距離にして3づつ近づく
+                        
+                    let travelTime = SKAction.move( to: CGPoint(x: ally1.position.x - CGFloat( 3 * cos(Double(direction))),y: ally1.position.y
+                            + CGFloat( 3 * sin(Double(direction)))), duration: 0.01)
+                    ally1.run(travelTime)
+                            
+                }
+                        
+                levelLabel1.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 45)// 表示するポジションを指定.
+                
+            }
+        }
     }
     
-    
-    
+    func start(){//ゲームを開始するときに呼ばれるメソッド。
+        
+        phaseFlag = true
+        
+        Ally1Flag = false
+        MoveMarker1Flag = false
+        
+    }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
@@ -180,8 +232,101 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 self.view?.presentScene(Scene, transition: transition)
             }
             
+            if self.atPoint(location).name == "Ally1"{
+                Ally1Flag = true
+            }
+            
+            if self.atPoint(location).name == "MoveMarker1"{
+                MoveMarker1Flag = true
+            }
+            
         }
         
     }
     
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        if let touch = touches.first as UITouch? {
+            let location = touch.location(in: self)
+            
+            if Ally1Flag || MoveMarker1Flag {
+                MoveMarker1.alpha = 1.0
+                MoveMarker1.position = location
+            }
+            
+        }
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        //allyの挙動を全て書いてるため、長くなっております。あとで関数化するかも。多分そうしたほうが少なく書ける。
+        
+        if let touch = touches.first as UITouch? {
+            let location = touch.location(in: self)
+            
+            //ally1
+            if Ally1Flag {//味方を最初に触った時。
+                
+                Ally1Flag = false
+                
+                if self.rangeofField(minX: 10, maxX: 886, minY: 10, maxY: 344, location: location) {
+                    
+                    MoveMarker1.position = location
+                    
+                } else {
+                    MoveMarker1.position = ally1.position
+                    MoveMarker1.alpha = 0.0
+                }
+                
+            }
+            
+            if MoveMarker1Flag {
+                
+                MoveMarker1Flag = false
+                
+                if self.rangeofField(minX: 10, maxX: 886, minY: 10, maxY:344, location: location) {
+                    MoveMarker1.position = location
+                } else {
+                    MoveMarker1.position = ally1.position
+                    MoveMarker1.alpha = 0.0
+                }
+            }
+            
+        }
+    }
+    
+    func changeHp(change:Int,side:Int) {//渡された値が正なら回復。負ならダメージを与える。hpを変動させる。sideが0なら味方,1なら敵
+        print("chageHp")
+    }
+    
+    //便利系メソッド集
+    func rangeofField(minX: CGFloat,maxX: CGFloat,minY: CGFloat,maxY: CGFloat,location: CGPoint) -> Bool {//触ったポイント内にあるかどうか判定するメソッド。
+        
+        if location.x >= minX  && location.x <= maxX && location.y >= minY && location.y <= maxY {
+            
+            return true
+            
+        }
+        
+        return false
+        
+    }
+    
+    func vector2radian(vector: CGPoint) -> CGFloat {//向いている方向をくれる。
+        
+        let len = length(v: vector)
+        let t = -vector.y / vector.x
+        let c = vector.x / len
+        
+        if vector.x == 0 {
+            return acos(c)
+        } else {
+            let angle = CGFloat(atan(t))
+            return angle + CGFloat(0 < vector.x ? Double.pi : 0.0)
+        }
+        
+    }
+    
+    func length(v: CGPoint) -> CGFloat {//相対位置の長さを測る。
+        return sqrt(v.x * v.x + v.y * v.y)//長さを測る。
+    }
 }
