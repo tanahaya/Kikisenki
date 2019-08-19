@@ -40,7 +40,7 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
         //背景の地図
         Map.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "map.png"), size: Map.size)
         Map.name = "map"
-        Map.position = CGPoint(x: 207,y: 448)
+        Map.position = CGPoint(x: 208,y: 448)
         Map.physicsBody?.categoryBitMask = 0
         Map.physicsBody?.contactTestBitMask = 0
         Map.physicsBody?.collisionBitMask = 0

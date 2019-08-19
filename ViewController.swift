@@ -22,7 +22,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         View.showsFPS = true
         View.showsNodeCount = true
         View.isMultipleTouchEnabled = false
-        //View.showsPhysics = true//物体の輪郭表示、一時的に無効にしております。
+        View.showsPhysics = true//物体の輪郭表示、一時的に無効にしております。
         
         View.presentScene(startScene)
         

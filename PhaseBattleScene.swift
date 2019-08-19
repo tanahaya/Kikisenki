@@ -25,7 +25,10 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     let levelLabel1 = SKLabelNode()
     var level1:Int = 0
     
-    var UpperWall = SKSpriteNode(color: UIColor.black, size: CGSize(width: 414, height: 40))//敵のhpの量を表示
+    var LeftWall = SKSpriteNode(color: UIColor.black, size: CGSize(width: 10, height: 334))
+    var RightWall = SKSpriteNode(color: UIColor.black, size: CGSize(width: 10, height: 334))
+    var UpperWall = SKSpriteNode(color: UIColor.black, size: CGSize(width: 896, height: 10))
+    var LowerWall = SKSpriteNode(color: UIColor.black, size: CGSize(width: 896, height: 10))
     
     //衝突判定のためのビットマスク作成
     struct PhysicsCategory {
@@ -41,27 +44,50 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     override func didMove(to view: SKView) {
         
         //起動した時の処理
-        self.size = CGSize(width: 414, height: 896)//414x896が最適。これはiphoneXRの画面サイズ
+        self.size = CGSize(width: 896, height: 414)//896x414が最適。これはiphoneXRの画面サイズを横にしたもの。
         self.physicsWorld.gravity = CGVector(dx: 0.0, dy: 0.0)
         self.physicsWorld.contactDelegate = self //didBeginCOntactに必要
         
         self.backgroundColor = UIColor.white
         
-        numberLabel.fontSize = 30// フォントサイズを設定.
-        numberLabel.fontColor = UIColor.red// 色を指定(青).
-        numberLabel.position = CGPoint(x: 30, y: 808)// 表示するポジションを指定.今回は中央
-        numberLabel.text = "0"
-        self.addChild(numberLabel)//シーンに追加
-        
-        phaseLabel.fontSize = 30// フォントサイズを設定.
+        phaseLabel.fontSize = 25// フォントサイズを設定.
         phaseLabel.fontColor = UIColor.red// 色を指定(青).
-        phaseLabel.position = CGPoint(x: 207, y: 808)// 表示するポジションを指定.今回は中央
+        phaseLabel.position = CGPoint(x: 448, y: 390)// 表示するポジションを指定.今回は中央
         phaseLabel.text = "MovePhase"
         self.addChild(phaseLabel)//シーンに追加
         
+        numberLabel.fontSize = 25// フォントサイズを設定.
+        numberLabel.fontColor = UIColor.red// 色を指定(青).
+        numberLabel.position = CGPoint(x: 448, y: 364)// 表示するポジションを指定.今回は中央
+        numberLabel.text = "0"
+        self.addChild(numberLabel)//シーンに追加
+        
+        
         self.MainTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.mainTimerupdate), userInfo: nil, repeats: true)
         
-        //壁
+        //四つの壁
+        LeftWall.name = "LeftWall"
+        LeftWall.physicsBody?.restitution = 1.0//反発値
+        LeftWall.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
+        LeftWall.physicsBody?.categoryBitMask = PhysicsCategory.Wall //物体のカテゴリ次元をwall(4)
+        LeftWall.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
+        LeftWall.physicsBody?.collisionBitMask = PhysicsCategory.Ball //衝突させたい物体Ball
+        LeftWall.position = CGPoint(x: 5,y: 177)
+        LeftWall.userData = NSMutableDictionary()
+        LeftWall.userData?.setValue( 0, forKey: "count")
+        LeftWall.userData?.setValue( PhysicsCategory.Wall, forKey: "category")
+        self.addChild(LeftWall)
+        
+        RightWall.name = "WallRight"
+        RightWall.physicsBody?.restitution = 1.0//反発値
+        RightWall.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
+        RightWall.physicsBody?.categoryBitMask = PhysicsCategory.Wall //物体のカテゴリ次元をwall(4)
+        RightWall.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
+        RightWall.physicsBody?.collisionBitMask = PhysicsCategory.Ball //衝突させたい物体Ball
+        RightWall.position = CGPoint(x: 891,y: 177)
+        RightWall.userData = NSMutableDictionary()
+        RightWall.userData?.setValue( PhysicsCategory.Wall, forKey: "category")
+        self.addChild(RightWall)
         
         UpperWall.name = "UpperWall"
         UpperWall.physicsBody?.restitution = 1.0//反発値
@@ -69,17 +95,28 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         UpperWall.physicsBody?.categoryBitMask = PhysicsCategory.Wall //物体のカテゴリ次元をwall(4)
         UpperWall.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
         UpperWall.physicsBody?.collisionBitMask = PhysicsCategory.Ball //衝突させたい物体Ball
-        UpperWall.position = CGPoint(x: 207,y: 733)
+        UpperWall.position = CGPoint(x: 448,y: 349)
         UpperWall.userData = NSMutableDictionary()
-        UpperWall.userData?.setValue( 0, forKey: "count")
         UpperWall.userData?.setValue( PhysicsCategory.Wall, forKey: "category")
         self.addChild(UpperWall)
+        
+        LowerWall.name = "LowerWall"
+        LowerWall.physicsBody?.restitution = 1.0//反発値
+        LowerWall.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
+        LowerWall.physicsBody?.categoryBitMask = PhysicsCategory.Wall //物体のカテゴリ次元をwall(4)
+        LowerWall.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
+        LowerWall.physicsBody?.collisionBitMask = PhysicsCategory.Ball //衝突させたい物体Ball
+        LowerWall.position = CGPoint(x: 448,y: 5)
+        LowerWall.userData = NSMutableDictionary()
+        LowerWall.userData?.setValue( PhysicsCategory.Wall, forKey: "category")
+        self.addChild(LowerWall)
+        
         
         ally1.name = "Ally1"
         ally1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "monster1a"), size: ally1.size)
         ally1.physicsBody?.isDynamic = false
         ally1.physicsBody?.restitution = 1.0//反発値
-        ally1.position = CGPoint(x: 207,y: 500)
+        ally1.position = CGPoint(x: 448,y: 150)
         ally1.zPosition = 1 //movermarkerより上に来るようにz=1
         ally1.userData = NSMutableDictionary()
         ally1.userData?.setValue( PhysicsCategory.Ally, forKey: "category")
@@ -104,8 +141,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         MoveMarker1.name = "MoveMarker1"
         self.addChild(MoveMarker1)
         
-        
-        
     }
     
     @objc func mainTimerupdate() {
@@ -126,17 +161,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             }
             
         }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         
     }
     
