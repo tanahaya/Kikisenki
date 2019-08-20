@@ -26,6 +26,9 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     var level1:Int = 0
     
     var Skill1 = SKSpriteNode(color: UIColor.cyan , size: CGSize(width: 50.0, height: 50.0))//skill1の四角
+    var Skill2 = SKSpriteNode(color: UIColor.cyan , size: CGSize(width: 50.0, height: 50.0))//skill2の四角
+    var Skill3 = SKSpriteNode(color: UIColor.cyan , size: CGSize(width: 50.0, height: 50.0))//skill3の四角
+    var Skill4 = SKSpriteNode(color: UIColor.cyan , size: CGSize(width: 50.0, height: 50.0))//skill4の四角
     
     var Ally1Flag = true
     var MoveMarker1Flag = true
@@ -147,10 +150,28 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         self.addChild(MoveMarker1)
         
         Skill1.anchorPoint = CGPoint(x: 0, y: 0)
-        Skill1.position = CGPoint(x: ally1.position.x + 50, y: ally1.position.y + 50)
+        Skill1.position = CGPoint(x: ally1.position.x + 50, y: ally1.position.y + 50)//右上
         Skill1.name = "Skill1"
         Skill1.alpha = 0.0
         self.addChild(Skill1)
+        
+        Skill2.anchorPoint = CGPoint(x: 0, y: 0)
+        Skill2.position = CGPoint(x: ally1.position.x + 50, y: ally1.position.y - 50)//右下
+        Skill2.name = "Skill2"
+        Skill2.alpha = 0.0
+        self.addChild(Skill2)
+        
+        Skill3.anchorPoint = CGPoint(x: 0, y: 0)
+        Skill3.position = CGPoint(x: ally1.position.x - 50, y: ally1.position.y + 50)//左上
+        Skill3.name = "Skill3"
+        Skill3.alpha = 0.0
+        self.addChild(Skill3)
+        
+        Skill4.anchorPoint = CGPoint(x: 0, y: 0)
+        Skill4.position = CGPoint(x: ally1.position.x - 50, y: ally1.position.y - 50)//左下
+        Skill4.name = "Skill4"
+        Skill4.alpha = 0.0
+        self.addChild(Skill4)
         
         self.start() //始める時の処理
         
@@ -180,6 +201,9 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 phaseLabel.text = "MovePhase"
                 
                 Skill1.alpha = 0.0
+                Skill2.alpha = 0.0
+                Skill3.alpha = 0.0
+                Skill4.alpha = 0.0
                 
             }
             
@@ -282,8 +306,17 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                 } else {//Attackphaseの時
                     
-                    Skill1.position = CGPoint(x: ally1.position.x + 50, y: ally1.position.y + 50)
+                    Skill1.position = CGPoint(x: ally1.position.x + 50, y: ally1.position.y + 50)//右上
                     Skill1.alpha = 1.0
+                    
+                    Skill2.position = CGPoint(x: ally1.position.x + 50, y: ally1.position.y - 50)//右下
+                    Skill2.alpha = 1.0
+                    
+                    Skill3.position = CGPoint(x: ally1.position.x - 50, y: ally1.position.y + 50)//左上
+                    Skill3.alpha = 1.0
+                    
+                    Skill4.position = CGPoint(x: ally1.position.x - 50, y: ally1.position.y - 50)//左下
+                    Skill4.alpha = 1.0
                     
                 }
                 
@@ -323,14 +356,31 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                 } else {//Attackphase
                     
-                    if self.atPoint(location).name == "Skill1" {
+                    if self.atPoint(location).name == "Skill1" {//skill1の発動
                         
                         print("Skill1")
                     }
                     
+                    if self.atPoint(location).name == "Skill2" {//skill2の発動
+                        
+                        print("Skill2")
+                    }
+                    
+                    if self.atPoint(location).name == "Skill3" {//skill3の発動
+                        
+                        print("Skill3")
+                    }
+                    
+                    if self.atPoint(location).name == "Skill4" {//skill4の発動
+                        
+                        print("Skill4")
+                    }
                 }
                 
                 Skill1.alpha = 0.0//name判定より後にしないと判定がされなくなる。
+                Skill2.alpha = 0.0
+                Skill3.alpha = 0.0
+                Skill4.alpha = 0.0
                 
             }
             
