@@ -169,45 +169,55 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         }
         
         //移動の処理
-        
-        var allyposition:CGPoint = CGPoint(x: 0.0,y: 0.0)
-        var movemarkerposition:CGPoint = CGPoint(x: 0.0,y: 0.0)
-        
-        allyposition = ally1.position
-        movemarkerposition = MoveMarker1.position
-        
-        if allyposition == movemarkerposition {//移動系の処理
+        if phaseFlag {
             
-            MoveMarker1.alpha = 0.0
+            var allyposition:CGPoint = CGPoint(x: 0.0,y: 0.0)
+            var movemarkerposition:CGPoint = CGPoint(x: 0.0,y: 0.0)
+            
+            allyposition = ally1.position
+            movemarkerposition = MoveMarker1.position
+            
+            if allyposition == movemarkerposition {//移動系の処理
+                
+                MoveMarker1.alpha = 0.0
+                
+            } else {
+                
+                var relativepostion:CGPoint = CGPoint(x: 0,y: 0)
+                
+                relativepostion.x = MoveMarker1.position.x - ally1.position.x
+                relativepostion.y = MoveMarker1.position.y - ally1.position.y
+                
+                let direction :CGFloat = vector2radian(vector: relativepostion)
+                
+                if Ally1Flag || MoveMarker1Flag {} else {
+                    
+                    if length(v: relativepostion) <= 6 {//相対位置の距離が6以下の場合、位置を同じにする。
+                        
+                        ally1.position = MoveMarker1.position
+                        MoveMarker1.alpha = 0.0
+                        
+                    }else{//違う場合距離にして3づつ近づく
+                        
+                        let travelTime = SKAction.move( to: CGPoint(x: ally1.position.x - CGFloat( 3 * cos(Double(direction))),y: ally1.position.y
+                            + CGFloat( 3 * sin(Double(direction)))), duration: 0.01)
+                        ally1.run(travelTime)
+                        
+                    }
+                    
+                    levelLabel1.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 45)// 表示するポジションを指定.
+                    
+                }
+            }
             
         } else {
             
-            var relativepostion:CGPoint = CGPoint(x: 0,y: 0)
+            MoveMarker1.position = ally1.position
+            MoveMarker1.alpha = 0.0
             
-            relativepostion.x = MoveMarker1.position.x - ally1.position.x
-            relativepostion.y = MoveMarker1.position.y - ally1.position.y
-            
-            let direction :CGFloat = vector2radian(vector: relativepostion)
-            
-            if Ally1Flag || MoveMarker1Flag {} else {
-                
-                if length(v: relativepostion) <= 6 {//相対位置の距離が6以下の場合、位置を同じにする。
-                        
-                    ally1.position = MoveMarker1.position
-                    MoveMarker1.alpha = 0.0
-                            
-                }else{//違う場合距離にして3づつ近づく
-                        
-                    let travelTime = SKAction.move( to: CGPoint(x: ally1.position.x - CGFloat( 3 * cos(Double(direction))),y: ally1.position.y
-                            + CGFloat( 3 * sin(Double(direction)))), duration: 0.01)
-                    ally1.run(travelTime)
-                            
-                }
-                        
-                levelLabel1.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 45)// 表示するポジションを指定.
-                
-            }
-        }
+        }//phaseflag
+        
+        
     }
     
     func start(){//ゲームを開始するときに呼ばれるメソッド。
@@ -250,8 +260,14 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             let location = touch.location(in: self)
             
             if Ally1Flag || MoveMarker1Flag {
-                MoveMarker1.alpha = 1.0
-                MoveMarker1.position = location
+                if phaseFlag {//movephaseの時
+                    
+                    MoveMarker1.alpha = 1.0
+                    MoveMarker1.position = location
+                    
+                } else {//Attackphaseの時
+                    
+                }
             }
             
         }
@@ -298,7 +314,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         print("chageHp")
     }
     
-    //便利系メソッド集
+    
+    //////////////////////////便利系メソッド集/////////////////////////////////
     func rangeofField(minX: CGFloat,maxX: CGFloat,minY: CGFloat,maxY: CGFloat,location: CGPoint) -> Bool {//触ったポイント内にあるかどうか判定するメソッド。
         
         if location.x >= minX  && location.x <= maxX && location.y >= minY && location.y <= maxY {
