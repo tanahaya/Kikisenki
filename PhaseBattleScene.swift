@@ -25,6 +25,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     let levelLabel1 = SKLabelNode()
     var level1:Int = 0
     
+    var Skill1 = SKSpriteNode(color: UIColor.cyan , size: CGSize(width: 50.0, height: 50.0))//skill1の四角
+    
     var Ally1Flag = true
     var MoveMarker1Flag = true
     
@@ -144,6 +146,12 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         MoveMarker1.name = "MoveMarker1"
         self.addChild(MoveMarker1)
         
+        Skill1.anchorPoint = CGPoint(x: 0, y: 0)
+        Skill1.position = CGPoint(x: ally1.position.x + 50, y: ally1.position.y + 50)
+        Skill1.name = "Skill1"
+        Skill1.alpha = 0.0
+        self.addChild(Skill1)
+        
         self.start() //始める時の処理
         
     }
@@ -158,12 +166,21 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             
             phasenumber = 0
             
-            if phaseFlag {
-                phaseLabel.text = "AttackPhase"
+            if phaseFlag { //Attackphaseに切り替わる時。
+                
                 phaseFlag = false
-            }else {
-                phaseLabel.text = "MovePhase"
+                phaseLabel.text = "AttackPhase"
+                
+                MoveMarker1.position = ally1.position
+                MoveMarker1.alpha = 0.0
+                
+            }else { //Movephaseに切り替わる時。
+                
                 phaseFlag = true
+                phaseLabel.text = "MovePhase"
+                
+                Skill1.alpha = 0.0
+                
             }
             
         }
@@ -212,9 +229,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             
         } else {
             
-            MoveMarker1.position = ally1.position
-            MoveMarker1.alpha = 0.0
-            
         }//phaseflag
         
         
@@ -259,7 +273,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         if let touch = touches.first as UITouch? {
             let location = touch.location(in: self)
             
-            if Ally1Flag || MoveMarker1Flag {
+            if Ally1Flag {
+                
                 if phaseFlag {//movephaseの時
                     
                     MoveMarker1.alpha = 1.0
@@ -267,14 +282,24 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                 } else {//Attackphaseの時
                     
+                    Skill1.position = CGPoint(x: ally1.position.x + 50, y: ally1.position.y + 50)
+                    Skill1.alpha = 1.0
+                    
                 }
+                
+            }
+            
+            if MoveMarker1Flag {
+                
+                MoveMarker1.alpha = 1.0
+                MoveMarker1.position = location
+                    
             }
             
         }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        //allyの挙動を全て書いてるため、長くなっております。あとで関数化するかも。多分そうしたほうが少なく書ける。
         
         if let touch = touches.first as UITouch? {
             let location = touch.location(in: self)
@@ -284,14 +309,28 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
                 Ally1Flag = false
                 
-                if self.rangeofField(minX: 10, maxX: 886, minY: 10, maxY: 344, location: location) {
+                
+                if phaseFlag {//movephase
                     
-                    MoveMarker1.position = location
+                    if self.rangeofField(minX: 10, maxX: 886, minY: 10, maxY: 344, location: location) {
+                        
+                        MoveMarker1.position = location
+                        
+                    } else {
+                        MoveMarker1.position = ally1.position
+                        MoveMarker1.alpha = 0.0
+                    }
                     
-                } else {
-                    MoveMarker1.position = ally1.position
-                    MoveMarker1.alpha = 0.0
+                } else {//Attackphase
+                    
+                    if self.atPoint(location).name == "Skill1" {
+                        
+                        print("Skill1")
+                    }
+                    
                 }
+                
+                Skill1.alpha = 0.0//name判定より後にしないと判定がされなくなる。
                 
             }
             
