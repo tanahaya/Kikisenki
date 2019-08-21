@@ -25,10 +25,10 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     let levelLabel1 = SKLabelNode()
     var level1:Int = 0
     
-    var Skill1 = SKSpriteNode(color: UIColor.cyan , size: CGSize(width: 50.0, height: 50.0))//skill1の四角
-    var Skill2 = SKSpriteNode(color: UIColor.cyan , size: CGSize(width: 50.0, height: 50.0))//skill2の四角
-    var Skill3 = SKSpriteNode(color: UIColor.cyan , size: CGSize(width: 50.0, height: 50.0))//skill3の四角
-    var Skill4 = SKSpriteNode(color: UIColor.cyan , size: CGSize(width: 50.0, height: 50.0))//skill4の四角
+    var Skill1 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))//skill1の四角
+    var Skill2 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))//skill2の四角
+    var Skill3 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))//skill3の四角
+    var Skill4 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))//skill4の四角
     
     var SkilledFlag = true//スキルを使ったかどうかを判定するflag
     
