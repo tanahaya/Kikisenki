@@ -30,6 +30,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     var Skill3 = SKSpriteNode(color: UIColor.cyan , size: CGSize(width: 50.0, height: 50.0))//skill3の四角
     var Skill4 = SKSpriteNode(color: UIColor.cyan , size: CGSize(width: 50.0, height: 50.0))//skill4の四角
     
+    var SkilledFlag = true//スキルを使ったかどうかを判定するflag
+    
     var Ally1Flag = true
     var MoveMarker1Flag = true
     
@@ -195,6 +197,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 MoveMarker1.position = ally1.position
                 MoveMarker1.alpha = 0.0
                 
+                SkilledFlag = true
+                
             }else { //Movephaseに切り替わる時。
                 
                 phaseFlag = true
@@ -264,6 +268,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
         Ally1Flag = false
         MoveMarker1Flag = false
+        SkilledFlag = true
         
     }
     
@@ -305,19 +310,23 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     MoveMarker1.position = location
                     
                 } else {//Attackphaseの時
-                    
-                    Skill1.position = CGPoint(x: ally1.position.x + 50, y: ally1.position.y + 50)//右上
-                    Skill1.alpha = 1.0
-                    
-                    Skill2.position = CGPoint(x: ally1.position.x + 50, y: ally1.position.y - 50)//右下
-                    Skill2.alpha = 1.0
-                    
-                    Skill3.position = CGPoint(x: ally1.position.x - 50, y: ally1.position.y + 50)//左上
-                    Skill3.alpha = 1.0
-                    
-                    Skill4.position = CGPoint(x: ally1.position.x - 50, y: ally1.position.y - 50)//左下
-                    Skill4.alpha = 1.0
-                    
+                    if SkilledFlag {
+                        
+                        Skill1.position = CGPoint(x: ally1.position.x + 50, y: ally1.position.y + 50)//右上
+                        Skill1.alpha = 1.0
+                        
+                        Skill2.position = CGPoint(x: ally1.position.x + 50, y: ally1.position.y - 50)//右下
+                        Skill2.alpha = 1.0
+                        
+                        Skill3.position = CGPoint(x: ally1.position.x - 50, y: ally1.position.y + 50)//左上
+                        Skill3.alpha = 1.0
+                        
+                        Skill4.position = CGPoint(x: ally1.position.x - 50, y: ally1.position.y - 50)//左下
+                        Skill4.alpha = 1.0
+                        
+                    } else {
+                        
+                    }
                 }
                 
             }
@@ -356,24 +365,38 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                 } else {//Attackphase
                     
-                    if self.atPoint(location).name == "Skill1" {//skill1の発動
+                    if SkilledFlag {
                         
-                        print("Skill1")
-                    }
-                    
-                    if self.atPoint(location).name == "Skill2" {//skill2の発動
+                        if self.atPoint(location).name == "Skill1" {//skill1の発動
+                            
+                            print("Skill1")
+                            SkilledFlag = false
+                            
+                        }
                         
-                        print("Skill2")
-                    }
-                    
-                    if self.atPoint(location).name == "Skill3" {//skill3の発動
+                        if self.atPoint(location).name == "Skill2" {//skill2の発動
+                            
+                            print("Skill2")
+                            SkilledFlag = false
+                            
+                        }
                         
-                        print("Skill3")
-                    }
-                    
-                    if self.atPoint(location).name == "Skill4" {//skill4の発動
+                        if self.atPoint(location).name == "Skill3" {//skill3の発動
+                            
+                            print("Skill3")
+                            SkilledFlag = false
+                            
+                        }
                         
-                        print("Skill4")
+                        if self.atPoint(location).name == "Skill4" {//skill4の発動
+                            
+                            print("Skill4")
+                            SkilledFlag = false
+                            
+                        }
+                        
+                    } else {
+                        
                     }
                 }
                 
