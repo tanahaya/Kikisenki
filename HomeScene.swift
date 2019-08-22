@@ -31,7 +31,7 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
     override func didMove(to view: SKView) {
         
         //起動した時の処理
-        self.size = CGSize(width: 414, height: 896)//414x896が最適。これはiphoneXRの画面サイズ
+        self.size = CGSize(width: 896, height: 414)//414x896が最適。これはiphoneXRの画面サイズ
         self.physicsWorld.gravity = CGVector(dx: 0.0, dy: 0.0)
         self.physicsWorld.contactDelegate = self //didBeginCOntactに必要
         
@@ -40,7 +40,7 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
         //背景の地図
         Map.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "map.png"), size: Map.size)
         Map.name = "map"
-        Map.position = CGPoint(x: 208,y: 448)
+        Map.position = CGPoint(x: 448,y: 207)
         Map.physicsBody?.categoryBitMask = 0
         Map.physicsBody?.contactTestBitMask = 0
         Map.physicsBody?.collisionBitMask = 0
@@ -49,7 +49,7 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
         
         MapIcon1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "mapIcon.png"), size: MapIcon1.size)
         MapIcon1.name = "mapIcon1"
-        MapIcon1.position = CGPoint(x: 296,y: 259)
+        MapIcon1.position = CGPoint(x: 603,y: 293)
         MapIcon1.xScale = 0.25
         MapIcon1.yScale = 0.25
         MapIcon1.physicsBody?.categoryBitMask = 0
@@ -59,7 +59,7 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
         
         MapIcon2.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "mapIcon.png"), size: MapIcon2.size)
         MapIcon2.name = "mapIcon2"
-        MapIcon2.position = CGPoint(x: 290,y: 408)
+        MapIcon2.position = CGPoint(x: 437,y: 285)
         MapIcon2.xScale = 0.25
         MapIcon2.yScale = 0.25
         MapIcon2.physicsBody?.categoryBitMask = 0
@@ -69,7 +69,7 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
         
         MapIcon3.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "mapIcon.png"), size: MapIcon3.size)
         MapIcon3.name = "mapIcon3"
-        MapIcon3.position = CGPoint(x: 292,y: 568)
+        MapIcon3.position = CGPoint(x: 264,y: 285)
         MapIcon3.xScale = 0.25
         MapIcon3.yScale = 0.25
         MapIcon3.physicsBody?.categoryBitMask = 0
@@ -79,7 +79,7 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
         
         MapIcon4.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "mapIcon.png"), size: MapIcon4.size)
         MapIcon4.name = "mapIcon4"
-        MapIcon4.position = CGPoint(x: 240,y: 478)
+        MapIcon4.position = CGPoint(x: 361,y: 228)
         MapIcon4.xScale = 0.25
         MapIcon4.yScale = 0.25
         MapIcon4.physicsBody?.categoryBitMask = 0
@@ -89,7 +89,7 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
         
         MapIcon5.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "mapIcon.png"), size: MapIcon5.size)
         MapIcon5.name = "mapIcon5"
-        MapIcon5.position = CGPoint(x: 194,y: 548)
+        MapIcon5.position = CGPoint(x: 282,y: 175)
         MapIcon5.xScale = 0.25
         MapIcon5.yScale = 0.25
         MapIcon5.physicsBody?.categoryBitMask = 0
@@ -99,7 +99,7 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
         
         MapIcon6.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "mapIcon.png"), size: MapIcon6.size)
         MapIcon6.name = "mapIcon6"
-        MapIcon6.position = CGPoint(x: 166,y: 458)
+        MapIcon6.position = CGPoint(x: 383,y: 145)
         MapIcon6.xScale = 0.25
         MapIcon6.yScale = 0.25
         MapIcon6.physicsBody?.categoryBitMask = 0
@@ -109,7 +109,7 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
         
         MapIcon7.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "mapIcon.png"), size: MapIcon7.size)
         MapIcon7.name = "mapIcon7"
-        MapIcon7.position = CGPoint(x: 137,y: 372)
+        MapIcon7.position = CGPoint(x: 479,y: 112)
         MapIcon7.xScale = 0.25
         MapIcon7.yScale = 0.25
         MapIcon7.physicsBody?.categoryBitMask = 0
@@ -119,7 +119,7 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
         
         MapIcon8.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "mapIcon.png"), size: MapIcon8.size)
         MapIcon8.name = "mapIcon8"
-        MapIcon8.position = CGPoint(x: 137,y: 287)
+        MapIcon8.position = CGPoint(x: 573,y: 113)
         MapIcon8.xScale = 0.25
         MapIcon8.yScale = 0.25
         MapIcon8.physicsBody?.categoryBitMask = 0
@@ -129,7 +129,7 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
         
         MapIcon9.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "mapIcon.png"), size: MapIcon9.size)
         MapIcon9.name = "mapIcon9"
-        MapIcon9.position = CGPoint(x: 250,y: 213)
+        MapIcon9.position = CGPoint(x: 655,y: 241)
         MapIcon9.xScale = 0.25
         MapIcon9.yScale = 0.25
         MapIcon9.physicsBody?.categoryBitMask = 0
@@ -139,7 +139,7 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
         
         MapIcon10.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "mapIcon.png"), size: MapIcon10.size)
         MapIcon10.name = "mapIco10"
-        MapIcon10.position = CGPoint(x: 245,y: 278)
+        MapIcon10.position = CGPoint(x: 582,y: 235)
         MapIcon10.xScale = 0.25
         MapIcon10.yScale = 0.25
         MapIcon10.physicsBody?.categoryBitMask = 0
@@ -149,7 +149,7 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
         
         MapIcon11.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "mapIcon.png"), size: MapIcon11.size)
         MapIcon11.name = "mapIcon11"
-        MapIcon11.position = CGPoint(x: 214,y: 352)
+        MapIcon11.position = CGPoint(x: 501,y: 200)
         MapIcon11.xScale = 0.25
         MapIcon11.yScale = 0.25
         MapIcon11.physicsBody?.categoryBitMask = 0
@@ -159,7 +159,7 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
         
         levelup.name = "levelup"
         levelup.anchorPoint = CGPoint(x: 0,y: 0)
-        levelup.position = CGPoint(x: 274,y: 712)
+        levelup.position = CGPoint(x: 756,y: 30)
         levelup.xScale = 0.7
         levelup.yScale = 0.7
         levelup.physicsBody?.categoryBitMask = 0

@@ -35,6 +35,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     var Ally1Flag = true
     var MoveMarker1Flag = true
     
+    var Enemy1 = SKSpriteNode(imageNamed: "syatihoko")
+    
     var LeftWall = SKSpriteNode(color: UIColor.black, size: CGSize(width: 10, height: 334))
     var RightWall = SKSpriteNode(color: UIColor.black, size: CGSize(width: 10, height: 334))
     var UpperWall = SKSpriteNode(color: UIColor.black, size: CGSize(width: 896, height: 10))
@@ -43,12 +45,10 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     //衝突判定のためのビットマスク作成
     struct PhysicsCategory {
         static let Emeny: UInt32 = 1
-        static let Ball: UInt32 = 2
-        static let Ally: UInt32 = 3
+        static let Ally: UInt32 = 2
+        static let Bullet: UInt32 = 3
         static let Wall: UInt32 = 4
-        static let Button: UInt32 = 5
-        static let SmallBall: UInt32 = 6
-        static let Heart: UInt32 = 7
+        static let Heart: UInt32 = 5
     }
     
     override func didMove(to view: SKView) {
@@ -80,8 +80,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         LeftWall.physicsBody?.restitution = 1.0//反発値
         LeftWall.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
         LeftWall.physicsBody?.categoryBitMask = PhysicsCategory.Wall //物体のカテゴリ次元をwall(4)
-        LeftWall.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
-        LeftWall.physicsBody?.collisionBitMask = PhysicsCategory.Ball //衝突させたい物体Ball
+        LeftWall.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet //衝突を検知するカテゴリBall
+        LeftWall.physicsBody?.collisionBitMask = PhysicsCategory.Bullet //衝突させたい物体Ball
         LeftWall.position = CGPoint(x: 5,y: 177)
         LeftWall.userData = NSMutableDictionary()
         LeftWall.userData?.setValue( 0, forKey: "count")
@@ -92,8 +92,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         RightWall.physicsBody?.restitution = 1.0//反発値
         RightWall.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
         RightWall.physicsBody?.categoryBitMask = PhysicsCategory.Wall //物体のカテゴリ次元をwall(4)
-        RightWall.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
-        RightWall.physicsBody?.collisionBitMask = PhysicsCategory.Ball //衝突させたい物体Ball
+        RightWall.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet //衝突を検知するカテゴリBall
+        RightWall.physicsBody?.collisionBitMask = PhysicsCategory.Bullet //衝突させたい物体Ball
         RightWall.position = CGPoint(x: 891,y: 177)
         RightWall.userData = NSMutableDictionary()
         RightWall.userData?.setValue( PhysicsCategory.Wall, forKey: "category")
@@ -103,8 +103,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         UpperWall.physicsBody?.restitution = 1.0//反発値
         UpperWall.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
         UpperWall.physicsBody?.categoryBitMask = PhysicsCategory.Wall //物体のカテゴリ次元をwall(4)
-        UpperWall.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
-        UpperWall.physicsBody?.collisionBitMask = PhysicsCategory.Ball //衝突させたい物体Ball
+        UpperWall.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet //衝突を検知するカテゴリBall
+        UpperWall.physicsBody?.collisionBitMask = PhysicsCategory.Bullet //衝突させたい物体Ball
         UpperWall.position = CGPoint(x: 448,y: 349)
         UpperWall.userData = NSMutableDictionary()
         UpperWall.userData?.setValue( PhysicsCategory.Wall, forKey: "category")
@@ -114,14 +114,15 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         LowerWall.physicsBody?.restitution = 1.0//反発値
         LowerWall.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
         LowerWall.physicsBody?.categoryBitMask = PhysicsCategory.Wall //物体のカテゴリ次元をwall(4)
-        LowerWall.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
-        LowerWall.physicsBody?.collisionBitMask = PhysicsCategory.Ball //衝突させたい物体Ball
+        LowerWall.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet //衝突を検知するカテゴリBall
+        LowerWall.physicsBody?.collisionBitMask = PhysicsCategory.Bullet //衝突させたい物体Ball
         LowerWall.position = CGPoint(x: 448,y: 5)
         LowerWall.userData = NSMutableDictionary()
         LowerWall.userData?.setValue( PhysicsCategory.Wall, forKey: "category")
         self.addChild(LowerWall)
         
         
+        //ally1の処理
         ally1.name = "Ally1"
         ally1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "monster1a"), size: ally1.size)
         ally1.physicsBody?.isDynamic = false
@@ -132,7 +133,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         ally1.userData?.setValue( PhysicsCategory.Ally, forKey: "category")
         ally1.userData?.setValue( 0, forKey: "level")//levelを追加
         ally1.physicsBody?.categoryBitMask = PhysicsCategory.Ally //物体のカテゴリ次元をally
-        ally1.physicsBody?.contactTestBitMask = PhysicsCategory.Ball //衝突を検知するカテゴリBall
+        ally1.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet //衝突を検知するカテゴリBall
         ally1.physicsBody?.collisionBitMask = 0 //PhysicsCategory.Ball //衝突させたい物体＝＞なし
         ally1.xScale = 0.7
         ally1.yScale = 0.7
@@ -174,6 +175,23 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Skill4.name = "Skill4"
         Skill4.alpha = 0.0
         self.addChild(Skill4)
+        
+        
+        //enemy1の処理
+        Enemy1.name = "Enemy1"
+        Enemy1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "syatihoko"), size: Enemy1.size)
+        Enemy1.physicsBody?.isDynamic = false
+        Enemy1.physicsBody?.restitution = 1.0//反発値
+        Enemy1.position = CGPoint(x: 600,y: 200)
+        Enemy1.userData = NSMutableDictionary()
+        Enemy1.userData?.setValue( PhysicsCategory.Emeny, forKey: "category")
+        Enemy1.physicsBody?.categoryBitMask = PhysicsCategory.Emeny //物体のカテゴリ次元をEnemy
+        Enemy1.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet //衝突を検知するカテゴリBall
+        Enemy1.physicsBody?.collisionBitMask = 0 //PhysicsCategory.Ball //衝突させたい物体＝＞なし
+        Enemy1.xScale = 0.6
+        Enemy1.yScale = 0.6
+        self.addChild(Enemy1)
+        
         
         self.start() //始める時の処理
         

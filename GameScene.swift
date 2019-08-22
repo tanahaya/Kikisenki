@@ -68,10 +68,10 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     var enemy1Level:Int = 5
     var enemy1LevelLabel = SKLabelNode()
     
-    let enemyHpLabel = SKLabelNode()//
+    let enemyHpLabel = SKLabelNode()
     var enemyHpBar = SKSpriteNode(color: UIColor.red, size: CGSize(width: 0.5, height: 25.0))//敵のhpの量を表示
     var enemyHp:Int = 500
-    var enemyMaxHp:Int = 500//敵の最大のHP
+    var enemyMaxHp:Int = 500 //敵の最大のHP
     
     var lifeTimerCount:Int = 0
     var HeartCount:Int = 1
