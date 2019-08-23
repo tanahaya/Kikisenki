@@ -25,6 +25,10 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     let levelLabel1 = SKLabelNode()
     var level1:Int = 0
     
+    var allyHpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))//味方のhpの量を表示
+    var allyHp:Int = 1000
+    var allyMaxHp:Int = 1000//味方の最大のHp
+    
     var Skill1 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))//skill1の四角
     var Skill2 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))//skill2の四角
     var Skill3 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))//skill3の四角
@@ -139,13 +143,19 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         ally1.yScale = 0.7
         self.addChild(ally1)
         
-        levelLabel1.text = "level: 0"// Labelに文字列を設定.
+        levelLabel1.text = "0"// Labelに文字列を設定.
         levelLabel1.name = "levelLabel1"
         levelLabel1.fontSize = 20// フォントサイズを設定.
         levelLabel1.fontColor = UIColor.green// 色を指定(赤).
-        levelLabel1.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 45)// 表示するポジションを指定.
-        levelLabel1.text = "level: \(level1)"
+        levelLabel1.position = CGPoint(x: ally1.position.x - 30, y: ally1.position.y - 35)// 表示するポジションを指定.
+        levelLabel1.text = " \(level1)"
         self.addChild(levelLabel1)//シーンに追加
+        
+        allyHpBar.anchorPoint = CGPoint(x: 0, y: 0)
+        allyHpBar.position = CGPoint(x: ally1.position.x - 20,y:ally1.position.y - 35)
+        allyHpBar.zPosition = 1
+        allyHpBar.xScale = CGFloat( allyHp / allyMaxHp )//x方向の倍率
+        self.addChild(allyHpBar)
         
         MoveMarker1.position = ally1.position
         MoveMarker1.alpha = 0.0
@@ -175,7 +185,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Skill4.name = "Skill4"
         Skill4.alpha = 0.0
         self.addChild(Skill4)
-        
         
         //enemy1の処理
         Enemy1.name = "Enemy1"
@@ -268,7 +277,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         
                     }
                     
-                    levelLabel1.position = CGPoint(x: ally1.position.x, y: ally1.position.y - 45)// 表示するポジションを指定.
+                    levelLabel1.position = CGPoint(x: ally1.position.x - 30, y: ally1.position.y - 35)// 表示するポジションを指定.
+                    allyHpBar.position = CGPoint(x: ally1.position.x - 20,y:ally1.position.y - 35)
                     
                 }
             }
