@@ -34,12 +34,16 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     var Skill3 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))//skill3の四角
     var Skill4 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))//skill4の四角
     
-    var SkilledFlag = true//スキルを使ったかどうかを判定するflag
+    var SkilledFlag = true //スキルを使ったかどうかを判定するflag
     
     var Ally1Flag = true
     var MoveMarker1Flag = true
     
     var Enemy1 = SKSpriteNode(imageNamed: "syatihoko")
+    
+    var Enemy1HpBar = SKSpriteNode(color: UIColor.yellow, size: CGSize(width: 40.0, height: 10.0))//敵1のhpの量を表示
+    var Enemy1Hp:Int = 1000
+    var Enemy1MaxHp:Int = 1000//敵1の最大のHp
     
     var LeftWall = SKSpriteNode(color: UIColor.black, size: CGSize(width: 10, height: 334))
     var RightWall = SKSpriteNode(color: UIColor.black, size: CGSize(width: 10, height: 334))
@@ -201,6 +205,11 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Enemy1.yScale = 0.6
         self.addChild(Enemy1)
         
+        Enemy1HpBar.anchorPoint = CGPoint(x: 0, y: 0)
+        Enemy1HpBar.position = CGPoint(x: Enemy1.position.x - 20,y: Enemy1.position.y - 35)
+        Enemy1HpBar.zPosition = 1
+        Enemy1HpBar.xScale = CGFloat( Enemy1Hp / Enemy1MaxHp )//x方向の倍率
+        self.addChild(Enemy1HpBar)
         
         self.start() //始める時の処理
         
@@ -450,8 +459,28 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         }
     }
     
-    func changeHp(change:Int,side:Int) {//渡された値が正なら回復。負ならダメージを与える。hpを変動させる。sideが0なら味方,1なら敵
+    func changeHp(change:Int,side:Int) {//渡された値が正なら回復。負ならダメージを与える。hpを変動させる。sideが0なら敵,1なら味方
+        
         print("chageHp")
+        
+        if side == 0 {
+            
+            Enemy1Hp = Enemy1Hp + change//hpの増減処理
+            
+            Enemy1HpBar.position = CGPoint(x: Enemy1.position.x - 20,y: Enemy1.position.y - 35)
+            Enemy1HpBar.zPosition = 1
+            Enemy1HpBar.xScale = CGFloat( Enemy1Hp / Enemy1MaxHp )//x方向の倍率
+            
+        } else if side == 1 {
+            
+            allyHp = allyHp + change//hpの増減処理
+            
+            allyHpBar.position = CGPoint(x: ally1.position.x - 20,y:ally1.position.y - 35)
+            allyHpBar.zPosition = 1
+            allyHpBar.xScale = CGFloat( allyHp / allyMaxHp )//x方向の倍率
+            
+        }
+        
     }
     
     
