@@ -197,9 +197,9 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Enemy1.position = CGPoint(x: 600,y: 200)
         Enemy1.userData = NSMutableDictionary()
         Enemy1.userData?.setValue( PhysicsCategory.Enemy, forKey: "category")
-        Enemy1.physicsBody?.categoryBitMask = PhysicsCategory.Enemy //物体のカテゴリ次元をEnemy
-        Enemy1.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet //衝突を検知するカテゴリBall
-        Enemy1.physicsBody?.collisionBitMask = PhysicsCategory.Bullet //PhysicsCategory.Ball //衝突させたい物体＝＞なし
+        Enemy1.physicsBody?.categoryBitMask = PhysicsCategory.Enemy //衝突判定に使用する値の設定
+        Enemy1.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet
+        Enemy1.physicsBody?.collisionBitMask = PhysicsCategory.Enemy //衝突させたい物体Enemy
         Enemy1.xScale = 0.6
         Enemy1.yScale = 0.6
         self.addChild(Enemy1)
@@ -408,24 +408,27 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             print("Skill1")
                             
                             //Bullet作成
-                            let bullet = SKSpriteNode(color: UIColor.black, size: CGSize(width: 30, height: 10))
                             
+                            let bullet = SKSpriteNode(imageNamed: "Back")
+                            
+                            bullet.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Back"), size: bullet.size)
+                            bullet.xScale = 0.03
+                            bullet.yScale = 0.01
                             bullet.position = CGPoint(x: ally1.position.x,y: ally1.position.y) //生成位置の設定
                             bullet.name  = "bullet"
                             bullet.userData = NSMutableDictionary()
                             bullet.userData?.setValue( PhysicsCategory.Bullet, forKey: "category")
                             
+                            //bullet.physicsBody = SKPhysicsBody(rectangleOf: bullet.size)
+                            bullet.physicsBody?.categoryBitMask = PhysicsCategory.Bullet //衝突判定に使用する値の設定
+                            bullet.physicsBody?.collisionBitMask = PhysicsCategory.Enemy
+                            bullet.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet
+                            
+                            self.addChild(bullet)//Bullet表示
+                            
                             let action = SKAction.moveTo(x: self.size.width, duration: 1.0)//アクション作成(移動方向:Y,移動時間:1.0秒)
                             let actionDone = SKAction.removeFromParent()
                             bullet.run(SKAction.sequence([action,actionDone]))
-                            
-                            bullet.physicsBody?.affectedByGravity = false //重力影響を無効化
-                            bullet.physicsBody?.categoryBitMask = PhysicsCategory.Bullet //衝突判定に使用する値の設定
-                            bullet.physicsBody?.contactTestBitMask = PhysicsCategory.Enemy
-                            bullet.physicsBody?.collisionBitMask = PhysicsCategory.Enemy //衝突させたい物体Enemy
-                            bullet.physicsBody?.isDynamic = false //衝突影響を無効化
-                            
-                            self.addChild(bullet)//Bullet表示
                             
                             SkilledFlag = false//Skillを使ったこと判定
                             
@@ -481,14 +484,18 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     
     func didBegin(_ contact: SKPhysicsContact) {//衝突の処理
         
-        print("didbegin")
-        
         if let nodeA = contact.bodyA.node {
             if let nodeB = contact.bodyB.node{
-                //なぜか反応しません。：理由はわかりません。
+                
                 if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Enemy && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Bullet || nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Bullet && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Enemy {
                     //ダメージ処理
                     print("damage")
+                    
+                    if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Bullet {
+                        nodeA.removeFromParent()
+                    } else if nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Bullet {
+                        nodeB.removeFromParent()
+                    }
                     
                     
                 }
