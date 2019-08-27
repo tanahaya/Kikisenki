@@ -26,10 +26,10 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     let ally1GradeLabel1 = SKLabelNode()
     var ally1Grade1:Int = 0
     
-    var allyHpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))//味方のhpの量を表示
-    var allyHpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))//味方のhpの量を表示
-    var allyHp:Int = 1000
-    var allyMaxHp:Int = 1000//味方の最大のHp
+    var ally1HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))//味方のhpの量を表示
+    var ally1HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))//味方のhpの量を表示
+    var ally1Hp:Int = 1000
+    var ally1MaxHp:Int = 1000//味方の最大のHp
     
     var Skill1 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))//skill1の四角
     var Skill2 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))//skill2の四角
@@ -47,7 +47,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     let Enemy1GradeLabel1 = SKLabelNode()
     var Enemy1Grade1:Int = 0
     
-    var Enemy1HpBar = SKSpriteNode(color: UIColor.yellow, size: CGSize(width: 40.0, height: 10.0))//敵1のhpの量を表示
+    var Enemy1HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))//敵1のhpの量を表示
     var Enemy1HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))//味方のhpの量を表示
     var Enemy1Hp:Int = 1000
     var Enemy1MaxHp:Int = 1000//敵1の最大のHp
@@ -153,14 +153,14 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         ally1.yScale = 0.7
         self.addChild(ally1)
         
-        allyHpBarBack.anchorPoint = CGPoint(x: 0, y: 0)
-        allyHpBarBack.position = CGPoint(x: ally1.position.x - 18,y:ally1.position.y - 37)
-        self.addChild(allyHpBarBack)
+        ally1HpBarBack.anchorPoint = CGPoint(x: 0, y: 0)
+        ally1HpBarBack.position = CGPoint(x: ally1.position.x - 18,y:ally1.position.y - 37)
+        self.addChild(ally1HpBarBack)
         
-        allyHpBar.anchorPoint = CGPoint(x: 0, y: 0)
-        allyHpBar.position = CGPoint(x: ally1.position.x - 18,y:ally1.position.y - 35)
-        allyHpBar.xScale = CGFloat( allyHp / allyMaxHp )//x方向の倍率
-        self.addChild(allyHpBar)
+        ally1HpBar.anchorPoint = CGPoint(x: 0, y: 0)
+        ally1HpBar.position = CGPoint(x: ally1.position.x - 18,y:ally1.position.y - 35)
+        ally1HpBar.xScale = CGFloat(Double(ally1Hp) / Double(ally1MaxHp))//x方向の倍率
+        self.addChild(ally1HpBar)
         
         ally1GradeIcon.name = "ally1Gradeicon"
         ally1GradeIcon.position = CGPoint(x: ally1.position.x - 28, y: ally1.position.y - 30)
@@ -230,7 +230,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Enemy1HpBar.anchorPoint = CGPoint(x: 0, y: 0)
         Enemy1HpBar.position = CGPoint(x: Enemy1.position.x - 20,y: Enemy1.position.y - 75)
         Enemy1HpBar.zPosition = 1
-        Enemy1HpBar.xScale = CGFloat( Enemy1Hp / Enemy1MaxHp )//x方向の倍率
+        Enemy1HpBar.xScale = CGFloat( Double(Enemy1Hp) / Double(Enemy1MaxHp) )//x方向の倍率
         self.addChild(Enemy1HpBar)
         
         Enemy1GradeIcon.name = "Enemy1Gradeicon"
@@ -327,8 +327,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                     ally1GradeLabel1.position = CGPoint(x: ally1.position.x - 28, y: ally1.position.y - 37)// 表示するポジションを指定.
                     ally1GradeIcon.position = CGPoint(x: ally1.position.x - 28, y: ally1.position.y - 30)
-                    allyHpBar.position = CGPoint(x: ally1.position.x - 18,y:ally1.position.y - 35)
-                    allyHpBarBack.position = CGPoint(x: ally1.position.x - 18,y:ally1.position.y - 37)
+                    ally1HpBar.position = CGPoint(x: ally1.position.x - 18,y:ally1.position.y - 35)
+                    ally1HpBarBack.position = CGPoint(x: ally1.position.x - 18,y:ally1.position.y - 37)
                     
                 }
             }
@@ -532,6 +532,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Enemy && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Bullet || nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Bullet && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Enemy {
                     //ダメージ処理
                     print("damage")
+                    self.changeHp(change: -400, side: 0)
                     
                     if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Bullet {
                         nodeA.removeFromParent()
@@ -549,24 +550,49 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     
     func changeHp(change:Int,side:Int) {//渡された値が正なら回復。負ならダメージを与える。hpを変動させる。sideが0なら敵,1なら味方
         
-        print("chageHp")
-        
         if side == 0 {
             
             Enemy1Hp = Enemy1Hp + change//hpの増減処理
             
             Enemy1HpBar.position = CGPoint(x: Enemy1.position.x - 20,y: Enemy1.position.y - 75)
             Enemy1HpBar.zPosition = 1
-            Enemy1HpBar.xScale = CGFloat( Enemy1Hp / Enemy1MaxHp )//x方向の倍率
+            Enemy1HpBar.xScale = CGFloat( Double(Enemy1Hp) / Double(Enemy1MaxHp) )//x方向の倍率
+            
+            if Double(Enemy1Hp) / Double(Enemy1MaxHp) >= 0.7 {
+                //hpbarGreen
+                Enemy1HpBar.color = UIColor.green
+                
+            } else if Double(Enemy1Hp) / Double(Enemy1MaxHp) >= 0.3 {
+                //hpbarYellow
+                Enemy1HpBar.color = UIColor.yellow
+                
+            } else {
+                //hpbarRed
+                Enemy1HpBar.color = UIColor.red
+                
+            }
             
         } else if side == 1 {
             
-            allyHp = allyHp + change//hpの増減処理
+            ally1Hp = ally1Hp + change//hpの増減処理
             
-            allyHpBar.position = CGPoint(x: ally1.position.x - 20,y:ally1.position.y - 35)
-            allyHpBar.zPosition = 1
-            allyHpBar.xScale = CGFloat( allyHp / allyMaxHp )//x方向の倍率
+            ally1HpBar.position = CGPoint(x: ally1.position.x - 20,y:ally1.position.y - 35)
+            ally1HpBar.zPosition = 1
+            ally1HpBar.xScale = CGFloat( Double(ally1Hp) / Double(ally1MaxHp) )//x方向の倍率
             
+            if Double(ally1Hp) / Double(ally1MaxHp) >= 0.7 {
+                //hpbarGreen
+                Enemy1HpBar.color = UIColor.green
+                
+            } else if Double(ally1Hp) / Double(ally1MaxHp) >= 0.3 {
+                //hpbarYellow
+                Enemy1HpBar.color = UIColor.yellow
+                
+            } else {
+                //hpbarRed
+                Enemy1HpBar.color = UIColor.red
+                
+            }
         }
         
     }
