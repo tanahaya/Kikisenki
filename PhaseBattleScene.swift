@@ -22,10 +22,12 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     
     var ally1  = SKSpriteNode(imageNamed: "monster1a")//allyの追加
     var MoveMarker1 = SKSpriteNode(imageNamed: "movemarker1")//ally1のmovemader
-    let levelLabel1 = SKLabelNode()
-    var level1:Int = 0
+    var ally1GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
+    let ally1GradeLabel1 = SKLabelNode()
+    var ally1Grade1:Int = 0
     
     var allyHpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))//味方のhpの量を表示
+    var allyHpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))//味方のhpの量を表示
     var allyHp:Int = 1000
     var allyMaxHp:Int = 1000//味方の最大のHp
     
@@ -41,7 +43,12 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     
     var Enemy1 = SKSpriteNode(imageNamed: "syatihoko")
     
+    var Enemy1GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
+    let Enemy1GradeLabel1 = SKLabelNode()
+    var Enemy1Grade1:Int = 0
+    
     var Enemy1HpBar = SKSpriteNode(color: UIColor.yellow, size: CGSize(width: 40.0, height: 10.0))//敵1のhpの量を表示
+    var Enemy1HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))//味方のhpの量を表示
     var Enemy1Hp:Int = 1000
     var Enemy1MaxHp:Int = 1000//敵1の最大のHp
     
@@ -146,19 +153,31 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         ally1.yScale = 0.7
         self.addChild(ally1)
         
-        levelLabel1.text = "0"// Labelに文字列を設定.
-        levelLabel1.name = "levelLabel1"
-        levelLabel1.fontSize = 20// フォントサイズを設定.
-        levelLabel1.fontColor = UIColor.green// 色を指定(赤).
-        levelLabel1.position = CGPoint(x: ally1.position.x - 30, y: ally1.position.y - 35)// 表示するポジションを指定.
-        levelLabel1.text = " \(level1)"
-        self.addChild(levelLabel1)//シーンに追加
+        allyHpBarBack.anchorPoint = CGPoint(x: 0, y: 0)
+        allyHpBarBack.position = CGPoint(x: ally1.position.x - 18,y:ally1.position.y - 37)
+        self.addChild(allyHpBarBack)
         
         allyHpBar.anchorPoint = CGPoint(x: 0, y: 0)
-        allyHpBar.position = CGPoint(x: ally1.position.x - 20,y:ally1.position.y - 35)
-        allyHpBar.zPosition = 1
+        allyHpBar.position = CGPoint(x: ally1.position.x - 18,y:ally1.position.y - 35)
         allyHpBar.xScale = CGFloat( allyHp / allyMaxHp )//x方向の倍率
         self.addChild(allyHpBar)
+        
+        ally1GradeIcon.name = "ally1Gradeicon"
+        ally1GradeIcon.position = CGPoint(x: ally1.position.x - 28, y: ally1.position.y - 30)
+        ally1GradeIcon.userData = NSMutableDictionary()
+        ally1GradeIcon.userData?.setValue( PhysicsCategory.Ally, forKey: "category")
+        ally1GradeIcon.userData?.setValue( 0, forKey: "level")//levelを追加
+        ally1GradeIcon.xScale = 0.3
+        ally1GradeIcon.yScale = 0.3
+        self.addChild(ally1GradeIcon)
+        
+        ally1GradeLabel1.text = "0"// Labelに文字列を設定.
+        ally1GradeLabel1.name = "ally1GradeLabel1"
+        ally1GradeLabel1.fontSize = 20// フォントサイズを設定.
+        ally1GradeLabel1.fontColor = UIColor.black// 色を指定(赤).
+        ally1GradeLabel1.position = CGPoint(x: ally1.position.x - 28, y: ally1.position.y - 37)// 表示するポジションを指定.
+        ally1GradeLabel1.text = " \(ally1Grade1)"
+        self.addChild(ally1GradeLabel1)
         
         MoveMarker1.position = ally1.position
         MoveMarker1.alpha = 0.0
@@ -204,11 +223,32 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Enemy1.yScale = 0.6
         self.addChild(Enemy1)
         
+        Enemy1HpBarBack.anchorPoint = CGPoint(x: 0, y: 0)
+        Enemy1HpBarBack.position = CGPoint(x: Enemy1.position.x - 18,y:Enemy1.position.y - 77)
+        self.addChild(Enemy1HpBarBack)
+        
         Enemy1HpBar.anchorPoint = CGPoint(x: 0, y: 0)
         Enemy1HpBar.position = CGPoint(x: Enemy1.position.x - 20,y: Enemy1.position.y - 75)
         Enemy1HpBar.zPosition = 1
         Enemy1HpBar.xScale = CGFloat( Enemy1Hp / Enemy1MaxHp )//x方向の倍率
         self.addChild(Enemy1HpBar)
+        
+        Enemy1GradeIcon.name = "Enemy1Gradeicon"
+        Enemy1GradeIcon.position = CGPoint(x: Enemy1.position.x - 28, y: Enemy1.position.y - 70)
+        Enemy1GradeIcon.userData = NSMutableDictionary()
+        Enemy1GradeIcon.userData?.setValue( PhysicsCategory.Ally, forKey: "category")
+        Enemy1GradeIcon.userData?.setValue( 0, forKey: "level")//levelを追加
+        Enemy1GradeIcon.xScale = 0.3
+        Enemy1GradeIcon.yScale = 0.3
+        self.addChild(Enemy1GradeIcon)
+        
+        Enemy1GradeLabel1.text = "0"// Labelに文字列を設定.
+        Enemy1GradeLabel1.name = "Enemy1GradeLabel1"
+        Enemy1GradeLabel1.fontSize = 20// フォントサイズを設定.
+        Enemy1GradeLabel1.fontColor = UIColor.black// 色を指定(赤).
+        Enemy1GradeLabel1.position = CGPoint(x: Enemy1.position.x - 28, y: Enemy1.position.y - 77)// 表示するポジションを指定.
+        Enemy1GradeLabel1.text = " \(ally1Grade1)"
+        self.addChild(Enemy1GradeLabel1)
         
         self.start() //始める時の処理
         
@@ -285,8 +325,10 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         
                     }
                     
-                    levelLabel1.position = CGPoint(x: ally1.position.x - 30, y: ally1.position.y - 35)// 表示するポジションを指定.
-                    allyHpBar.position = CGPoint(x: ally1.position.x - 20,y:ally1.position.y - 35)
+                    ally1GradeLabel1.position = CGPoint(x: ally1.position.x - 28, y: ally1.position.y - 37)// 表示するポジションを指定.
+                    ally1GradeIcon.position = CGPoint(x: ally1.position.x - 28, y: ally1.position.y - 30)
+                    allyHpBar.position = CGPoint(x: ally1.position.x - 18,y:ally1.position.y - 35)
+                    allyHpBarBack.position = CGPoint(x: ally1.position.x - 18,y:ally1.position.y - 37)
                     
                 }
             }
