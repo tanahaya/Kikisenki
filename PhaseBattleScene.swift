@@ -61,14 +61,17 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     var UpperWall = SKSpriteNode(color: UIColor.black, size: CGSize(width: 896, height: 10))
     var LowerWall = SKSpriteNode(color: UIColor.black, size: CGSize(width: 896, height: 10))
     
-    var HeartCount:Int = 1
+    //Itemの数を管理する。
+    var ItemCount:Int = 1
+    
     //衝突判定のためのビットマスク作成
     struct PhysicsCategory {
         static let Enemy: UInt32 = 1
         static let Ally: UInt32 = 2
         static let Bullet: UInt32 = 3
         static let Wall: UInt32 = 4
-        static let Heart: UInt32 = 5
+        static let Item: UInt32 = 5
+        
     }
     
     override func didMove(to view: SKView) {
@@ -296,22 +299,34 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 if Int.random(in: 0 ..< 2) == 0 { //毎ターン回復アイテムかgradeupアイテムがフィールドに現れる。
                     
                     //makeheart
-                    let heartX = Int.random(in: 0 ..< 254)
-                    let heartY = Int.random(in: 0 ..< 816)
+                    let heartX = Int.random(in: 0 ..< 816)
+                    let heartY = Int.random(in: 0 ..< 254)
                     
-                    if self.atPoint(CGPoint(x: heartX,y: heartY)).name == "Background" { //ハートと他のオブジェクトが被らないようにできる場所に他のオブジェクトがなかったらハートができるように変更。
+                    if self.atPoint(CGPoint(x: heartX,y: heartY)).name == "Background" { //Itemと他のオブジェクトが被らないようにできる場所に他のオブジェクトがなかったらItemができるように変更。
                         
                         self.makeHeart(x: heartX, y: heartY)
+                        
+                    } else {
+                        //Itemと他のオブジェクトが被った時の処理
                         
                     }
                     
                 } else {
+                    
                     //ここにgradeupItemを用意する予定
+                    let gradeupX = Int.random(in: 0 ..< 816)
+                    let gradeupY = Int.random(in: 0 ..< 254)
+                    
+                    if self.atPoint(CGPoint(x: gradeupX,y: gradeupY)).name == "Background" { //Itemと他のオブジェクトが被らないようにできる場所に他のオブジェクトがなかったらItemができるように変更。
+                        self.makeGradeupItem(x: gradeupX, y: gradeupY)
+                        
+                    } else {
+                        //Itemと他のオブジェクトが被った時の処理
+                        
+                    }
                     
                 }
-                
             }
-            
         }
         
         //移動の処理
@@ -570,6 +585,30 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                 }
                 
+                //Itemを撮るときに呼ばれるコード。Itemcountを-1して、効果を発揮する。
+                if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Item && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ally || nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Ally && nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Item {
+                    
+                    if nodeA.name == "heart" || nodeB.name == "heart" {
+                        
+                        ItemCount = ItemCount - 1
+                        self.changeHp(change: 100, side: 1)
+                        
+                    }
+                    
+                    if nodeA.name == "gradeup" || nodeB.name == "gradeup" {
+                        //Itemを取った時の処理
+                        
+                    }
+                    
+                    if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Item {
+                        nodeA.removeFromParent()
+                    }else if nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Item {
+                        nodeB.removeFromParent()
+                    }
+                    
+                }
+                
+                
             }
         }
         
@@ -651,12 +690,37 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Heart.physicsBody?.collisionBitMask = 0 //衝突させたい物体＝＞なし
         Heart.position = CGPoint(x: 50 + x,y: 50 + y)
         Heart.userData = NSMutableDictionary()
-        Heart.userData?.setValue( PhysicsCategory.Heart, forKey: "category")
+        Heart.userData?.setValue( PhysicsCategory.Item, forKey: "category")
         Heart.xScale = 0.7
         Heart.yScale = 0.7
-        self.addChild(Heart)//Ballを追加
+        self.addChild(Heart)
         
-        HeartCount = HeartCount + 1
+        ItemCount = ItemCount + 1
+        
+    }
+    
+    func makeGradeupItem(x: Int,y: Int) {//gradeupItemを作る関数、まだ
+        
+        let GradeItem = SKSpriteNode(imageNamed: "gradeup")
+        
+        GradeItem.physicsBody?.usesPreciseCollisionDetection = true//精度の高い衝突判定を行う。
+        GradeItem.physicsBody?.friction = 0//摩擦係数を0にする
+        GradeItem.name = "gradeup"
+        GradeItem.physicsBody?.isDynamic = false
+        GradeItem.physicsBody?.restitution = 1.0 // 1.0にしたい。
+        GradeItem.physicsBody?.allowsRotation = false
+        GradeItem.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "gradeup.png"), size: GradeItem.size)
+        GradeItem.physicsBody?.categoryBitMask = 0//物体のカテゴリ次元をHeart
+        GradeItem.physicsBody?.contactTestBitMask = PhysicsCategory.Ally //衝突を検知するカテゴリ
+        GradeItem.physicsBody?.collisionBitMask = 0 //衝突させたい物体＝＞なし
+        GradeItem.position = CGPoint(x: 50 + x,y: 50 + y)
+        GradeItem.userData = NSMutableDictionary()
+        GradeItem.userData?.setValue( PhysicsCategory.Item, forKey: "category")
+        GradeItem.xScale = 0.7
+        GradeItem.yScale = 0.7
+        self.addChild(GradeItem)
+        
+        ItemCount = ItemCount + 1
         
     }
     
