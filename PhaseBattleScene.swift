@@ -25,8 +25,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     var ally1  = SKSpriteNode(imageNamed: "monster1a")//allyの追加
     var MoveMarker1 = SKSpriteNode(imageNamed: "movemarker1")//ally1のmovemader
     var ally1GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
-    let ally1GradeLabel1 = SKLabelNode()
-    var ally1Grade1:Int = 0
+    let ally1GradeLabel = SKLabelNode()
+    var ally1Grade:Int = 0
     
     var ally1HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))//味方のhpの量を表示
     var ally1HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))//味方のhpの量を表示
@@ -47,8 +47,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     var Enemy1 = SKSpriteNode(imageNamed: "syatihoko")
     
     var Enemy1GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
-    let Enemy1GradeLabel1 = SKLabelNode()
-    var Enemy1Grade1:Int = 0
+    let Enemy1GradeLabel = SKLabelNode()
+    var Enemy1Grade:Int = 0
     
     var Enemy1HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))//敵1のhpの量を表示
     var Enemy1HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))//味方のhpの量を表示
@@ -66,6 +66,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     
     //衝突判定のためのビットマスク作成
     struct PhysicsCategory {
+        
         static let Enemy: UInt32 = 1
         static let Ally: UInt32 = 2
         static let Bullet: UInt32 = 3
@@ -183,13 +184,13 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         ally1GradeIcon.yScale = 0.3
         self.addChild(ally1GradeIcon)
         
-        ally1GradeLabel1.text = "0"// Labelに文字列を設定.
-        ally1GradeLabel1.name = "ally1GradeLabel1"
-        ally1GradeLabel1.fontSize = 20// フォントサイズを設定.
-        ally1GradeLabel1.fontColor = UIColor.black// 色を指定(赤).
-        ally1GradeLabel1.position = CGPoint(x: ally1.position.x - 28, y: ally1.position.y - 37)// 表示するポジションを指定.
-        ally1GradeLabel1.text = " \(ally1Grade1)"
-        self.addChild(ally1GradeLabel1)
+        ally1GradeLabel.text = "0"// Labelに文字列を設定.
+        ally1GradeLabel.name = "ally1GradeLabel1"
+        ally1GradeLabel.fontSize = 20// フォントサイズを設定.
+        ally1GradeLabel.fontColor = UIColor.black// 色を指定(赤).
+        ally1GradeLabel.position = CGPoint(x: ally1.position.x - 28, y: ally1.position.y - 37)// 表示するポジションを指定.
+        ally1GradeLabel.text = " \(ally1Grade)"
+        self.addChild(ally1GradeLabel)
         
         MoveMarker1.position = ally1.position
         MoveMarker1.alpha = 0.0
@@ -254,13 +255,13 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Enemy1GradeIcon.yScale = 0.3
         self.addChild(Enemy1GradeIcon)
         
-        Enemy1GradeLabel1.text = "0"// Labelに文字列を設定.
-        Enemy1GradeLabel1.name = "Enemy1GradeLabel1"
-        Enemy1GradeLabel1.fontSize = 20// フォントサイズを設定.
-        Enemy1GradeLabel1.fontColor = UIColor.black// 色を指定(赤).
-        Enemy1GradeLabel1.position = CGPoint(x: Enemy1.position.x - 28, y: Enemy1.position.y - 77)// 表示するポジションを指定.
-        Enemy1GradeLabel1.text = " \(ally1Grade1)"
-        self.addChild(Enemy1GradeLabel1)
+        Enemy1GradeLabel.text = "0"// Labelに文字列を設定.
+        Enemy1GradeLabel.name = "Enemy1GradeLabel1"
+        Enemy1GradeLabel.fontSize = 20// フォントサイズを設定.
+        Enemy1GradeLabel.fontColor = UIColor.black// 色を指定(赤).
+        Enemy1GradeLabel.position = CGPoint(x: Enemy1.position.x - 28, y: Enemy1.position.y - 77)// 表示するポジションを指定.
+        Enemy1GradeLabel.text = " \(ally1Grade)"
+        self.addChild(Enemy1GradeLabel)
         
         self.start() //始める時の処理
         
@@ -296,36 +297,44 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 ally1Skill3.alpha = 0.0
                 ally1Skill4.alpha = 0.0
                 
-                if Int.random(in: 0 ..< 2) == 0 { //毎ターン回復アイテムかgradeupアイテムがフィールドに現れる。
+                if ItemCount <= 3 {
                     
-                    //makeheart
-                    let heartX = Int.random(in: 0 ..< 816)
-                    let heartY = Int.random(in: 0 ..< 254)
+                    ItemCount = ItemCount + 1
                     
-                    if self.atPoint(CGPoint(x: heartX,y: heartY)).name == "Background" { //Itemと他のオブジェクトが被らないようにできる場所に他のオブジェクトがなかったらItemができるように変更。
+                    if Int.random(in: 0 ..< 2) == 0 { //毎ターン回復アイテムかgradeupアイテムがフィールドに現れる。
                         
-                        self.makeHeart(x: heartX, y: heartY)
+                        //makeheart
+                        let heartX = Int.random(in: 0 ..< 816)
+                        let heartY = Int.random(in: 0 ..< 254)
+                        
+                        if self.atPoint(CGPoint(x: heartX,y: heartY)).name == "Background" { //Itemと他のオブジェクトが被らないようにできる場所に他のオブジェクトがなかったらItemができるように変更。
+                            
+                            self.makeHeart(x: heartX, y: heartY)
+                            
+                        } else {
+                            //Itemと他のオブジェクトが被った時の処理
+                            
+                        }
                         
                     } else {
-                        //Itemと他のオブジェクトが被った時の処理
+                        
+                        //ここにgradeupItemを用意する予定
+                        let gradeupX = Int.random(in: 0 ..< 816)
+                        let gradeupY = Int.random(in: 0 ..< 254)
+                        
+                        if self.atPoint(CGPoint(x: gradeupX,y: gradeupY)).name == "Background" { //Itemと他のオブジェクトが被らないようにできる場所に他のオブジェクトがなかったらItemができるように変更。
+                            self.makeGradeupItem(x: gradeupX, y: gradeupY)
+                            
+                        } else {
+                            //Itemと他のオブジェクトが被った時の処理
+                            
+                        }
                         
                     }
                     
-                } else {
-                    
-                    //ここにgradeupItemを用意する予定
-                    let gradeupX = Int.random(in: 0 ..< 816)
-                    let gradeupY = Int.random(in: 0 ..< 254)
-                    
-                    if self.atPoint(CGPoint(x: gradeupX,y: gradeupY)).name == "Background" { //Itemと他のオブジェクトが被らないようにできる場所に他のオブジェクトがなかったらItemができるように変更。
-                        self.makeGradeupItem(x: gradeupX, y: gradeupY)
-                        
-                    } else {
-                        //Itemと他のオブジェクトが被った時の処理
-                        
-                    }
                     
                 }
+                
             }
         }
         
@@ -366,7 +375,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         
                     }
                     
-                    ally1GradeLabel1.position = CGPoint(x: ally1.position.x - 28, y: ally1.position.y - 37)// 表示するポジションを指定.
+                    ally1GradeLabel.position = CGPoint(x: ally1.position.x - 28, y: ally1.position.y - 37)// 表示するポジションを指定.
                     ally1GradeIcon.position = CGPoint(x: ally1.position.x - 28, y: ally1.position.y - 30)
                     ally1HpBar.position = CGPoint(x: ally1.position.x - 18,y:ally1.position.y - 35)
                     ally1HpBarBack.position = CGPoint(x: ally1.position.x - 18,y:ally1.position.y - 37)
@@ -388,7 +397,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Ally1Flag = false
         MoveMarker1Flag = false
         ally1SkilledFlag = true
-        
         
     }
     
@@ -489,7 +497,15 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         
                         if self.atPoint(location).name == "Skill1" {//skill1の発動
                             
-                            print("Skill1")
+                            if ally1Grade == 0 {
+                                print("Skill1")
+                            } else if ally1Grade == 1 {
+                                print("Skill1G1")
+                            } else if ally1Grade == 2 {
+                                print("Skill1G2")
+                            }
+                            
+                            ally1Grade = 0//gradeをリセットする。
                             
                             //Bullet作成
                             
@@ -590,6 +606,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                     if nodeA.name == "heart" || nodeB.name == "heart" {
                         
+                        print("getheart")
                         ItemCount = ItemCount - 1
                         self.changeHp(change: 100, side: 1)
                         
@@ -597,6 +614,11 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                     if nodeA.name == "gradeup" || nodeB.name == "gradeup" {
                         //Itemを取った時の処理
+                        print("getgradeupItem")
+                        ItemCount = ItemCount - 1
+                        if ally1Grade <= 1 {
+                            ally1Grade = ally1Grade + 1
+                        }
                         
                     }
                     
@@ -649,7 +671,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             ally1Hp = ally1Hp + change//hpの増減処理
             
             if ally1Hp <= 0 {
-                //gameclear処理]
+                //gameclear処理
                 
             }
             
@@ -755,4 +777,5 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     func length(v: CGPoint) -> CGFloat {//相対位置の長さを測る。
         return sqrt(v.x * v.x + v.y * v.y)//長さを測る。
     }
+    
 }
