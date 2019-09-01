@@ -43,6 +43,51 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     var MoveMarker1Flag = true
     //ally1ここまで
     
+    //ally2ここから
+    var ally2  = SKSpriteNode(imageNamed: "monster2a")//allyの追加
+    var MoveMarker2 = SKSpriteNode(imageNamed: "movemarker2")//ally1のmovemader
+    var ally2GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
+    let ally2GradeLabel = SKLabelNode()
+    var ally2Grade:Int = 0
+    
+    var ally2HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))//味方のhpの量を表示
+    var ally2HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))//味方のhpの量を表示
+    var ally2Hp:Int = 1000
+    var ally2MaxHp:Int = 1000//味方の最大のHp
+    
+    var ally2Skill1 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))//skill1の四角
+    var ally2Skill2 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))//skill2の四角
+    var ally2Skill3 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))//skill3の四角
+    var ally2Skill4 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))//skill4の四角
+    var ally2SkilledFlag = true //スキルを使ったかどうかを判定するflag
+    
+    var Ally2Flag = true
+    var MoveMarker2Flag = true
+    //ally2ここまで
+    
+    //ally3ここから
+    var ally3  = SKSpriteNode(imageNamed: "monster3a")//allyの追加
+    var MoveMarker3 = SKSpriteNode(imageNamed: "movemarker3")//ally1のmovemader
+    var ally3GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
+    let ally3GradeLabel = SKLabelNode()
+    var ally3Grade:Int = 0
+    
+    var ally3HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))//味方のhpの量を表示
+    var ally3HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))//味方のhpの量を表示
+    var ally3Hp:Int = 1000
+    var ally3MaxHp:Int = 1000//味方の最大のHp
+    
+    var ally3Skill1 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))//skill1の四角
+    var ally3Skill2 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))//skill2の四角
+    var ally3Skill3 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))//skill3の四角
+    var ally3Skill4 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))//skill4の四角
+    var ally3SkilledFlag = true //スキルを使ったかどうかを判定するflag
+    
+    var Ally3Flag = true
+    var MoveMarker3Flag = true
+    //ally3ここまで
+    
+    
     //enemy1ここから
     var Enemy1 = SKSpriteNode(imageNamed: "syatihoko")
     
@@ -185,7 +230,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         self.addChild(ally1GradeIcon)
         
         ally1GradeLabel.text = "0"// Labelに文字列を設定.
-        ally1GradeLabel.name = "ally1GradeLabel1"
+        ally1GradeLabel.name = "ally1GradeLabel"
         ally1GradeLabel.fontSize = 20// フォントサイズを設定.
         ally1GradeLabel.fontColor = UIColor.black// 色を指定(赤).
         ally1GradeLabel.position = CGPoint(x: ally1.position.x - 28, y: ally1.position.y - 37)// 表示するポジションを指定.
@@ -199,27 +244,172 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
         ally1Skill1.anchorPoint = CGPoint(x: 0, y: 0)
         ally1Skill1.position = CGPoint(x: ally1.position.x + 50, y: ally1.position.y + 50)//右上
-        ally1Skill1.name = "Skill1"
+        ally1Skill1.name = "ally1Skill1"
         ally1Skill1.alpha = 0.0
         self.addChild(ally1Skill1)
         
         ally1Skill2.anchorPoint = CGPoint(x: 0, y: 0)
         ally1Skill2.position = CGPoint(x: ally1.position.x + 50, y: ally1.position.y - 50)//右下
-        ally1Skill2.name = "Skill2"
+        ally1Skill2.name = "ally1Skill2"
         ally1Skill2.alpha = 0.0
         self.addChild(ally1Skill2)
         
         ally1Skill3.anchorPoint = CGPoint(x: 0, y: 0)
         ally1Skill3.position = CGPoint(x: ally1.position.x - 50, y: ally1.position.y + 50)//左上
-        ally1Skill3.name = "Skill3"
+        ally1Skill3.name = "ally1Skill3"
         ally1Skill3.alpha = 0.0
         self.addChild(ally1Skill3)
         
         ally1Skill4.anchorPoint = CGPoint(x: 0, y: 0)
         ally1Skill4.position = CGPoint(x: ally1.position.x - 50, y: ally1.position.y - 50)//左下
-        ally1Skill4.name = "Skill4"
+        ally1Skill4.name = "ally1Skill4"
         ally1Skill4.alpha = 0.0
         self.addChild(ally1Skill4)
+        
+        //ally2の処理
+        ally2.name = "Ally2"
+        ally2.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "monster2a"), size: ally2.size)
+        ally2.physicsBody?.isDynamic = false
+        ally2.physicsBody?.restitution = 1.0//反発値
+        ally2.position = CGPoint(x: 448,y: 75)
+        ally2.zPosition = 1 //movermarkerより上に来るようにz=1
+        ally2.userData = NSMutableDictionary()
+        ally2.userData?.setValue( PhysicsCategory.Ally, forKey: "category")
+        ally2.userData?.setValue( 0, forKey: "level")//levelを追加
+        ally2.physicsBody?.categoryBitMask = PhysicsCategory.Ally //物体のカテゴリ次元をally
+        ally2.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet //衝突を検知するカテゴリBall
+        ally2.physicsBody?.collisionBitMask = 0 //PhysicsCategory.Ball //衝突させたい物体＝＞なし
+        ally2.xScale = 0.7
+        ally2.yScale = 0.7
+        self.addChild(ally2)
+        
+        ally2HpBarBack.anchorPoint = CGPoint(x: 0, y: 0)
+        ally2HpBarBack.position = CGPoint(x: ally2.position.x - 18,y:ally2.position.y - 37)
+        self.addChild(ally2HpBarBack)
+        
+        ally2HpBar.anchorPoint = CGPoint(x: 0, y: 0)
+        ally2HpBar.position = CGPoint(x: ally2.position.x - 18,y:ally2.position.y - 35)
+        ally2HpBar.xScale = CGFloat(Double(ally2Hp) / Double(ally2MaxHp))//x方向の倍率
+        self.addChild(ally2HpBar)
+        
+        ally2GradeIcon.name = "ally2Gradeicon"
+        ally2GradeIcon.position = CGPoint(x: ally2.position.x - 28, y: ally2.position.y - 30)
+        ally2GradeIcon.userData = NSMutableDictionary()
+        ally2GradeIcon.userData?.setValue( PhysicsCategory.Ally, forKey: "category")
+        ally2GradeIcon.userData?.setValue( 0, forKey: "level")//levelを追加
+        ally2GradeIcon.xScale = 0.3
+        ally2GradeIcon.yScale = 0.3
+        self.addChild(ally2GradeIcon)
+        
+        ally2GradeLabel.text = "0"// Labelに文字列を設定.
+        ally2GradeLabel.name = "ally2GradeLabel"
+        ally2GradeLabel.fontSize = 20// フォントサイズを設定.
+        ally2GradeLabel.fontColor = UIColor.black// 色を指定(赤).
+        ally2GradeLabel.position = CGPoint(x: ally2.position.x - 28, y: ally2.position.y - 37)// 表示するポジションを指定.
+        ally2GradeLabel.text = " \(ally2Grade)"
+        self.addChild(ally2GradeLabel)
+        
+        MoveMarker2.position = ally2.position
+        MoveMarker2.alpha = 0.0
+        MoveMarker2.name = "MoveMarker2"
+        self.addChild(MoveMarker2)
+        
+        ally2Skill1.anchorPoint = CGPoint(x: 0, y: 0)
+        ally2Skill1.position = CGPoint(x: ally2.position.x + 50, y: ally2.position.y + 50)//右上
+        ally2Skill1.name = "ally2Skill1"
+        ally2Skill1.alpha = 0.0
+        self.addChild(ally2Skill1)
+        
+        ally2Skill2.anchorPoint = CGPoint(x: 0, y: 0)
+        ally2Skill2.position = CGPoint(x: ally2.position.x + 50, y: ally2.position.y - 50)//右下
+        ally2Skill2.name = "ally2Skill2"
+        ally2Skill2.alpha = 0.0
+        self.addChild(ally2Skill2)
+        
+        ally2Skill3.anchorPoint = CGPoint(x: 0, y: 0)
+        ally2Skill3.position = CGPoint(x: ally2.position.x - 50, y: ally2.position.y + 50)//左上
+        ally2Skill3.name = "ally2Skill3"
+        ally2Skill3.alpha = 0.0
+        self.addChild(ally2Skill3)
+        
+        ally2Skill4.anchorPoint = CGPoint(x: 0, y: 0)
+        ally2Skill4.position = CGPoint(x: ally2.position.x - 50, y: ally2.position.y - 50)//左下
+        ally2Skill4.name = "ally2Skill4"
+        ally2Skill4.alpha = 0.0
+        self.addChild(ally2Skill4)
+        
+        //ally3の処理
+        ally3.name = "Ally3"
+        ally3.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "monster3a"), size: ally3.size)
+        ally3.physicsBody?.isDynamic = false
+        ally3.physicsBody?.restitution = 1.0//反発値
+        ally3.position = CGPoint(x: 448,y: 225)
+        ally3.zPosition = 1 //movermarkerより上に来るようにz=1
+        ally3.userData = NSMutableDictionary()
+        ally3.userData?.setValue( PhysicsCategory.Ally, forKey: "category")
+        ally3.userData?.setValue( 0, forKey: "level")//levelを追加
+        ally3.physicsBody?.categoryBitMask = PhysicsCategory.Ally //物体のカテゴリ次元をally
+        ally3.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet //衝突を検知するカテゴリBall
+        ally3.physicsBody?.collisionBitMask = 0 //PhysicsCategory.Ball //衝突させたい物体＝＞なし
+        ally3.xScale = 0.7
+        ally3.yScale = 0.7
+        self.addChild(ally3)
+        
+        ally3HpBarBack.anchorPoint = CGPoint(x: 0, y: 0)
+        ally3HpBarBack.position = CGPoint(x: ally3.position.x - 18,y:ally3.position.y - 37)
+        self.addChild(ally3HpBarBack)
+        
+        ally3HpBar.anchorPoint = CGPoint(x: 0, y: 0)
+        ally3HpBar.position = CGPoint(x: ally3.position.x - 18,y: ally3.position.y - 35)
+        ally3HpBar.xScale = CGFloat(Double(ally3Hp) / Double(ally3MaxHp))//x方向の倍率
+        self.addChild(ally3HpBar)
+        
+        ally3GradeIcon.name = "ally3Gradeicon"
+        ally3GradeIcon.position = CGPoint(x: ally3.position.x - 28, y: ally3.position.y - 30)
+        ally3GradeIcon.userData = NSMutableDictionary()
+        ally3GradeIcon.userData?.setValue( PhysicsCategory.Ally, forKey: "category")
+        ally3GradeIcon.userData?.setValue( 0, forKey: "level")//levelを追加
+        ally3GradeIcon.xScale = 0.3
+        ally3GradeIcon.yScale = 0.3
+        self.addChild(ally3GradeIcon)
+        
+        ally3GradeLabel.text = "0"// Labelに文字列を設定.
+        ally3GradeLabel.name = "ally3GradeLabel"
+        ally3GradeLabel.fontSize = 20// フォントサイズを設定.
+        ally3GradeLabel.fontColor = UIColor.black// 色を指定(赤).
+        ally3GradeLabel.position = CGPoint(x: ally3.position.x - 28, y: ally3.position.y - 37)// 表示するポジションを指定.
+        ally3GradeLabel.text = " \(ally3Grade)"
+        self.addChild(ally3GradeLabel)
+        
+        MoveMarker3.position = ally3.position
+        MoveMarker3.alpha = 0.0
+        MoveMarker3.name = "MoveMarker3"
+        self.addChild(MoveMarker3)
+        
+        ally3Skill1.anchorPoint = CGPoint(x: 0, y: 0)
+        ally3Skill1.position = CGPoint(x: ally3.position.x + 50, y: ally3.position.y + 50)//右上
+        ally3Skill1.name = "ally3Skill1"
+        ally3Skill1.alpha = 0.0
+        self.addChild(ally3Skill1)
+        
+        ally3Skill2.anchorPoint = CGPoint(x: 0, y: 0)
+        ally3Skill2.position = CGPoint(x: ally3.position.x + 50, y: ally3.position.y - 50)//右下
+        ally3Skill2.name = "ally3Skill2"
+        ally3Skill2.alpha = 0.0
+        self.addChild(ally3Skill2)
+        
+        ally3Skill3.anchorPoint = CGPoint(x: 0, y: 0)
+        ally3Skill3.position = CGPoint(x: ally3.position.x - 50, y: ally3.position.y + 50)//左上
+        ally3Skill3.name = "ally3Skill3"
+        ally3Skill3.alpha = 0.0
+        self.addChild(ally3Skill3)
+        
+        ally3Skill4.anchorPoint = CGPoint(x: 0, y: 0)
+        ally3Skill4.position = CGPoint(x: ally3.position.x - 50, y: ally3.position.y - 50)//左下
+        ally3Skill4.name = "ally3Skill4"
+        ally3Skill4.alpha = 0.0
+        self.addChild(ally3Skill4)
+        
         
         //enemy1の処理
         Enemy1.name = "Enemy1"
@@ -271,9 +461,9 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
         //phaseの切り替えの処理。
         phasenumber = phasenumber + 1
-        numberLabel.text = "\( Float(50 - phasenumber) / 10)"
+        numberLabel.text = "\( Float(70 - phasenumber) / 10)"
         
-        if phasenumber == 50 {
+        if phasenumber == 70 {
             
             phasenumber = 0
             
@@ -285,7 +475,15 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 MoveMarker1.position = ally1.position
                 MoveMarker1.alpha = 0.0
                 
+                MoveMarker2.position = ally2.position
+                MoveMarker2.alpha = 0.0
+                
+                MoveMarker3.position = ally3.position
+                MoveMarker3.alpha = 0.0
+                
                 ally1SkilledFlag = true
+                ally2SkilledFlag = true
+                ally3SkilledFlag = true
                 
             }else { //Movephaseに切り替わる時。
                 
@@ -296,6 +494,16 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 ally1Skill2.alpha = 0.0
                 ally1Skill3.alpha = 0.0
                 ally1Skill4.alpha = 0.0
+                
+                ally2Skill1.alpha = 0.0
+                ally2Skill2.alpha = 0.0
+                ally2Skill3.alpha = 0.0
+                ally2Skill4.alpha = 0.0
+                
+                ally3Skill1.alpha = 0.0
+                ally3Skill2.alpha = 0.0
+                ally3Skill3.alpha = 0.0
+                ally3Skill4.alpha = 0.0
                 
                 if ItemCount <= 3 {
                     
@@ -341,13 +549,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         //移動の処理
         if phaseFlag {
             
-            var allyposition:CGPoint = CGPoint(x: 0.0,y: 0.0)
-            var movemarkerposition:CGPoint = CGPoint(x: 0.0,y: 0.0)
-            
-            allyposition = ally1.position
-            movemarkerposition = MoveMarker1.position
-            
-            if allyposition == movemarkerposition {//移動系の処理
+            if ally1.position == MoveMarker1.position {//ally1の移動系の処理
                 
                 MoveMarker1.alpha = 0.0
                 
@@ -360,7 +562,9 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
                 let direction :CGFloat = vector2radian(vector: relativepostion)
                 
-                if Ally1Flag || MoveMarker1Flag {} else {
+                if Ally1Flag || MoveMarker1Flag {
+                    
+                } else {
                     
                     if length(v: relativepostion) <= 6 {//相対位置の距離が6以下の場合、位置を同じにする。
                         
@@ -383,6 +587,82 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 }
             }
             
+            if ally2.position == MoveMarker2.position {//ally2の移動系の処理
+                
+                MoveMarker2.alpha = 0.0
+                
+            } else {
+                
+                var relativepostion:CGPoint = CGPoint(x: 0,y: 0)
+                
+                relativepostion.x = MoveMarker2.position.x - ally2.position.x
+                relativepostion.y = MoveMarker2.position.y - ally2.position.y
+                
+                let direction :CGFloat = vector2radian(vector: relativepostion)
+                
+                if Ally2Flag || MoveMarker2Flag {
+                    
+                } else {
+                    
+                    if length(v: relativepostion) <= 6 {//相対位置の距離が6以下の場合、位置を同じにする。
+                        
+                        ally2.position = MoveMarker2.position
+                        MoveMarker2.alpha = 0.0
+                        
+                    }else{//違う場合距離にして3づつ近づく
+                        
+                        let travelTime = SKAction.move( to: CGPoint(x: ally2.position.x - CGFloat( 3 * cos(Double(direction))),y: ally2.position.y
+                            + CGFloat( 3 * sin(Double(direction)))), duration: 0.01)
+                        ally2.run(travelTime)
+                        
+                    }
+                    
+                    ally2GradeLabel.position = CGPoint(x: ally2.position.x - 28, y: ally2.position.y - 37)// 表示するポジションを指定.
+                    ally2GradeIcon.position = CGPoint(x: ally2.position.x - 28, y: ally2.position.y - 30)
+                    ally2HpBar.position = CGPoint(x: ally2.position.x - 18,y:ally2.position.y - 35)
+                    ally2HpBarBack.position = CGPoint(x: ally2.position.x - 18,y:ally2.position.y - 37)
+                    
+                }
+            }
+            
+            if ally3.position == MoveMarker3.position {//ally3の移動系の処理
+                
+                MoveMarker3.alpha = 0.0
+                
+            } else {
+                
+                var relativepostion:CGPoint = CGPoint(x: 0,y: 0)
+                
+                relativepostion.x = MoveMarker3.position.x - ally3.position.x
+                relativepostion.y = MoveMarker3.position.y - ally3.position.y
+                
+                let direction :CGFloat = vector2radian(vector: relativepostion)
+                
+                if Ally3Flag || MoveMarker3Flag {
+                    
+                } else {
+                    
+                    if length(v: relativepostion) <= 6 {//相対位置の距離が6以下の場合、位置を同じにする。
+                        
+                        ally3.position = MoveMarker3.position
+                        MoveMarker3.alpha = 0.0
+                        
+                    }else{//違う場合距離にして3づつ近づく
+                        
+                        let travelTime = SKAction.move( to: CGPoint(x: ally3.position.x - CGFloat( 3 * cos(Double(direction))),y: ally3.position.y
+                            + CGFloat( 3 * sin(Double(direction)))), duration: 0.01)
+                        ally3.run(travelTime)
+                        
+                    }
+                    
+                    ally3GradeLabel.position = CGPoint(x: ally3.position.x - 28, y: ally3.position.y - 37)// 表示するポジションを指定.
+                    ally3GradeIcon.position = CGPoint(x: ally3.position.x - 28, y: ally3.position.y - 30)
+                    ally3HpBar.position = CGPoint(x: ally3.position.x - 18,y:ally3.position.y - 35)
+                    ally3HpBarBack.position = CGPoint(x: ally3.position.x - 18,y:ally3.position.y - 37)
+                    
+                }
+            }
+            
         } else {
             
         }//phaseflag
@@ -398,6 +678,14 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         MoveMarker1Flag = false
         ally1SkilledFlag = true
         
+        Ally2Flag = false
+        MoveMarker2Flag = false
+        ally2SkilledFlag = true
+        
+        Ally3Flag = false
+        MoveMarker3Flag = false
+        ally3SkilledFlag = true
+        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -405,20 +693,25 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         if let touch = touches.first as UITouch? {
             let location = touch.location(in: self)
             
-            if self.atPoint(location).name == "" {
-                let Scene = HomeScene()
-                Scene.size = self.size
-                let transition = SKTransition.crossFade(withDuration: 1.0)
-                
-                self.view?.presentScene(Scene, transition: transition)
-            }
-            
             if self.atPoint(location).name == "Ally1"{
                 Ally1Flag = true
             }
-            
             if self.atPoint(location).name == "MoveMarker1"{
                 MoveMarker1Flag = true
+            }
+            
+            if self.atPoint(location).name == "Ally2"{
+                Ally2Flag = true
+            }
+            if self.atPoint(location).name == "MoveMarker2"{
+                MoveMarker2Flag = true
+            }
+            
+            if self.atPoint(location).name == "Ally3"{
+                Ally3Flag = true
+            }
+            if self.atPoint(location).name == "MoveMarker3"{
+                MoveMarker3Flag = true
             }
             
         }
@@ -430,6 +723,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         if let touch = touches.first as UITouch? {
             let location = touch.location(in: self)
             
+            //ally1の処理
             if Ally1Flag {
                 
                 if phaseFlag {//movephaseの時
@@ -466,6 +760,81 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
             }
             
+            //ally2の処理
+            if Ally2Flag {
+                
+                if phaseFlag {//movephaseの時
+                    
+                    MoveMarker2.alpha = 1.0
+                    MoveMarker2.position = location
+                    
+                } else {//Attackphaseの時
+                    if ally2SkilledFlag {
+                        
+                        ally2Skill1.position = CGPoint(x: ally2.position.x + 50, y: ally2.position.y + 50)//右上
+                        ally2Skill1.alpha = 1.0
+                        
+                        ally2Skill2.position = CGPoint(x: ally2.position.x + 50, y: ally2.position.y - 50)//右下
+                        ally2Skill2.alpha = 1.0
+                        
+                        ally2Skill3.position = CGPoint(x: ally2.position.x - 50, y: ally2.position.y + 50)//左上
+                        ally2Skill3.alpha = 1.0
+                        
+                        ally2Skill4.position = CGPoint(x: ally2.position.x - 50, y: ally2.position.y - 50)//左下
+                        ally2Skill4.alpha = 1.0
+                        
+                    } else {
+                        
+                    }
+                }
+                
+            }
+            
+            if MoveMarker2Flag {
+                
+                MoveMarker2.alpha = 1.0
+                MoveMarker2.position = location
+                
+            }
+            
+            //ally3の処理
+            if Ally3Flag {
+                
+                if phaseFlag {//movephaseの時
+                    
+                    MoveMarker3.alpha = 1.0
+                    MoveMarker3.position = location
+                    
+                } else {//Attackphaseの時
+                    if ally3SkilledFlag {
+                        
+                        ally3Skill1.position = CGPoint(x: ally3.position.x + 50, y: ally3.position.y + 50)//右上
+                        ally3Skill1.alpha = 1.0
+                        
+                        ally3Skill2.position = CGPoint(x: ally3.position.x + 50, y: ally3.position.y - 50)//右下
+                        ally3Skill2.alpha = 1.0
+                        
+                        ally3Skill3.position = CGPoint(x: ally3.position.x - 50, y: ally3.position.y + 50)//左上
+                        ally3Skill3.alpha = 1.0
+                        
+                        ally3Skill4.position = CGPoint(x: ally3.position.x - 50, y: ally3.position.y - 50)//左下
+                        ally3Skill4.alpha = 1.0
+                        
+                    } else {
+                        
+                    }
+                }
+                
+            }
+            
+            if MoveMarker3Flag {
+                
+                MoveMarker3.alpha = 1.0
+                MoveMarker3.position = location
+                
+            }
+            
+            
         }
     }
     
@@ -495,14 +864,14 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                     if ally1SkilledFlag {
                         
-                        if self.atPoint(location).name == "Skill1" {//skill1の発動
+                        if self.atPoint(location).name == "ally1Skill1" {//skill1の発動
                             
                             if ally1Grade == 0 {
-                                print("Skill1")
+                                print("ally1Skill1")
                             } else if ally1Grade == 1 {
-                                print("Skill1G1")
+                                print("ally1Skill1G1")
                             } else if ally1Grade == 2 {
-                                print("Skill1G2")
+                                print("ally1Skill1G2")
                             }
                             
                             ally1Grade = 0//gradeをリセットする。
@@ -534,23 +903,23 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                         }
                         
-                        if self.atPoint(location).name == "Skill2" {//skill2の発動
+                        if self.atPoint(location).name == "ally1Skill2" {//skill2の発動
                             
-                            print("Skill2")
+                            print("ally1Skill2")
                             ally1SkilledFlag = false
                             
                         }
                         
-                        if self.atPoint(location).name == "Skill3" {//skill3の発動
+                        if self.atPoint(location).name == "ally1Skill3" {//skill3の発動
                             
-                            print("Skill3")
+                            print("ally1Skill3")
                             ally1SkilledFlag = false
                             
                         }
                         
-                        if self.atPoint(location).name == "Skill4" {//skill4の発動
+                        if self.atPoint(location).name == "ally1Skill4" {//skill4の発動
                             
-                            print("Skill4")
+                            print("ally1Skill4")
                             ally1SkilledFlag = false
                             
                         }
@@ -579,6 +948,215 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 }
             }
             
+            //ally2
+            if Ally2Flag {//味方を最初に触った時。
+                
+                Ally2Flag = false
+                
+                
+                if phaseFlag {//movephase
+                    
+                    if self.rangeofField(minX: 10, maxX: 886, minY: 10, maxY: 344, location: location) {
+                        
+                        MoveMarker2.position = location
+                        
+                    } else {
+                        MoveMarker2.position = ally2.position
+                        MoveMarker2.alpha = 0.0
+                    }
+                    
+                } else {//Attackphase
+                    
+                    if ally2SkilledFlag {
+                        
+                        if self.atPoint(location).name == "ally2Skill1" {//skill1の発動
+                            
+                            if ally2Grade == 0 {
+                                print("ally1Skill1")
+                            } else if ally2Grade == 1 {
+                                print("ally2Skill1G1")
+                            } else if ally2Grade == 2 {
+                                print("ally2Skill1G2")
+                            }
+                            
+                            ally2Grade = 0//gradeをリセットする。
+                            
+                            //Bullet作成
+                            
+                            let bullet = SKSpriteNode(imageNamed: "Back")
+                            
+                            bullet.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Back"), size: bullet.size)
+                            bullet.xScale = 0.03
+                            bullet.yScale = 0.01
+                            bullet.position = CGPoint(x: ally2.position.x,y: ally2.position.y) //生成位置の設定
+                            bullet.name  = "bullet"
+                            bullet.userData = NSMutableDictionary()
+                            bullet.userData?.setValue( PhysicsCategory.Bullet, forKey: "category")
+                            
+                            //bullet.physicsBody = SKPhysicsBody(rectangleOf: bullet.size)
+                            bullet.physicsBody?.categoryBitMask = PhysicsCategory.Bullet //衝突判定に使用する値の設定
+                            bullet.physicsBody?.collisionBitMask = PhysicsCategory.Enemy
+                            bullet.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet
+                            
+                            self.addChild(bullet)//Bullet表示
+                            
+                            let action = SKAction.moveTo(x: self.size.width, duration: 1.0)//アクション作成(移動方向:Y,移動時間:1.0秒)
+                            let actionDone = SKAction.removeFromParent()
+                            bullet.run(SKAction.sequence([action,actionDone]))
+                            
+                            ally2SkilledFlag = false//Skillを使ったこと判定
+                            
+                        }
+                        
+                        if self.atPoint(location).name == "ally2Skill2" {//skill2の発動
+                            
+                            print("ally2Skill2")
+                            ally2SkilledFlag = false
+                            
+                        }
+                        
+                        if self.atPoint(location).name == "ally2Skill3" {//skill3の発動
+                            
+                            print("ally2Skill3")
+                            ally2SkilledFlag = false
+                            
+                        }
+                        
+                        if self.atPoint(location).name == "ally2Skill4" {//skill4の発動
+                            
+                            print("ally2Skill4")
+                            ally2SkilledFlag = false
+                            
+                        }
+                        
+                    } else {
+                        
+                    }
+                }
+                
+                ally2Skill1.alpha = 0.0//name判定より後にしないと判定がされなくなる。
+                ally2Skill2.alpha = 0.0
+                ally2Skill3.alpha = 0.0
+                ally2Skill4.alpha = 0.0
+                
+            }
+            
+            if MoveMarker2Flag {
+                
+                MoveMarker2Flag = false
+                
+                if self.rangeofField(minX: 10, maxX: 886, minY: 10, maxY:344, location: location) {
+                    MoveMarker2.position = location
+                } else {
+                    MoveMarker2.position = ally2.position
+                    MoveMarker2.alpha = 0.0
+                }
+            }
+            
+            //ally1
+            if Ally3Flag {//味方を最初に触った時。
+                
+                Ally3Flag = false
+                
+                
+                if phaseFlag {//movephase
+                    
+                    if self.rangeofField(minX: 10, maxX: 886, minY: 10, maxY: 344, location: location) {
+                        
+                        MoveMarker3.position = location
+                        
+                    } else {
+                        MoveMarker3.position = ally3.position
+                        MoveMarker3.alpha = 0.0
+                    }
+                    
+                } else {//Attackphase
+                    
+                    if ally3SkilledFlag {
+                        
+                        if self.atPoint(location).name == "ally3Skill1" {//skill1の発動
+                            
+                            if ally3Grade == 0 {
+                                print("ally3Skill1")
+                            } else if ally3Grade == 1 {
+                                print("ally3Skill1G1")
+                            } else if ally3Grade == 2 {
+                                print("ally3Skill1G2")
+                            }
+                            
+                            ally3Grade = 0//gradeをリセットする。
+                            
+                            //Bullet作成
+                            
+                            let bullet = SKSpriteNode(imageNamed: "Back")
+                            
+                            bullet.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Back"), size: bullet.size)
+                            bullet.xScale = 0.03
+                            bullet.yScale = 0.01
+                            bullet.position = CGPoint(x: ally3.position.x,y: ally3.position.y) //生成位置の設定
+                            bullet.name  = "bullet"
+                            bullet.userData = NSMutableDictionary()
+                            bullet.userData?.setValue( PhysicsCategory.Bullet, forKey: "category")
+                            
+                            //bullet.physicsBody = SKPhysicsBody(rectangleOf: bullet.size)
+                            bullet.physicsBody?.categoryBitMask = PhysicsCategory.Bullet //衝突判定に使用する値の設定
+                            bullet.physicsBody?.collisionBitMask = PhysicsCategory.Enemy
+                            bullet.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet
+                            
+                            self.addChild(bullet)//Bullet表示
+                            
+                            let action = SKAction.moveTo(x: self.size.width, duration: 1.0)//アクション作成(移動方向:Y,移動時間:1.0秒)
+                            let actionDone = SKAction.removeFromParent()
+                            bullet.run(SKAction.sequence([action,actionDone]))
+                            
+                            ally3SkilledFlag = false//Skillを使ったこと判定
+                            
+                        }
+                        
+                        if self.atPoint(location).name == "ally3Skill2" {//skill2の発動
+                            
+                            print("ally3Skill2")
+                            ally3SkilledFlag = false
+                            
+                        }
+                        
+                        if self.atPoint(location).name == "ally3Skill3" {//skill3の発動
+                            
+                            print("ally3Skill3")
+                            ally3SkilledFlag = false
+                            
+                        }
+                        
+                        if self.atPoint(location).name == "ally3Skill4" {//skill4の発動
+                            
+                            print("ally3Skill4")
+                            ally3SkilledFlag = false
+                            
+                        }
+                        
+                    } else {
+                        
+                    }
+                }
+                
+                ally3Skill1.alpha = 0.0//name判定より後にしないと判定がされなくなる。
+                ally3Skill2.alpha = 0.0
+                ally3Skill3.alpha = 0.0
+                ally3Skill4.alpha = 0.0
+                
+            }
+            
+            if MoveMarker3Flag {
+                
+                MoveMarker3Flag = false
+                
+                if self.rangeofField(minX: 10, maxX: 886, minY: 10, maxY:344, location: location) {
+                    MoveMarker3.position = location
+                } else {
+                    MoveMarker3.position = ally3.position
+                    MoveMarker3.alpha = 0.0
+                }
+            }
         }
     }
     
@@ -608,7 +1186,14 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         
                         print("getheart")
                         ItemCount = ItemCount - 1
-                        self.changeHp(change: 100, side: 1)
+                        
+                        if nodeA.name == "Ally1" || nodeB.name == "Ally1" {
+                            self.changeHp(change: 100, side: 1)
+                        } else if nodeA.name == "Ally2" || nodeB.name == "Ally2" {
+                            self.changeHp(change: 100, side: 2)
+                        } else if nodeA.name == "Ally3" || nodeB.name == "Ally3" {
+                            self.changeHp(change: 100, side: 3)
+                        }
                         
                     }
                     
@@ -616,8 +1201,27 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         //Itemを取った時の処理
                         print("getgradeupItem")
                         ItemCount = ItemCount - 1
-                        if ally1Grade <= 1 {
-                            ally1Grade = ally1Grade + 1
+                        
+                        if nodeA.name == "Ally1" || nodeB.name == "Ally1" {
+                            
+                            if ally1Grade <= 1 {
+                                ally1Grade = ally1Grade + 1
+                            }
+                            ally1GradeLabel.text =  "\(ally1Grade)"
+                            
+                        } else if nodeA.name == "Ally2" || nodeB.name == "Ally2" {
+                            
+                            if ally2Grade <= 1 {
+                                ally2Grade = ally2Grade + 1
+                            }
+                            ally2GradeLabel.text =  "\(ally2Grade)"
+                            
+                        } else if nodeA.name == "Ally3" || nodeB.name == "Ally3" {
+                            
+                            if ally3Grade <= 1 {
+                                ally3Grade = ally3Grade + 1
+                            }
+                            ally3GradeLabel.text =  "\(ally3Grade)"
                         }
                         
                     }
@@ -671,7 +1275,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             ally1Hp = ally1Hp + change//hpの増減処理
             
             if ally1Hp <= 0 {
-                //gameclear処理
                 
             }
             
@@ -681,15 +1284,65 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             
             if Double(ally1Hp) / Double(ally1MaxHp) >= 0.7 {
                 //hpbarGreen
-                Enemy1HpBar.color = UIColor.green
+                ally1HpBar.color = UIColor.green
                 
             } else if Double(ally1Hp) / Double(ally1MaxHp) >= 0.3 {
                 //hpbarYellow
-                Enemy1HpBar.color = UIColor.yellow
+                ally1HpBar.color = UIColor.yellow
                 
             } else {
                 //hpbarRed
-                Enemy1HpBar.color = UIColor.red
+                ally1HpBar.color = UIColor.red
+                
+            }
+        } else if side == 2 {
+            
+            ally2Hp = ally2Hp + change//hpの増減処理
+            
+            if ally2Hp <= 0 {
+                
+            }
+            
+            ally2HpBar.position = CGPoint(x: ally2.position.x - 20,y:ally2.position.y - 35)
+            ally2HpBar.zPosition = 1
+            ally2HpBar.xScale = CGFloat( Double(ally2Hp) / Double(ally2MaxHp) )//x方向の倍率
+            
+            if Double(ally2Hp) / Double(ally2MaxHp) >= 0.7 {
+                //hpbarGreen
+                ally2HpBar.color = UIColor.green
+                
+            } else if Double(ally2Hp) / Double(ally2MaxHp) >= 0.3 {
+                //hpbarYellow
+                ally2HpBar.color = UIColor.yellow
+                
+            } else {
+                //hpbarRed
+                ally2.color = UIColor.red
+                
+            }
+        } else if side == 3 {
+            
+            ally3Hp = ally3Hp + change//hpの増減処理
+            
+            if ally3Hp <= 0 {
+                
+            }
+            
+            ally3HpBar.position = CGPoint(x: ally3.position.x - 20,y:ally3.position.y - 35)
+            ally3HpBar.zPosition = 1
+            ally3HpBar.xScale = CGFloat( Double(ally3Hp) / Double(ally3MaxHp) )//x方向の倍率
+            
+            if Double(ally3Hp) / Double(ally3MaxHp) >= 0.7 {
+                //hpbarGreen
+                ally3HpBar.color = UIColor.green
+                
+            } else if Double(ally3Hp) / Double(ally3MaxHp) >= 0.3 {
+                //hpbarYellow
+                ally3HpBar.color = UIColor.yellow
+                
+            } else {
+                //hpbarRed
+                ally3HpBar.color = UIColor.red
                 
             }
         }
