@@ -702,15 +702,15 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                 } else {
                     
-                    if length(v: relativepostion) <= 6 {//相対位置の距離が6以下の場合、位置を同じにする。
+                    if length(v: relativepostion) <= 30 {//相対位置の距離が6以下の場合、位置を同じにする。
                         
                         ally2.position = MoveMarker2.position
                         MoveMarker2.alpha = 0.0
                         
                     }else{//違う場合距離にして3づつ近づく
                         
-                        let travelTime = SKAction.move( to: CGPoint(x: ally2.position.x - CGFloat( 3 * cos(Double(direction))),y: ally2.position.y
-                            + CGFloat( 3 * sin(Double(direction)))), duration: 0.01)
+                        let travelTime = SKAction.move( to: CGPoint(x: ally2.position.x - CGFloat( 15 * cos(Double(direction))),y: ally2.position.y
+                            + CGFloat( 15 * sin(Double(direction)))), duration: 0.01)
                         ally2.run(travelTime)
                         
                     }
@@ -1216,9 +1216,23 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                         }
                         
-                        if self.atPoint(location).name == "ally2Skill2" {//skill2の発動
+                        if self.atPoint(location).name == "ally2Skill2" {//skill2の発動。範囲内の敵を全員攻撃する。
                             
-                            print("ally2Skill2")
+                            if ally2.grade! == 0 {
+                                print("ally2Skill2")
+                            } else if ally2.grade! == 1 {
+                                print("ally2Skill2G1")
+                            } else if ally2.grade! == 2 {
+                                print("ally2Skill2G2")
+                            }
+                            
+                            for i in 0 ..< EnemyArray.count {
+                                if 300 >= length(v: CGPoint(x: ally2.position.x - EnemyArray[i].position.x,y: ally2.position.y - EnemyArray[i].position.y)) {
+                                    print("hello")
+                                    self.changeHp(change: -300, side: EnemyArray[i].id!)
+                                }
+                            }
+                            
                             ally2SkilledFlag = false
                             
                         }
