@@ -1118,7 +1118,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                     if ally2SkilledFlag {
                         
-                        if self.atPoint(location).name == "ally2Skill1" {//skill1の発動
+                        if self.atPoint(location).name == "ally2Skill1" {//skill1の発動。手裏剣を四方に放つ。
                             
                             if ally2.grade! == 0 {
                                 print("ally1Skill1")
@@ -1132,26 +1132,85 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                             //Bullet作成
                             
-                            let bullet = Bullet(imageNamed: "Back")
+                            let syuriken1 = Bullet(imageNamed: "Back")
                             
-                            bullet.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Back"), size: bullet.size)
-                            bullet.xScale = 0.03
-                            bullet.yScale = 0.01
-                            bullet.position = CGPoint(x: ally2.position.x,y: ally2.position.y) //生成位置の設定
-                            bullet.name  = "bullet"
-                            bullet.userData = NSMutableDictionary()
-                            bullet.userData?.setValue( PhysicsCategory.Bullet, forKey: "category")
-                            bullet.damage = 400
-                            //bullet.physicsBody = SKPhysicsBody(rectangleOf: bullet.size)
-                            bullet.physicsBody?.categoryBitMask = PhysicsCategory.Bullet //衝突判定に使用する値の設定
-                            bullet.physicsBody?.collisionBitMask = PhysicsCategory.Enemy
-                            bullet.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet
+                            syuriken1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Back"), size: syuriken1.size)
+                            syuriken1.xScale = 0.03
+                            syuriken1.yScale = 0.01
+                            syuriken1.position = CGPoint(x: ally2.position.x,y: ally2.position.y) //生成位置の設定
+                            syuriken1.name  = "syuriken"
+                            syuriken1.userData = NSMutableDictionary()
+                            syuriken1.userData?.setValue( PhysicsCategory.Bullet, forKey: "category")
+                            syuriken1.damage = 200
+                            syuriken1.physicsBody?.categoryBitMask = PhysicsCategory.Bullet //衝突判定に使用する値の設定
+                            syuriken1.physicsBody?.collisionBitMask = PhysicsCategory.Enemy
+                            syuriken1.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet
                             
-                            self.addChild(bullet)//Bullet表示
+                            self.addChild(syuriken1)//Bullet表示
                             
-                            let action = SKAction.moveTo(x: self.size.width, duration: 1.0)//アクション作成(移動方向:Y,移動時間:1.0秒)
+                            let action1 = SKAction.move(to: CGPoint(x: ally2.position.x + 100, y: ally2.position.y + 100), duration: 0.5)//右上
+                            let wait = SKAction.wait(forDuration: 0.1)
+                            let backaction = SKAction.move(to: CGPoint(x: ally2.position.x, y: ally2.position.y), duration: 0.5)
                             let actionDone = SKAction.removeFromParent()
-                            bullet.run(SKAction.sequence([action,actionDone]))
+                            syuriken1.run(SKAction.sequence([action1,backaction,actionDone]))
+                            
+                            let syuriken2 = Bullet(imageNamed: "Back")
+                            
+                            syuriken2.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Back"), size: syuriken1.size)
+                            syuriken2.xScale = 0.03
+                            syuriken2.yScale = 0.01
+                            syuriken2.position = CGPoint(x: ally2.position.x,y: ally2.position.y) //生成位置の設定
+                            syuriken2.name  = "syuriken"
+                            syuriken2.userData = NSMutableDictionary()
+                            syuriken2.userData?.setValue( PhysicsCategory.Bullet, forKey: "category")
+                            syuriken2.damage = 200
+                            syuriken2.physicsBody?.categoryBitMask = PhysicsCategory.Bullet //衝突判定に使用する値の設定
+                            syuriken2.physicsBody?.collisionBitMask = PhysicsCategory.Enemy
+                            syuriken2.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet
+                            
+                            self.addChild(syuriken2)//Bullet表示
+                            
+                            let action2 = SKAction.move(to: CGPoint(x: ally2.position.x + 100, y: ally2.position.y - 100), duration: 0.5)//右下
+                            syuriken2.run(SKAction.sequence([action2,backaction,actionDone]))
+                            
+                            let syuriken3 = Bullet(imageNamed: "Back")
+                            
+                            syuriken3.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Back"), size: syuriken1.size)
+                            syuriken3.xScale = 0.03
+                            syuriken3.yScale = 0.01
+                            syuriken3.position = CGPoint(x: ally2.position.x,y: ally2.position.y) //生成位置の設定
+                            syuriken3.name  = "syuriken"
+                            syuriken3.userData = NSMutableDictionary()
+                            syuriken3.userData?.setValue( PhysicsCategory.Bullet, forKey: "category")
+                            syuriken3.damage = 200
+                            syuriken3.physicsBody?.categoryBitMask = PhysicsCategory.Bullet //衝突判定に使用する値の設定
+                            syuriken3.physicsBody?.collisionBitMask = PhysicsCategory.Enemy
+                            syuriken3.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet
+                            
+                            self.addChild(syuriken3)//Bullet表示
+                            
+                            let action3 = SKAction.move(to: CGPoint(x: ally2.position.x - 100, y: ally2.position.y + 100), duration: 0.5)//左上
+                            syuriken3.run(SKAction.sequence([action3,backaction,actionDone]))
+                            
+                            let syuriken4 = Bullet(imageNamed: "Back")
+                            
+                            syuriken4.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Back"), size: syuriken1.size)
+                            syuriken4.xScale = 0.03
+                            syuriken4.yScale = 0.01
+                            syuriken4.position = CGPoint(x: ally2.position.x,y: ally2.position.y) //生成位置の設定
+                            syuriken4.name  = "syuriken"
+                            syuriken4.userData = NSMutableDictionary()
+                            syuriken4.userData?.setValue( PhysicsCategory.Bullet, forKey: "category")
+                            syuriken4.damage = 200
+                            syuriken4.physicsBody?.categoryBitMask = PhysicsCategory.Bullet //衝突判定に使用する値の設定
+                            syuriken4.physicsBody?.collisionBitMask = PhysicsCategory.Enemy
+                            syuriken4.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet
+                            
+                            self.addChild(syuriken4)//Bullet表示
+                            
+                            let action4 = SKAction.move(to: CGPoint(x: ally2.position.x - 100, y: ally2.position.y - 100), duration: 0.5)//左下
+                            syuriken4.run(SKAction.sequence([action4,backaction,actionDone]))
+                            
                             
                             ally2SkilledFlag = false//Skillを使ったこと判定
                             
