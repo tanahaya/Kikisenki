@@ -467,7 +467,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Enemy1.physicsBody?.collisionBitMask = PhysicsCategory.Enemy //衝突させたい物体Enemy
         Enemy1.xScale = 0.6
         Enemy1.yScale = 0.6
-        Enemy1.grade = 0
+        Enemy1.grade = 2
         Enemy1.hp = 1000
         Enemy1.id = 4
         Enemy1.maxHp = 1000//敵1の最大のHp
@@ -513,7 +513,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Enemy2.physicsBody?.collisionBitMask = PhysicsCategory.Enemy //衝突させたい物体Enemy
         Enemy2.xScale = 0.6
         Enemy2.yScale = 0.6
-        Enemy2.grade = 0
+        Enemy2.grade = 2
         Enemy2.hp = 1000
         Enemy2.id = 5
         Enemy2.maxHp = 1000//敵1の最大のHp
@@ -1149,7 +1149,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             self.addChild(syuriken1)//Bullet表示
                             
                             let action1 = SKAction.move(to: CGPoint(x: ally2.position.x + 100, y: ally2.position.y + 100), duration: 0.5)//右上
-                            let wait = SKAction.wait(forDuration: 0.1)
                             let backaction = SKAction.move(to: CGPoint(x: ally2.position.x, y: ally2.position.y), duration: 0.5)
                             let actionDone = SKAction.removeFromParent()
                             syuriken1.run(SKAction.sequence([action1,backaction,actionDone]))
@@ -1237,9 +1236,36 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                         }
                         
-                        if self.atPoint(location).name == "ally2Skill3" {//skill3の発動
+                        if self.atPoint(location).name == "ally2Skill3" {//skill3の発動。毒霧で攻撃する。敵のグレードを下げる。実装途中。
                             
-                            print("ally2Skill3")
+                            if ally2.grade! == 0 {
+                                print("ally2Skill2")
+                            } else if ally2.grade! == 1 {
+                                print("ally2Skill2G1")
+                            } else if ally2.grade! == 2 {
+                                print("ally2Skill2G2")
+                            }
+                            
+                            let poison = Bullet(imageNamed: "Back")
+                            
+                            poison.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Back"), size: poison.size)
+                            poison.xScale = 0.03
+                            poison.yScale = 0.01
+                            poison.position = CGPoint(x: ally2.position.x,y: ally2.position.y) //生成位置の設定
+                            poison.name  = "poison"
+                            poison.userData = NSMutableDictionary()
+                            poison.userData?.setValue( PhysicsCategory.Bullet, forKey: "category")
+                            poison.damage = 200
+                            poison.physicsBody?.categoryBitMask = PhysicsCategory.Bullet //衝突判定に使用する値の設定
+                            poison.physicsBody?.collisionBitMask = PhysicsCategory.Enemy
+                            poison.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet
+                            
+                            self.addChild(poison)//Bullet表示
+                            
+                            let action = SKAction.moveTo(x: self.size.width, duration: 1.0)//アクション作成(移動方向:Y,移動時間:1.0秒)
+                            let actionDone = SKAction.removeFromParent()
+                            poison.run(SKAction.sequence([action,actionDone]))
+                            
                             ally2SkilledFlag = false
                             
                         }
@@ -1409,11 +1435,39 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     print("damage")
                     
                     if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Bullet {
+                        
                         self.changeHp(change: -(nodeA as! Bullet).damage!, side: (nodeB as! Enemy).id!)
+                        if nodeA.name == "poison" {
+                            if (nodeB as! Enemy).grade! >= 1 {
+                                (nodeB as! Enemy).grade! = (nodeB as! Enemy).grade! - 1
+                            }
+                            
+                            if (nodeB as! Enemy).id! == 4 {
+                                Enemy1GradeLabel.text = "\(Enemy1.grade!)"
+                            }else if (nodeB as! Enemy).id! == 5 {
+                                Enemy2GradeLabel.text = "\(Enemy2.grade!)"
+                            }
+                            
+                        }
                         nodeA.removeFromParent()
+                        
                     } else if nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Bullet {
+                        
                         self.changeHp(change: -(nodeB as! Bullet).damage!, side: (nodeA as! Enemy).id!)
+                        if nodeB.name == "poison" {
+                            if (nodeA as! Enemy).grade! >= 1 {
+                                (nodeA as! Enemy).grade! = (nodeA as! Enemy).grade! - 1
+                            }
+                            
+                            if (nodeA as! Enemy).id! == 4 {
+                                Enemy1GradeLabel.text = "\(Enemy1.grade!)"
+                            }else if (nodeA as! Enemy).id! == 5 {
+                                Enemy2GradeLabel.text = "\(Enemy2.grade!)"
+                            }
+                            
+                        }
                         nodeB.removeFromParent()
+                        
                     }
                     
                     
