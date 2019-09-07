@@ -1278,6 +1278,20 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         if self.atPoint(location).name == "ally2Skill4" {//skill4の発動
                             
                             print("ally2Skill4")
+                            
+                            //makeheart
+                            var heartX = 0
+                            var heartY = 0
+                            
+                            repeat { // repeat-while文のため、この処理は最低1回実行される
+                                
+                                heartX = Int.random(in: 0 ..< 816)
+                                heartY = Int.random(in: 0 ..< 254)
+                                
+                            } while(overlap(location: CGPoint(x: heartX,y: heartY)))
+                            
+                            self.makeHeart(x: heartX, y: heartY)
+                            
                             ally2SkilledFlag = false
                             
                         }
