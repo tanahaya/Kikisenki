@@ -557,9 +557,9 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
         //phaseの切り替えの処理。
         phasenumber = phasenumber + 1
-        numberLabel.text = "\( Float(70 - phasenumber) / 10)"
+        numberLabel.text = "\( Float(30 - phasenumber) / 10)"
         
-        if phasenumber == 70 {
+        if phasenumber == 30 {
             
             phasenumber = 0
             
@@ -610,36 +610,41 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                     if Int.random(in: 0 ..< 2) == 0 { //毎ターン回復アイテムかgradeupアイテムがフィールドに現れる。
                         
+                        print("makeheart")
                         //makeheart
-                        let heartX = Int.random(in: 0 ..< 816)
-                        let heartY = Int.random(in: 0 ..< 254)
+                        var heartX = 0
+                        var heartY = 0
                         
-                        if self.atPoint(CGPoint(x: heartX,y: heartY)).name == "Background" { //Itemと他のオブジェクトが被らないようにできる場所に他のオブジェクトがなかったらItemができるように変更。
+                        repeat { // repeat-while文のため、この処理は最低1回実行される
                             
-                            self.makeHeart(x: heartX, y: heartY)
+                            heartX = Int.random(in: 0 ..< 816)
+                            heartY = Int.random(in: 0 ..< 254)
                             
-                        } else {
-                            //Itemと他のオブジェクトが被った時の処理
-                            
-                        }
+                        } while(overlap(location: CGPoint(x: heartX,y: heartY)))
+                        
+                        self.makeHeart(x: heartX, y: heartY)
                         
                     } else {
                         
-                        //ここにgradeupItemを用意する予定
-                        let gradeupX = Int.random(in: 0 ..< 816)
-                        let gradeupY = Int.random(in: 0 ..< 254)
+                        print("makegrade")
                         
-                        if self.atPoint(CGPoint(x: gradeupX,y: gradeupY)).name == "Background" { //Itemと他のオブジェクトが被らないようにできる場所に他のオブジェクトがなかったらItemができるように変更。
-                            self.makeGradeupItem(x: gradeupX, y: gradeupY)
+                        //radeupItem
+                        var gradeupX = 0
+                        var gradeupY = 0
+                        
+                        repeat { // repeat-while文のため、この処理は最低1回実行される
                             
-                        } else {
-                            //Itemと他のオブジェクトが被った時の処理
+                            gradeupX = Int.random(in: 0 ..< 816)
+                            gradeupY = Int.random(in: 0 ..< 254)
                             
-                        }
+                        } while(overlap(location: CGPoint(x: gradeupX,y: gradeupY)))
+                        
+                        self.makeGradeupItem(x: gradeupX, y: gradeupY)
                         
                     }
+                    
+                    
                 }
-                
             }
         }
         
@@ -1540,6 +1545,10 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             
             ally1.hp! = ally1.hp! + change//hpの増減処理
             
+            if ally1.hp! > ally1.maxHp! {
+                ally1.hp! = ally1.maxHp!
+            }
+            
             if ally1.hp! <= 0 {
                 
             }
@@ -1565,6 +1574,10 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             
             ally2.hp! = ally2.hp! + change//hpの増減処理
             
+            if ally2.hp! > ally2.maxHp! {
+                ally2.hp! = ally2.maxHp!
+            }
+            
             if ally2.hp! <= 0 {
                 
             }
@@ -1589,6 +1602,10 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         } else if side == 3 {
             
             ally3.hp! = ally3.hp! + change//hpの増減処理
+            
+            if ally3.hp! > ally3.maxHp! {
+                ally3.hp! = ally3.maxHp!
+            }
             
             if ally3.hp! <= 0 {
                 
@@ -1617,6 +1634,10 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             
             Enemy1.hp = Enemy1.hp! + change//hpの増減処理
             
+            if Enemy1.hp! > Enemy1.maxHp! {
+                Enemy1.hp! = Enemy1.maxHp!
+            }
+            
             if Enemy1.hp! <= 0 {
                 //gameover処理
                 
@@ -1643,6 +1664,10 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         }else if side == 5 {
             
             Enemy2.hp = Enemy2.hp! + change//hpの増減処理
+            
+            if Enemy2.hp! > Enemy2.maxHp! {
+                Enemy2.hp! = Enemy2.maxHp!
+            }
             
             if Enemy2.hp! <= 0 {
                 //gameover処理
@@ -1691,8 +1716,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Heart.yScale = 0.7
         self.addChild(Heart)
         
-        ItemCount = ItemCount + 1
-        
     }
     
     func makeGradeupItem(x: Int,y: Int) {//gradeupItemを作る関数、まだ
@@ -1715,8 +1738,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         GradeItem.xScale = 0.7
         GradeItem.yScale = 0.7
         self.addChild(GradeItem)
-        
-        ItemCount = ItemCount + 1
         
     }
     
@@ -1750,6 +1771,16 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     
     func length(v: CGPoint) -> CGFloat {//相対位置の長さを測る。
         return sqrt(v.x * v.x + v.y * v.y)//長さを測る。
+    }
+    
+    func overlap(location:CGPoint) -> Bool {//ポイントの背面がbackgroundならtrueを返す。
+        
+        if self.atPoint(location).name == "Background" {
+            return true
+        }
+        
+        return false
+        
     }
     
 }
