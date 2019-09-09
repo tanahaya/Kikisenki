@@ -16,6 +16,7 @@ class Ally : SKSpriteNode {
     var hp:Int?
     var maxHp:Int?
     var grade:Int?
+    var moveEnable:Bool = true
     
     func test() -> String {
         return "Hello"
