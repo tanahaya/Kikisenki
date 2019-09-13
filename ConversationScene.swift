@@ -8,139 +8,75 @@
 
 import UIKit
 import SpriteKit
+import RealmSwift
 
 class ConversationScene : SKScene, SKPhysicsContactDelegate{
     
+    var background = SKSpriteNode()
     
-    var gameTableView = GameRoomTableView()
+    let nameLabel = SKLabelNode()
+    let serifLabel = SKLabelNode()//文字を表示する。
     
-    var skipButton = SKSpriteNode(color: UIColor.red, size: CGSize(width: 50.0, height: 30.0))//エナジーの量を表示
+    let nameArray:[String] = ["フランソワ","2","3","ゴリラゴリあ"]
     
-    var Background = SKSpriteNode(imageNamed: "Background")//キャラクターの背景
+    let serifArray:[String] = ["フランソワ","2","3","ゴリラゴリあ"]
     
+    // 作成したTodoModel型の変数を用意。<Serif>という書き方はいわゆるジェネリック
+    //Realmから受け取るデータを突っ込む変数を準備
+    var serifList: Results<Serif>!
     
     override func didMove(to view: SKView) {
         
-        self.size = CGSize(width: 414, height: 896)//414x896が最適。これはiphoneXRの画面サイズ。これがないと画面が(1,1)のサイズになります。
+        //起動した時の処理
+        self.size = CGSize(width: 896, height: 414)//896x414が最適。これはiphoneXRの画面サイズを横にしたもの。
         self.physicsWorld.gravity = CGVector(dx: 0.0, dy: 0.0)
         self.physicsWorld.contactDelegate = self //didBeginCOntactに必要
         
         self.backgroundColor = UIColor.white
         
+        background = SKSpriteNode(imageNamed: "serifback1")
+        background.name = "background"
+        background.position = CGPoint(x: 448, y: 121)//234,448
+        self.addChild(background)
         
-        // Table setup
-        gameTableView.register (UINib(nibName: "SpeechTableviewCell", bundle: nil),forCellReuseIdentifier:"speechCell")
-        gameTableView.frame=CGRect(x: 0,y: 448,width: 414,height: 448)
-        gameTableView.name = "tableview"
-        self.scene?.view?.addSubview(gameTableView)
-        gameTableView.reloadData()
+        // スキーマバージョンを上げる。デフォルトのスキーマバージョンは0。serifclassを更新する時に必要
+        let config = Realm.Configuration(schemaVersion: 1)
+        Realm.Configuration.defaultConfiguration = config
         
-        //背景。今は茶色
-        Background.size = CGSize(width: 414, height: 448)
-        Background.anchorPoint = CGPoint(x: 0,y: 0)//ノードの位置配置などの起点を設定。
-        Background.position = CGPoint(x: 0,y: 448)
-        Background.name = "Background"
-        Background.physicsBody?.categoryBitMask = 0
-        Background.physicsBody?.contactTestBitMask = 0
-        Background.physicsBody?.collisionBitMask = 0
-        self.addChild(Background)
+        // Realmのインスタンスを取得
+        let RealmInstance = try! Realm()
+        // Realmのfunctionでデータを取得。functionを更に追加することで、フィルターもかけられる
+        // Realmデータベースに登録されているデータを全て取得
+        // try!はエラーが発生しなかった場合は通常の値が返されるが、エラーの場合はクラッシュ
+        self.serifList = RealmInstance.objects(Serif.self)
+        
+        print(Realm.Configuration.defaultConfiguration.fileURL!)
         
         
-        skipButton.name = "skipButton"
-        skipButton.position = CGPoint(x: 350,y: 800)
-        skipButton.physicsBody?.categoryBitMask = 0
-        skipButton.physicsBody?.contactTestBitMask = 0
-        skipButton.physicsBody?.collisionBitMask = 0
-        self.addChild(skipButton)
+        nameLabel.fontSize = 40 // フォントサイズを設定.
+        nameLabel.fontColor = UIColor.black// 色を指定(青)
+        nameLabel.horizontalAlignmentMode = .left
+        nameLabel.position = CGPoint(x: 100, y: 170) // 表示するポジションを指定.今回は中央
+        nameLabel.text = nameArray[0]
+        print(nameArray[0].utf16.count)
+        self.addChild(nameLabel)//シーンに追加
+        
+        
+        serifLabel.fontSize = 27 // フォントサイズを設定.
+        serifLabel.fontColor = UIColor.black// 色を指定(青).
+        serifLabel.text = "セリフあああああああああ"
+        serifLabel.horizontalAlignmentMode = .left
+        
+        if serifLabel.numberOfLines == 1 {
+            serifLabel.position = CGPoint(x: 80, y: 120)// 表示するポジションを指定.今回は中央
+        } else if serifLabel.numberOfLines == 2 {
+            serifLabel.position = CGPoint(x: 80, y: 70)// 表示するポジションを指定.今回は中央
+        }
+        self.addChild(serifLabel)//シーンに追加
         
     }
-    
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
-        if let touch = touches.first as UITouch? {
-                    
-            let location = touch.location(in: self)
-            print(self.atPoint(location))
-            
-            
-            if self.atPoint(location).name == "skipButton" {
-                
-                print("skip")
-                
-                //移動用コード。gametableviewを隠す必要あり。
-                gameTableView.isHidden =  true
-                
-                let selectScene = SelectScene()
-                selectScene.size = self.size
-                let transition = SKTransition.crossFade(withDuration: 1.0)
-                
-                self.view?.presentScene(selectScene, transition: transition)
-                
-            }
-            
-        }
-
-    }
-    
-}
-
-class GameRoomTableView: UITableView,UITableViewDelegate,UITableViewDataSource {
-    
-    var items: [String] = ["Player1"]
-    var additionalitems: [String] =  ["Player2","Player3","Player4", "Player5", "Player6"]
-    var itemnumber:Int = 0
-    var name:String = "tableview"
-    
-    override init(frame: CGRect, style: UITableView.Style) {
-        
-        super.init(frame: frame, style: style)
-        self.delegate = self
-        self.dataSource = self
-        
-        self.estimatedRowHeight = 160
-        self.rowHeight = UITableView.automaticDimension
-        
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {//sectionの数を返す。
-        return 1
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {//cellの数を返す。
-        return items.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {//cellの内容を返す
-        let cell:SpeechTableviewCell = tableView.dequeueReusableCell(withIdentifier: "speechCell")! as! SpeechTableviewCell
-        cell.nameLabel.text = "名前"
-        cell.speechLabel.text = "セリフ"
-        cell.selectionStyle = UITableViewCell.SelectionStyle.none//選択不可にするためのコード。
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {//tapしたときの内容(cell)
-        
-        print("You selected cell #\(indexPath.row)!")
-        
-        if itemnumber >= additionalitems.count {
-            
-        }else {
-            items.insert(additionalitems[itemnumber], at: 0)//順番を指定してarrayに追加する。
-            itemnumber = itemnumber + 1
-            self.reloadData()//こんな感じでデータの追加が可能です。
-        }
-        
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
-        tableView.estimatedRowHeight = 160 //セルの高さ
-        return 160
         
     }
     
