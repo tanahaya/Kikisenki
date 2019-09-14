@@ -11,7 +11,6 @@ import SpriteKit
 
 class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
-    
     let startScene = StartScene()
     
     override func viewDidLoad() {
@@ -24,10 +23,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         View.isMultipleTouchEnabled = false
         View.showsPhysics = true
         
-        //View.presentScene(startScene)
         View.presentScene(startScene)
         
-        // Do any additional setup after loading the view.
         
     }
     

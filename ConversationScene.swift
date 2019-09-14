@@ -8,7 +8,6 @@
 
 import UIKit
 import SpriteKit
-import RealmSwift
 
 class ConversationScene : SKScene, SKPhysicsContactDelegate{
     
@@ -21,11 +20,40 @@ class ConversationScene : SKScene, SKPhysicsContactDelegate{
     
     let serifArray:[String] = ["フランソワ","2","3","ゴリラゴリあ"]
     
-    // 作成したTodoModel型の変数を用意。<Serif>という書き方はいわゆるジェネリック
-    //Realmから受け取るデータを突っ込む変数を準備
-    var serifList: Results<Serif>!
+    
     
     override func didMove(to view: SKView) {
+        
+        var list:[String] = []//一度入れる。
+        
+        let path = Bundle.main.path(forResource: "story1", ofType: "csv")
+        
+        do {
+            let text = try String(contentsOfFile: path!, encoding: String.Encoding.utf8)
+            
+            let lineChange = text.replacingOccurrences(of: "\r", with: "\n")
+            //"\n"の改行コードで区切って、配列csvArrayに格納する
+            
+            list = lineChange.components(separatedBy: "\n")
+            
+        } catch let error as NSError {
+            print("エラー: \(error)")
+            return
+        }
+        
+        for data in list {
+            if data == "" {//行がない時を省く
+                
+            } else {
+                
+                let detail = data.components(separatedBy: ",")
+                print("【id】\(detail[0])　【名前】\(detail[1])　【説明】\(detail[2])")
+                
+            }
+            
+        }
+        
+        
         
         //起動した時の処理
         self.size = CGSize(width: 896, height: 414)//896x414が最適。これはiphoneXRの画面サイズを横にしたもの。
@@ -39,26 +67,13 @@ class ConversationScene : SKScene, SKPhysicsContactDelegate{
         background.position = CGPoint(x: 448, y: 121)//234,448
         self.addChild(background)
         
-        // スキーマバージョンを上げる。デフォルトのスキーマバージョンは0。serifclassを更新する時に必要
-        let config = Realm.Configuration(schemaVersion: 1)
-        Realm.Configuration.defaultConfiguration = config
-        
-        // Realmのインスタンスを取得
-        let RealmInstance = try! Realm()
-        // Realmのfunctionでデータを取得。functionを更に追加することで、フィルターもかけられる
-        // Realmデータベースに登録されているデータを全て取得
-        // try!はエラーが発生しなかった場合は通常の値が返されるが、エラーの場合はクラッシュ
-        self.serifList = RealmInstance.objects(Serif.self)
-        
-        print(Realm.Configuration.defaultConfiguration.fileURL!)
-        
         
         nameLabel.fontSize = 40 // フォントサイズを設定.
         nameLabel.fontColor = UIColor.black// 色を指定(青)
         nameLabel.horizontalAlignmentMode = .left
         nameLabel.position = CGPoint(x: 100, y: 170) // 表示するポジションを指定.今回は中央
         nameLabel.text = nameArray[0]
-        print(nameArray[0].utf16.count)
+        //print(nameArray[0].utf16.count)=>文字数を数える。
         self.addChild(nameLabel)//シーンに追加
         
         
