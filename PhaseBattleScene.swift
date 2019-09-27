@@ -81,6 +81,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     var MoveMarker3Flag = true
     //ally3ここまで
     
+    var AllyArray:[Ally] = []
+    
     //enemy1ここから
     var Enemy1 = Enemy(imageNamed: "syatihoko")
     
@@ -110,6 +112,9 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     
     //Itemの数を管理する。
     var ItemCount:Int = 1
+    
+    
+    let userDefaults = UserDefaults.standard//ダメージ管理用のuserdefaults
     
     //衝突判定のためのビットマスク作成
     struct PhysicsCategory {
@@ -468,6 +473,11 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         ally3Skill5.zPosition = 2
         self.addChild(ally3Skill5)
         
+        //allyarrayを追加
+        AllyArray.append(ally1)
+        AllyArray.append(ally2)
+        AllyArray.append(ally3)
+        
         //enemy1の処理
         Enemy1.name = "Enemy1"
         Enemy1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "syatihoko"), size: Enemy1.size)
@@ -603,7 +613,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 ally3GradeIcon.position = CGPoint(x: ally3.position.x - 28, y: ally3.position.y - 30)
                 ally3HpBar.position = CGPoint(x: ally3.position.x - 18,y:ally3.position.y - 35)
                 ally3HpBarBack.position = CGPoint(x: ally3.position.x - 18,y:ally3.position.y - 37)
-                
                 
             }else { //Movephaseに切り替わる時。
                 
@@ -857,6 +866,13 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             }
             if self.atPoint(location).name == "MoveMarker3"{
                 MoveMarker3Flag = true
+            }
+            
+            if self.atPoint(location).name == "gameclear"{
+                self.gotoSelectScene()
+            }
+            if self.atPoint(location).name == "gameover"{
+                self.gotoSelectScene()
             }
             
         }
@@ -1651,7 +1667,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
     }
     
-    func changeHp(change:Int,side:Int) {//渡された値が正なら回復。負ならダメージを与える。hpを変動させる。sideが4~なら敵,1なら味方
+    func changeHp(change:Int,side:Int) {//渡された値が正なら回復。負ならダメージを与える。hpを変動させる。sideが4~なら敵,123なら味方
         
         if side == 1 {
             
@@ -1659,10 +1675,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             
             if ally1.hp! > ally1.maxHp! {
                 ally1.hp! = ally1.maxHp!
-            }
-            
-            if ally1.hp! <= 0 {
-                
             }
             
             ally1HpBar.position = CGPoint(x: ally1.position.x - 20,y:ally1.position.y - 35)
@@ -1682,16 +1694,39 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 ally1HpBar.color = UIColor.red
                 
             }
+            
+            if ally1.hp! <= 0 {
+                
+                //味方の消去処理
+                if let Index = AllyArray.firstIndex(of: ally1) {
+                    print("インデックス番号: \(Index)")
+                    AllyArray.remove(at: Index)
+                    
+                    ally1.removeFromParent()
+                    ally1GradeIcon.removeFromParent()
+                    ally1GradeLabel.removeFromParent()
+                    ally1HpBar.removeFromParent()
+                    ally1HpBarBack.removeFromParent()
+                    MoveMarker3.removeFromParent()
+                    ally1Skill1.removeFromParent()
+                    ally1Skill2.removeFromParent()
+                    ally1Skill3.removeFromParent()
+                    ally1Skill4.removeFromParent()
+                    ally1Skill5.removeFromParent()
+                    
+                }
+                if AllyArray.count == 0 {
+                    self.gameover(side: "ally")
+                }
+                
+            }
+            
         } else if side == 2 {
             
             ally2.hp! = ally2.hp! + change//hpの増減処理
             
             if ally2.hp! > ally2.maxHp! {
                 ally2.hp! = ally2.maxHp!
-            }
-            
-            if ally2.hp! <= 0 {
-                
             }
             
             ally2HpBar.position = CGPoint(x: ally2.position.x - 20,y:ally2.position.y - 35)
@@ -1711,16 +1746,39 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 ally2.color = UIColor.red
                 
             }
+            
+            if ally2.hp! <= 0 {
+                
+                //味方の消去処理
+                if let Index = AllyArray.firstIndex(of: ally2) {
+                    print("インデックス番号: \(Index)")
+                    AllyArray.remove(at: Index)
+                    
+                    ally2.removeFromParent()
+                    ally2GradeIcon.removeFromParent()
+                    ally2GradeLabel.removeFromParent()
+                    ally2HpBar.removeFromParent()
+                    ally2HpBarBack.removeFromParent()
+                    MoveMarker2.removeFromParent()
+                    ally2Skill1.removeFromParent()
+                    ally2Skill2.removeFromParent()
+                    ally2Skill3.removeFromParent()
+                    ally2Skill4.removeFromParent()
+                    ally2Skill5.removeFromParent()
+                    
+                }
+                if AllyArray.count == 0 {
+                    self.gameover(side: "ally")
+                }
+                
+            }
+            
         } else if side == 3 {
             
             ally3.hp! = ally3.hp! + change//hpの増減処理
             
             if ally3.hp! > ally3.maxHp! {
                 ally3.hp! = ally3.maxHp!
-            }
-            
-            if ally3.hp! <= 0 {
-                
             }
             
             ally3HpBar.position = CGPoint(x: ally3.position.x - 20,y:ally3.position.y - 35)
@@ -1740,6 +1798,33 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 ally3HpBar.color = UIColor.red
                 
             }
+            
+            if ally3.hp! <= 0 {
+                
+                //味方の消去処理
+                if let Index = AllyArray.firstIndex(of: ally3) {
+                    print("インデックス番号: \(Index)")
+                    AllyArray.remove(at: Index)
+                    
+                    ally3.removeFromParent()
+                    ally3GradeIcon.removeFromParent()
+                    ally3GradeLabel.removeFromParent()
+                    ally3HpBar.removeFromParent()
+                    ally3HpBarBack.removeFromParent()
+                    MoveMarker3.removeFromParent()
+                    ally3Skill1.removeFromParent()
+                    ally3Skill2.removeFromParent()
+                    ally3Skill3.removeFromParent()
+                    ally3Skill4.removeFromParent()
+                    ally3Skill5.removeFromParent()
+                    
+                }
+                if AllyArray.count == 0 {
+                    self.gameover(side: "ally")
+                }
+                
+            }
+            
         }
         
         if side == 4 {
@@ -1748,11 +1833,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             
             if Enemy1.hp! > Enemy1.maxHp! {
                 Enemy1.hp! = Enemy1.maxHp!
-            }
-            
-            if Enemy1.hp! <= 0 {
-                //gameover処理
-                
             }
             
             Enemy1HpBar.position = CGPoint(x: Enemy1.position.x - 20,y: Enemy1.position.y - 75)
@@ -1773,17 +1853,32 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
             }
             
+            if Enemy1.hp! <= 0 {
+                //敵の消去処理
+                if let Index = EnemyArray.firstIndex(of: Enemy1) {
+                    print("インデックス番号: \(Index)")
+                    EnemyArray.remove(at: Index)
+                    
+                    Enemy1.removeFromParent()
+                    Enemy1GradeIcon.removeFromParent()
+                    Enemy1GradeLabel.removeFromParent()
+                    Enemy1HpBar.removeFromParent()
+                    Enemy1HpBarBack.removeFromParent()
+                    
+                }
+                if EnemyArray.count == 0 {
+                    self.gameover(side: "enemy")
+                }
+                
+            }
+            
+            
         }else if side == 5 {
             
             Enemy2.hp = Enemy2.hp! + change//hpの増減処理
             
             if Enemy2.hp! > Enemy2.maxHp! {
                 Enemy2.hp! = Enemy2.maxHp!
-            }
-            
-            if Enemy2.hp! <= 0 {
-                //gameover処理
-                
             }
             
             Enemy2HpBar.position = CGPoint(x: Enemy2.position.x - 20,y: Enemy2.position.y - 75)
@@ -1804,9 +1899,69 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
             }
             
+            if Enemy2.hp! <= 0 {
+                //敵の消去処理
+                if let Index = EnemyArray.firstIndex(of: Enemy2) {
+                    print("インデックス番号: \(Index)")
+                    EnemyArray.remove(at: Index)
+                    Enemy2.removeFromParent()
+                    Enemy2GradeIcon.removeFromParent()
+                    Enemy2GradeLabel.removeFromParent()
+                    Enemy2HpBar.removeFromParent()
+                    Enemy2HpBarBack.removeFromParent()
+                }
+                if EnemyArray.count == 0 {
+                    self.gameover(side: "enemy")
+                }
+                
+            }
+            
         }
     }
     
+    func getSkillDamege() {//技の威力を変更するときに必要になるのでとりあえず、作っとく。
+        
+        userDefaults.set( 100, forKey: "ally1Skill1G1")
+        userDefaults.set( 100, forKey: "ally1Skill1G2")
+        userDefaults.set( 100, forKey: "ally1Skill1G3")
+        userDefaults.set( 100, forKey: "ally1Skill2G1")
+        userDefaults.set( 100, forKey: "ally1Skill2G2")
+        userDefaults.set( 100, forKey: "ally1Skill2G3")
+        userDefaults.set( 100, forKey: "ally1Skill3G1")
+        userDefaults.set( 100, forKey: "ally1Skill3G2")
+        userDefaults.set( 100, forKey: "ally1Skill3G3")
+        userDefaults.set( 100, forKey: "ally1Skill4G1")
+        userDefaults.set( 100, forKey: "ally1Skill4G2")
+        userDefaults.set( 100, forKey: "ally1Skill4G3")
+        
+        userDefaults.set( 100, forKey: "ally2Skill1G1")
+        userDefaults.set( 100, forKey: "ally2Skill1G2")
+        userDefaults.set( 100, forKey: "ally2Skill1G3")
+        userDefaults.set( 100, forKey: "ally2Skill2G1")
+        userDefaults.set( 100, forKey: "ally2Skill2G2")
+        userDefaults.set( 100, forKey: "ally2Skill2G3")
+        userDefaults.set( 100, forKey: "ally2Skill3G1")
+        userDefaults.set( 100, forKey: "ally2Skill3G2")
+        userDefaults.set( 100, forKey: "ally2Skill3G3")
+        userDefaults.set( 100, forKey: "ally2Skill4G1")
+        userDefaults.set( 100, forKey: "ally2Skill4G2")
+        userDefaults.set( 100, forKey: "ally2Skill4G3")
+        
+        userDefaults.set( 100, forKey: "ally3Skill1G1")
+        userDefaults.set( 100, forKey: "ally3Skill1G2")
+        userDefaults.set( 100, forKey: "ally3Skill1G3")
+        userDefaults.set( 100, forKey: "ally3Skill2G1")
+        userDefaults.set( 100, forKey: "ally3Skill2G2")
+        userDefaults.set( 100, forKey: "ally3Skill2G3")
+        userDefaults.set( 100, forKey: "ally3Skill3G1")
+        userDefaults.set( 100, forKey: "ally3Skill3G2")
+        userDefaults.set( 100, forKey: "ally3Skill3G3")
+        userDefaults.set( 100, forKey: "ally3Skill4G1")
+        userDefaults.set( 100, forKey: "ally3Skill4G2")
+        userDefaults.set( 100, forKey: "ally3Skill4G3")
+        
+        
+    }
     func makeHeart(x: Int,y: Int) {//ハートを作る関数
         
         let Heart = SKSpriteNode(imageNamed: "heart")
@@ -1850,6 +2005,40 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         GradeItem.xScale = 0.7
         GradeItem.yScale = 0.7
         self.addChild(GradeItem)
+        
+    }
+    
+    func gameover(side:String) {
+        
+        if side == "ally" {//味方の全滅
+            print("gameover")
+            
+            let gameover = SKSpriteNode(imageNamed: "gameover")
+            
+            gameover.name = "gameover"
+            gameover.position = CGPoint(x: 448, y: 207)
+            self.addChild(gameover)
+             
+        } else if side == "enemy" {//敵の全滅
+            print("gameclear")
+            
+            let gameclear = SKSpriteNode(imageNamed: "gameclear")
+            
+            gameclear.name = " gameclear"
+            gameclear.position = CGPoint(x: 448, y: 207)
+            self.addChild( gameclear)
+            
+        }
+        
+    }
+    
+    func gotoSelectScene() {
+        
+        let Scene = SelectScene()
+        Scene.size = self.size
+        let transition = SKTransition.crossFade(withDuration: 1.0)
+        
+        self.view?.presentScene(Scene, transition: transition)
         
     }
     

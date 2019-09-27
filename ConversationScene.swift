@@ -47,7 +47,9 @@ class ConversationScene : SKScene, SKPhysicsContactDelegate{
             } else {
                 
                 let detail = data.components(separatedBy: ",")
-                print("【id】\(detail[0])　【名前】\(detail[1])　【説明】\(detail[2])")
+                
+                print("【id】\(detail[0]) 【名前】\(detail[1]) 【位置】\(detail[2]) 【左画像】\(detail[3])【右画像】\(detail[4])【セリフ】\(detail[5]) ")
+                
                 serifArray.append(data)
                 
             }
@@ -102,7 +104,9 @@ class ConversationScene : SKScene, SKPhysicsContactDelegate{
             self.gotoSelectScene()
             
         } else {
+            
             self.text(page: pageNumber)
+            
         }
         
     }
@@ -111,7 +115,7 @@ class ConversationScene : SKScene, SKPhysicsContactDelegate{
         
         let detail = serifArray[page].components(separatedBy: ",")
         nameLabel.text = "\(detail[1])"
-        serifLabel.text = "\(detail[2])"
+        serifLabel.text = "\(detail[5])"
         
     }
     
