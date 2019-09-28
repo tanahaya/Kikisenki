@@ -1559,6 +1559,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Bullet {
                         
                         self.changeHp(change: -(nodeA as! Bullet).damage!, side: (nodeB as! Enemy).id!)
+                        self.damageEffect(damageposition: nodeA.position,damage: (nodeA as! Bullet).damage!)
+                        
                         if nodeA.name == "poison" {
                             if (nodeB as! Enemy).grade! >= 1 {
                                 (nodeB as! Enemy).grade! = (nodeB as! Enemy).grade! - 1
@@ -1576,6 +1578,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     } else if nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Bullet {
                         
                         self.changeHp(change: -(nodeB as! Bullet).damage!, side: (nodeA as! Enemy).id!)
+                        self.damageEffect(damageposition: nodeB.position,damage: (nodeB as! Bullet).damage!)
+                        
                         if nodeB.name == "poison" {
                             if (nodeA as! Enemy).grade! >= 1 {
                                 (nodeA as! Enemy).grade! = (nodeA as! Enemy).grade! - 1
@@ -1660,7 +1664,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     }
                     
                 }
-                
                 
             }
         }
@@ -2032,6 +2035,34 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
     }
     
+    func damageEffect(damageposition:CGPoint,damage:Int) { //ダメージを表示するためのエフェクトを作る。
+        
+        let damageEffectBack = SKSpriteNode(imageNamed: "damageEffect")
+        damageEffectBack.name = "damageEffectBack"
+        damageEffectBack.position = damageposition
+        damageEffectBack.xScale = 0.5
+        damageEffectBack.yScale = 0.5
+        self.addChild(damageEffectBack)
+        
+        
+        let damageLabel = SKLabelNode()
+        damageLabel.name = "damageLabel"
+        damageLabel.fontSize = 25 // フォントサイズを設定.
+        damageLabel.fontColor = UIColor.black// 色を指定
+        damageLabel.position = CGPoint(x: damageposition.x,y:damageposition.y - 8)// 表示するポジションを指定.
+        damageLabel.text = " \(damage)"
+        self.addChild(damageLabel)
+        
+        let wait = SKAction.wait(forDuration: 0.5)
+        let fadeout = SKAction.fadeOut(withDuration: 0.5)
+        let remove = SKAction.removeFromParent()
+        
+        damageLabel.run(SKAction.sequence([wait,fadeout,remove]))
+        damageEffectBack.run(SKAction.sequence([wait,fadeout,remove]))
+        
+    }
+    
+    //////////////////////////移動系メソッド集/////////////////////////////////
     func gotoSelectScene() {
         
         let Scene = SelectScene()
@@ -2041,6 +2072,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         self.view?.presentScene(Scene, transition: transition)
         
     }
+    
+    
     
     //////////////////////////便利系メソッド集/////////////////////////////////
     func rangeofField(minX: CGFloat,maxX: CGFloat,minY: CGFloat,maxY: CGFloat,location: CGPoint) -> Bool {//触ったポイント内にあるかどうか判定するメソッド。
