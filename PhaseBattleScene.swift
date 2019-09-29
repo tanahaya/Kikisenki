@@ -94,7 +94,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     //enemy1ここまで
     
     //enemy2ここから
-    var Enemy2 = Enemy(imageNamed: "syatihoko")
+    var Enemy2 = Enemy(imageNamed: "Soldier")
     
     var Enemy2GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
     let Enemy2GradeLabel = SKLabelNode()
@@ -431,7 +431,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         ally3GradeIcon.yScale = 0.3
         self.addChild(ally3GradeIcon)
         
-        ally3GradeLabel.text = "0"// Labelに文字列を設定.
+        ally3GradeLabel.text = "0"// Labelに文字列を設定
         ally3GradeLabel.name = "ally3GradeLabel"
         ally3GradeLabel.fontSize = 20// フォントサイズを設定.
         ally3GradeLabel.fontColor = UIColor.black// 色を指定(赤).
@@ -537,7 +537,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
         //enemy2の処理
         Enemy2.name = "Enemy2"
-        Enemy2.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "syatihoko"), size: Enemy2.size)
+        Enemy2.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Soldier"), size: Enemy2.size)
         Enemy2.physicsBody?.isDynamic = false
         Enemy2.physicsBody?.restitution = 1.0//反発値
         Enemy2.position = CGPoint(x: 700,y: 150)
@@ -546,8 +546,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Enemy2.physicsBody?.categoryBitMask = PhysicsCategory.Enemy //衝突判定に使用する値の設定
         Enemy2.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet
         Enemy2.physicsBody?.collisionBitMask = PhysicsCategory.Enemy //衝突させたい物体Enemy
-        Enemy2.xScale = 0.6
-        Enemy2.yScale = 0.6
+        Enemy2.xScale = 0.08
+        Enemy2.yScale = 0.08
         Enemy2.grade = 2
         Enemy2.hp = 1000
         Enemy2.id = 5
@@ -736,10 +736,102 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         
                     }
                     
+                    
+                }
+                
+                
+                //Enemy2の挙動。最も近い敵に向かって弾を発射する。また、角度30の所にも弾を撃つ。
+                
+                if EnemyArray.firstIndex(of: Enemy2) == nil {
+                    
+                } else {
+
+                    var shortestDistance:CGFloat = 5000.0
+                    var savei = 0
+                    
+                    for i in 0 ..< AllyArray.count {
+                        if shortestDistance >= length(v: CGPoint(x: Enemy2.position.x - AllyArray[i].position.x,y: Enemy2.position.y - AllyArray[i].position.y)) {
+                            shortestDistance = length(v: CGPoint(x: Enemy2.position.x - AllyArray[i].position.x,y: Enemy2.position.y - AllyArray[i].position.y))
+                            savei = i
+                        }
+                    }
+                    
+                    var relativepostion:CGPoint = CGPoint(x: 0,y: 0)
+                    
+                    relativepostion.x = AllyArray[savei].position.x - Enemy2.position.x
+                    relativepostion.y = AllyArray[savei].position.y - Enemy2.position.y
+                    
+                    let direction :CGFloat = vector2radian(vector: relativepostion)
+                    
+                    //Bullet作成
+                    
+                    let bullet1 = Bullet(imageNamed: "Back")
+                    bullet1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Back"), size: bullet1.size)
+                    bullet1.xScale = 0.03
+                    bullet1.yScale = 0.01
+                    bullet1.position = CGPoint(x: Enemy2.position.x,y: Enemy2.position.y) //生成位置の設定
+                    bullet1.name  = "bullet"
+                    bullet1.userData = NSMutableDictionary()
+                    bullet1.userData?.setValue( PhysicsCategory.eBullet, forKey: "category")
+                    bullet1.damage = 400
+                    bullet1.physicsBody?.categoryBitMask = PhysicsCategory.eBullet //衝突判定に使用する値の設定
+                    bullet1.physicsBody?.collisionBitMask = PhysicsCategory.Enemy
+                    bullet1.physicsBody?.contactTestBitMask = PhysicsCategory.eBullet
+                    self.addChild(bullet1)//Bullet表示
+                    
+                    let travelTime1 = SKAction.move( to: CGPoint(x: Enemy2.position.x - CGFloat( 300 * cos(Double(direction))),y: Enemy2.position.y
+                        + CGFloat( 300 * sin(Double(direction)))), duration: 0.8)
+                    let actionDone = SKAction.removeFromParent()
+                    bullet1.run(SKAction.sequence([travelTime1,actionDone]))
+                    
+                    let bullet2 = Bullet(imageNamed: "Back")
+                    bullet2.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Back"), size: bullet2.size)
+                    bullet2.xScale = 0.03
+                    bullet2.yScale = 0.01
+                    bullet2.position = CGPoint(x: Enemy2.position.x,y: Enemy2.position.y) //生成位置の設定
+                    bullet2.name  = "bullet"
+                    bullet2.userData = NSMutableDictionary()
+                    bullet2.userData?.setValue( PhysicsCategory.eBullet, forKey: "category")
+                    bullet2.damage = 400
+                    bullet2.physicsBody?.categoryBitMask = PhysicsCategory.eBullet //衝突判定に使用する値の設定
+                    bullet2.physicsBody?.collisionBitMask = PhysicsCategory.Enemy
+                    bullet2.physicsBody?.contactTestBitMask = PhysicsCategory.eBullet
+                    self.addChild(bullet2)//Bullet表示
+                    
+                    let travelTime2 = SKAction.move( to: CGPoint(x: Enemy2.position.x - CGFloat( 300 * cos(Double(direction + 0.2))),y: Enemy2.position.y
+                        + CGFloat( 300 * sin(Double(direction + 0.2)))), duration: 0.8)
+                    bullet2.run(SKAction.sequence([travelTime2,actionDone]))
+                    
+                    let bullet3 = Bullet(imageNamed: "Back")
+                    bullet3.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Back"), size: bullet3.size)
+                    bullet3.xScale = 0.03
+                    bullet3.yScale = 0.01
+                    bullet3.position = CGPoint(x: Enemy2.position.x,y: Enemy2.position.y) //生成位置の設定
+                    bullet3.name  = "bullet"
+                    bullet3.userData = NSMutableDictionary()
+                    bullet3.userData?.setValue( PhysicsCategory.eBullet, forKey: "category")
+                    bullet3.damage = 400
+                    bullet3.physicsBody?.categoryBitMask = PhysicsCategory.eBullet //衝突判定に使用する値の設定
+                    bullet3.physicsBody?.collisionBitMask = PhysicsCategory.Enemy
+                    bullet3.physicsBody?.contactTestBitMask = PhysicsCategory.eBullet
+                    self.addChild(bullet3)//Bullet表示
+                    
+                    let travelTime3 = SKAction.move( to: CGPoint(x: Enemy2.position.x - CGFloat( 300 * cos(Double(direction - 0.2))),y: Enemy2.position.y
+                        + CGFloat( 300 * sin(Double(direction - 0.2)))), duration: 0.8)
+                    bullet3.run(SKAction.sequence([travelTime3,actionDone]))
+                    
+                }
+                //enemy2の処理おわり
+                
+                //Enemy3の挙動
+                if EnemyArray.firstIndex(of: Enemy3) == nil {
+                    
+                } else {
+                    
                     Enemy3.grade! = Enemy3.grade! - 1
                     Enemy3GradeLabel.text = "\(Enemy3.grade!)"
                     
-                    if Enemy3.grade! <= 0 {//グレードが0になると自爆する。
+                    if Enemy3.grade! <= 0 {//グレードが0になると自爆する。死んでも発動する問題を確認。
                         
                         let BomPosition:CGPoint = Enemy3.position
                         
@@ -894,12 +986,12 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         let action8 = SKAction.move(to: CGPoint(x: BomPosition.x - 100, y: BomPosition.y + 100), duration: 1.0)//左うえ
                         bom8.run(SKAction.sequence([action8,actionDone]))
                         
-                    }//bomの処理
-                    
-                }//movephaze
+                    }//bomの処理終了
+                }
+                //Enemy3の処理終了
                 
                 
-            }
+            }//movephaze
         }
         
         //移動の処理
@@ -1039,6 +1131,35 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             }
             
         } else {//Attackphaseの時のタイマー、敵の移動の処理を行う。
+            
+            if Enemy2.moveEnable {
+                
+                var shortestDistance:CGFloat = 50000.0 //大きい数字をとりあえず、代入します。
+                var savei:Int = 0
+                
+                for i in 0 ..< AllyArray.count {
+                    if shortestDistance >= length(v: CGPoint(x: Enemy2.position.x - AllyArray[i].position.x,y: Enemy2.position.y - AllyArray[i].position.y)) {
+                        shortestDistance = length(v: CGPoint(x: Enemy2.position.x - EnemyArray[i].position.x,y: Enemy2.position.y - EnemyArray[i].position.y))
+                        savei = i
+                    }
+                }
+                
+                var relativepostion:CGPoint = CGPoint(x: 0,y: 0)
+                
+                relativepostion.x = AllyArray[savei].position.x - Enemy2.position.x
+                relativepostion.y = AllyArray[savei].position.y - Enemy2.position.y
+                
+                let direction :CGFloat = vector2radian(vector: relativepostion)
+                
+                let travelTime = SKAction.move( to: CGPoint(x: Enemy2.position.x - CGFloat( 4 * cos(Double(direction))),y: Enemy2.position.y), duration: 0.01)
+                Enemy2.run(travelTime)
+                
+                Enemy2GradeLabel.position = CGPoint(x: Enemy2.position.x - 28, y: Enemy2.position.y - 47)// 表示するポジションを指定.
+                Enemy2GradeIcon.position = CGPoint(x: Enemy2.position.x - 28, y: Enemy2.position.y - 40)
+                Enemy2HpBar.position = CGPoint(x: Enemy2.position.x - 18,y: Enemy2.position.y - 45)
+                Enemy2HpBarBack.position = CGPoint(x: Enemy2.position.x - 18,y: Enemy2.position.y - 47)
+                
+            }
             
             if Enemy3.moveEnable {
                 
@@ -2319,6 +2440,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
         
     }
+    
     func makeHeart(x: Int,y: Int) {//ハートを作る関数
         
         let Heart = SKSpriteNode(imageNamed: "heart")
