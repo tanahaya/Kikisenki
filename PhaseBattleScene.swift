@@ -84,7 +84,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     var AllyArray:[Ally] = []
     
     //enemy1ここから
-    var Enemy1 = Enemy(imageNamed: "syatihoko")
+    var Enemy1 = Enemy(imageNamed: "Queen")
     
     var Enemy1GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
     let Enemy1GradeLabel = SKLabelNode()
@@ -494,7 +494,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
         //enemy1の処理
         Enemy1.name = "Enemy1"
-        Enemy1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "syatihoko"), size: Enemy1.size)
+        Enemy1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Queen"), size: Enemy1.size)
         Enemy1.physicsBody?.isDynamic = false
         Enemy1.physicsBody?.restitution = 1.0//反発値
         Enemy1.position = CGPoint(x: 450,y: 250)
@@ -503,8 +503,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Enemy1.physicsBody?.categoryBitMask = PhysicsCategory.Enemy //衝突判定に使用する値の設定
         Enemy1.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet
         Enemy1.physicsBody?.collisionBitMask = PhysicsCategory.Enemy
-        Enemy1.xScale = 0.6
-        Enemy1.yScale = 0.6
+        Enemy1.xScale = 0.15
+        Enemy1.yScale = 0.15
         Enemy1.grade = 2
         Enemy1.hp = 1000
         Enemy1.id = 4
@@ -1139,7 +1139,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
                 for i in 0 ..< AllyArray.count {
                     if shortestDistance >= length(v: CGPoint(x: Enemy2.position.x - AllyArray[i].position.x,y: Enemy2.position.y - AllyArray[i].position.y)) {
-                        shortestDistance = length(v: CGPoint(x: Enemy2.position.x - EnemyArray[i].position.x,y: Enemy2.position.y - EnemyArray[i].position.y))
+                        shortestDistance = length(v: CGPoint(x: Enemy2.position.x - AllyArray[i].position.x,y: Enemy2.position.y - AllyArray[i].position.y))
                         savei = i
                     }
                 }
@@ -2301,11 +2301,14 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                 }
                 if EnemyArray.count == 0 {
-                    self.gameover(side: "enemy")
+                    self.gameover(side: "ally")
                 }
                 
             }
             
+            if Enemy1.hp! >= 0 {//一発で倒さないと失敗。
+                self.gameover(side: "ally")
+            }
             
         }else if side == 5 {
             
@@ -2492,20 +2495,30 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         if side == "ally" {//味方の全滅
             print("gameover")
             
-            let gameover = SKSpriteNode(imageNamed: "gameover")
+            let gameoverBack = SKSpriteNode(imageNamed: "gameover")
             
-            gameover.name = "gameover"
-            gameover.position = CGPoint(x: 448, y: 207)
-            self.addChild(gameover)
-             
+            gameoverBack.name = "gameover"
+            gameoverBack.position = CGPoint(x: 448, y: 207)
+            gameoverBack.zPosition = 6
+            self.addChild(gameoverBack)
+            
+            if MainTimer?.isValid == true {
+                MainTimer?.invalidate()
+            }
+            
         } else if side == "enemy" {//敵の全滅
             print("gameclear")
             
-            let gameclear = SKSpriteNode(imageNamed: "gameclear")
+            let gameclearBack = SKSpriteNode(imageNamed: "gameclear")
             
-            gameclear.name = " gameclear"
-            gameclear.position = CGPoint(x: 448, y: 207)
-            self.addChild( gameclear)
+            gameclearBack.name = " gameclear"
+            gameclearBack.position = CGPoint(x: 448, y: 207)
+            gameclearBack.zPosition = 6
+            self.addChild( gameclearBack)
+            
+            if MainTimer?.isValid == true {
+                MainTimer?.invalidate()
+            }
             
         }
         
