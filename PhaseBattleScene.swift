@@ -104,7 +104,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     //enemy2ここまで
     
     //enemy3ここから
-    var Enemy3 = Enemy(imageNamed: "BomHei")
+    var Enemy3 = Enemy(imageNamed: "Bom")
     
     var Enemy3GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
     let Enemy3GradeLabel = SKLabelNode()
@@ -507,139 +507,19 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         AllyArray.append(ally2)
         AllyArray.append(ally3)
         
-        //enemy1の処理
-        Enemy1.name = "Enemy1"
-        Enemy1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Queen"), size: Enemy1.size)
-        Enemy1.physicsBody?.isDynamic = false
-        Enemy1.physicsBody?.restitution = 1.0//反発値
-        Enemy1.position = CGPoint(x: 600,y: 250)
-        Enemy1.userData = NSMutableDictionary()
-        Enemy1.userData?.setValue( PhysicsCategory.Enemy, forKey: "category")
-        Enemy1.physicsBody?.categoryBitMask = PhysicsCategory.Enemy //衝突判定に使用する値の設定
-        Enemy1.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet
-        Enemy1.physicsBody?.collisionBitMask = PhysicsCategory.Enemy
-        Enemy1.xScale = 0.15
-        Enemy1.yScale = 0.15
-        Enemy1.grade = 2
-        Enemy1.hp = 1000
-        Enemy1.id = 4
-        Enemy1.maxHp = 1000//敵1の最大のHp
-        self.addChild(Enemy1)
+        //敵作成
+        let Queen1 = self.makeQueen(position: CGPoint(x: 600,y: 250))
+        self.addChild(Queen1)
+        EnemyArray.append(Queen1)
         
-        Enemy1HpBarBack.anchorPoint = CGPoint(x: 0, y: 0)
-        Enemy1HpBarBack.position = CGPoint(x: Enemy1.position.x - 18,y:Enemy1.position.y - 77)
-        self.addChild(Enemy1HpBarBack)
+        let Soilder1 = self.makeSoiler(position: CGPoint(x: 700,y: 150))
+        self.addChild(Soilder1)
+        EnemyArray.append(Soilder1)
         
-        Enemy1HpBar.anchorPoint = CGPoint(x: 0, y: 0)
-        Enemy1HpBar.position = CGPoint(x: Enemy1.position.x - 20,y: Enemy1.position.y - 75)
-        Enemy1HpBar.zPosition = 1
-        Enemy1HpBar.xScale = CGFloat( Double(Enemy1.hp!) / Double(Enemy1.maxHp!) )//x方向の倍率
-        self.addChild(Enemy1HpBar)
+        let Bom1 = self.makeBom(position: CGPoint(x: 450,y: 250))
+        self.addChild(Bom1)
+        EnemyArray.append(Bom1)
         
-        Enemy1GradeIcon.name = "Enemy1Gradeicon"
-        Enemy1GradeIcon.position = CGPoint(x: Enemy1.position.x - 28, y: Enemy1.position.y - 70)
-        Enemy1GradeIcon.xScale = 0.3
-        Enemy1GradeIcon.yScale = 0.3
-        self.addChild(Enemy1GradeIcon)
-        
-        Enemy1GradeLabel.text = "4"// Labelに文字列を設定.
-        Enemy1GradeLabel.name = "Enemy1GradeLabel"
-        Enemy1GradeLabel.fontSize = 20// フォントサイズを設定.
-        Enemy1GradeLabel.fontColor = UIColor.black// 色を指定(赤).
-        Enemy1GradeLabel.position = CGPoint(x: Enemy1.position.x - 28, y: Enemy1.position.y - 77)// 表示するポジションを指定.
-        Enemy1GradeLabel.text = " \(Enemy1.grade!)"
-        self.addChild(Enemy1GradeLabel)
-        
-        //enemy2の処理
-        Enemy2.name = "Enemy2"
-        Enemy2.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Soldier"), size: Enemy2.size)
-        Enemy2.physicsBody?.isDynamic = false
-        Enemy2.physicsBody?.restitution = 1.0//反発値
-        Enemy2.position = CGPoint(x: 700,y: 150)
-        Enemy2.userData = NSMutableDictionary()
-        Enemy2.userData?.setValue( PhysicsCategory.Enemy, forKey: "category")
-        Enemy2.physicsBody?.categoryBitMask = PhysicsCategory.Enemy //衝突判定に使用する値の設定
-        Enemy2.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet
-        Enemy2.physicsBody?.collisionBitMask = PhysicsCategory.Enemy //衝突させたい物体Enemy
-        Enemy2.xScale = 0.08
-        Enemy2.yScale = 0.08
-        Enemy2.grade = 2
-        Enemy2.hp = 1000
-        Enemy2.id = 5
-        Enemy2.maxHp = 1000//敵1の最大のHp
-        self.addChild(Enemy2)
-        
-        Enemy2HpBarBack.anchorPoint = CGPoint(x: 0, y: 0)
-        Enemy2HpBarBack.position = CGPoint(x: Enemy2.position.x - 18,y:Enemy2.position.y - 77)
-        self.addChild(Enemy2HpBarBack)
-        
-        Enemy2HpBar.anchorPoint = CGPoint(x: 0, y: 0)
-        Enemy2HpBar.position = CGPoint(x: Enemy2.position.x - 20,y: Enemy2.position.y - 75)
-        Enemy2HpBar.zPosition = 1
-        Enemy2HpBar.xScale = CGFloat( Double(Enemy2.hp!) / Double(Enemy2.maxHp!) )//x方向の倍率
-        self.addChild(Enemy2HpBar)
-        
-        Enemy2GradeIcon.name = "Enemy2Gradeicon"
-        Enemy2GradeIcon.position = CGPoint(x: Enemy2.position.x - 28, y: Enemy2.position.y - 70)
-        Enemy2GradeIcon.xScale = 0.3
-        Enemy2GradeIcon.yScale = 0.3
-        self.addChild(Enemy2GradeIcon)
-        
-        Enemy2GradeLabel.text = "5"// Labelに文字列を設定.
-        Enemy2GradeLabel.name = "Enemy2GradeLabel"
-        Enemy2GradeLabel.fontSize = 20// フォントサイズを設定.
-        Enemy2GradeLabel.fontColor = UIColor.black// 色を指定(赤).
-        Enemy2GradeLabel.position = CGPoint(x: Enemy2.position.x - 28, y: Enemy2.position.y - 77)// 表示するポジションを指定.
-        Enemy2GradeLabel.text = " \(Enemy1.grade!)"
-        self.addChild(Enemy2GradeLabel)
-        
-        //enemy2の処理
-        Enemy3.name = "Enemy3"
-        Enemy3.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "BomHei"), size: Enemy3.size)
-        Enemy3.physicsBody?.isDynamic = false
-        Enemy3.physicsBody?.restitution = 1.0//反発値
-        Enemy3.position = CGPoint(x: 450,y: 250)
-        Enemy3.userData = NSMutableDictionary()
-        Enemy3.userData?.setValue( PhysicsCategory.Enemy, forKey: "category")
-        Enemy3.physicsBody?.categoryBitMask = PhysicsCategory.Enemy //衝突判定に使用する値の設定
-        Enemy3.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet
-        Enemy3.physicsBody?.collisionBitMask = PhysicsCategory.Enemy //衝突させたい物体Enemy
-        Enemy3.xScale = 0.4
-        Enemy3.yScale = 0.4
-        Enemy3.grade = 3
-        Enemy3.hp = 1000
-        Enemy3.id = 6
-        Enemy3.maxHp = 1000//敵1の最大のHp
-        self.addChild(Enemy3)
-        
-        Enemy3HpBarBack.anchorPoint = CGPoint(x: 0, y: 0)
-        Enemy3HpBarBack.position = CGPoint(x: Enemy3.position.x - 18,y:Enemy3.position.y - 47)
-        self.addChild(Enemy3HpBarBack)
-        
-        Enemy3HpBar.anchorPoint = CGPoint(x: 0, y: 0)
-        Enemy3HpBar.position = CGPoint(x: Enemy3.position.x - 20,y: Enemy3.position.y - 45)
-        Enemy3HpBar.zPosition = 1
-        Enemy3HpBar.xScale = CGFloat( Double(Enemy3.hp!) / Double(Enemy3.maxHp!) )//x方向の倍率
-        self.addChild(Enemy3HpBar)
-        
-        Enemy3GradeIcon.name = "Enemy3Gradeicon"
-        Enemy3GradeIcon.position = CGPoint(x: Enemy3.position.x - 28, y: Enemy3.position.y - 40)
-        Enemy3GradeIcon.xScale = 0.3
-        Enemy3GradeIcon.yScale = 0.3
-        self.addChild(Enemy3GradeIcon)
-        
-        Enemy3GradeLabel.text = "5"// Labelに文字列を設定.
-        Enemy3GradeLabel.name = "Enemy3GradeLabel"
-        Enemy3GradeLabel.fontSize = 20// フォントサイズを設定.
-        Enemy3GradeLabel.fontColor = UIColor.black// 色を指定(赤).
-        Enemy3GradeLabel.position = CGPoint(x: Enemy3.position.x - 28, y: Enemy3.position.y - 47)// 表示するポジションを指定.
-        Enemy3GradeLabel.text = " \(Enemy3.grade!)"
-        self.addChild(Enemy3GradeLabel)
-        
-        
-        EnemyArray.append(Enemy1)
-        EnemyArray.append(Enemy2)
-        EnemyArray.append(Enemy3)
         
         self.start() //始める時の処理
 
@@ -2509,12 +2389,176 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     }
     
     //////////////////////////敵作成系メソッド集/////////////////////////////////
-    func  makeSoiler(position:CGPoint) -> Enemy { //一回放置します。
+    
+    func  makeSoiler(position:CGPoint) -> Enemy {
         
-        let Soldier = Enemy(imageNamed: "soldier")
+        let Soldier = Enemy(imageNamed: "Soldier")
+        
+        Soldier.name = "Soldier"
+        Soldier.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Soldier"), size: Soldier.size)
+        Soldier.physicsBody?.isDynamic = false
+        Soldier.physicsBody?.restitution = 1.0//反発値
+        Soldier.position = position
+        Soldier.userData = NSMutableDictionary()
+        Soldier.userData?.setValue( PhysicsCategory.Enemy, forKey: "category")
+        Soldier.physicsBody?.categoryBitMask = PhysicsCategory.Enemy //衝突判定に使用する値の設定
+        Soldier.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet
+        Soldier.physicsBody?.collisionBitMask = PhysicsCategory.Enemy //衝突させたい物体Enemy
+        Soldier.xScale = 1.0
+        Soldier.yScale = 1.0
+        Soldier.grade = 2
+        Soldier.hp = 1000
+        Soldier.type = "Soldier"
+        Soldier.maxHp = 1000//敵1の最大のHp
+        
+        let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
+        
+        HpBarBack.name = "HpBarBack"
+        HpBarBack.position = CGPoint(x: -5,y: -25)
+        Soldier.addChild(HpBarBack)
+        
+        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))//敵2のhpの量を表示
+        
+        HpBar.name = "HpBar"
+        HpBar.position = CGPoint(x: -5,y: -25)
+        HpBar.zPosition = 1
+        HpBar.xScale = CGFloat( Double(Soldier.hp!) / Double(Soldier.maxHp!) )//x方向の倍率
+        Soldier.addChild(HpBar)
+        
+        let GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
+        
+        GradeIcon.name = "Gradeicon"
+        GradeIcon.position = CGPoint(x: -37, y: -25)
+        GradeIcon.xScale = 0.3
+        GradeIcon.yScale = 0.3
+        Soldier.addChild(GradeIcon)
+        
+        let GradeLabel = SKLabelNode()
+        
+        GradeLabel.name = "GradeLabel"
+        GradeLabel.fontSize = 20// フォントサイズを設定.
+        GradeLabel.fontColor = UIColor.black// 色を指定(赤).
+        GradeLabel.position = CGPoint(x: -37, y: -30)// 表示するポジションを指定.
+        GradeLabel.text = " \(Soldier.grade!)"
+        Soldier.addChild(GradeLabel)
         
         
         return Soldier
+        
+    }
+    
+    func makeQueen(position:CGPoint) -> Enemy  {
+        
+        let Queen = Enemy(imageNamed: "Queen")
+        
+        Queen.name = "Queen"
+        Queen.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Queen"), size: Queen.size)
+        Queen.physicsBody?.isDynamic = false
+        Queen.physicsBody?.restitution = 1.0//反発値
+        Queen.position = position
+        Queen.userData = NSMutableDictionary()
+        Queen.userData?.setValue( PhysicsCategory.Enemy, forKey: "category")
+        Queen.physicsBody?.categoryBitMask = PhysicsCategory.Enemy //衝突判定に使用する値の設定
+        Queen.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet
+        Queen.physicsBody?.collisionBitMask = PhysicsCategory.Enemy //衝突させたい物体Enemy
+        Queen.xScale = 1.0
+        Queen.yScale = 1.0
+        Queen.grade = 2
+        Queen.hp = 1000
+        Queen.type = "Queen"
+        Queen.maxHp = 1000//敵1の最大のHp
+        
+        let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
+        
+        HpBarBack.name = "HpBarBack"
+        HpBarBack.position = CGPoint(x: -5,y: -25)
+        Queen.addChild(HpBarBack)
+        
+        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))//敵2のhpの量を表示
+        
+        HpBar.name = "HpBar"
+        HpBar.position = CGPoint(x: -5,y: -25)
+        HpBar.zPosition = 1
+        HpBar.xScale = CGFloat( Double(Queen.hp!) / Double(Queen.maxHp!) )//x方向の倍率
+        Queen.addChild(HpBar)
+        
+        let GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
+        
+        GradeIcon.name = "Gradeicon"
+        GradeIcon.position = CGPoint(x: -37, y: -25)
+        GradeIcon.xScale = 0.3
+        GradeIcon.yScale = 0.3
+        Queen.addChild(GradeIcon)
+        
+        let GradeLabel = SKLabelNode()
+        
+        GradeLabel.name = "GradeLabel"
+        GradeLabel.fontSize = 20// フォントサイズを設定.
+        GradeLabel.fontColor = UIColor.black// 色を指定(赤).
+        GradeLabel.position = CGPoint(x: -37, y: -30)// 表示するポジションを指定.
+        GradeLabel.text = " \(Queen.grade!)"
+        Queen.addChild(GradeLabel)
+        
+        
+        return Queen
+        
+    }
+    
+    func makeBom(position:CGPoint) -> Enemy  {
+        
+        let Bom = Enemy(imageNamed: "Bom")
+        
+        Bom.name = "Bom"
+        Bom.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Bom"), size: Bom.size)
+        Bom.physicsBody?.isDynamic = false
+        Bom.physicsBody?.restitution = 1.0//反発値
+        Bom.position = position
+        Bom.userData = NSMutableDictionary()
+        Bom.userData?.setValue( PhysicsCategory.Enemy, forKey: "category")
+        Bom.physicsBody?.categoryBitMask = PhysicsCategory.Enemy //衝突判定に使用する値の設定
+        Bom.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet
+        Bom.physicsBody?.collisionBitMask = PhysicsCategory.Enemy //衝突させたい物体Enemy
+        Bom.xScale = 1.0
+        Bom.yScale = 1.0
+        Bom.grade = 2
+        Bom.hp = 1000
+        Bom.type = "Bom"
+        Bom.maxHp = 1000//敵1の最大のHp
+        
+        let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
+        
+        HpBarBack.name = "HpBarBack"
+        HpBarBack.position = CGPoint(x: -5,y: -25)
+        Bom.addChild(HpBarBack)
+        
+        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))//敵2のhpの量を表示
+        
+        HpBar.name = "HpBar"
+        HpBar.position = CGPoint(x: -5,y: -25)
+        HpBar.zPosition = 1
+        HpBar.xScale = CGFloat( Double(Bom.hp!) / Double(Bom.maxHp!) )//x方向の倍率
+        Bom.addChild(HpBar)
+        
+        let GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
+        
+        GradeIcon.name = "Gradeicon"
+        GradeIcon.position = CGPoint(x: -37, y: -25)
+        GradeIcon.xScale = 0.3
+        GradeIcon.yScale = 0.3
+        Bom.addChild(GradeIcon)
+        
+        let GradeLabel = SKLabelNode()
+        
+        GradeLabel.name = "GradeLabel"
+        GradeLabel.fontSize = 20// フォントサイズを設定.
+        GradeLabel.fontColor = UIColor.black// 色を指定(赤).
+        GradeLabel.position = CGPoint(x: -37, y: -30)// 表示するポジションを指定.
+        GradeLabel.text = " \(Bom.grade!)"
+        Bom.addChild(GradeLabel)
+        
+        
+        return Bom
+        
     }
     
     //////////////////////////移動系メソッド集/////////////////////////////////
