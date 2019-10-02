@@ -12,8 +12,14 @@ import SpriteKit
 class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装用のScene
     
     
-    let numberLabel = SKLabelNode()//文字を表示する。
-    let phaseLabel = SKLabelNode()//文字を表示する。
+    let numberLabel = SKLabelNode()//フェイズの時間を表示する。
+    let phaseLabel = SKLabelNode()//フェイズを表示する。
+    let waveLabel = SKLabelNode()//waveを表示する。
+    
+    var waveNumber:Int = 0
+    var maxWaveNumber:Int = 0
+    
+    var Stage:[[Enemy]] = []
     
     var MainTimer:Timer?
     var phasenumber:Int = 0
@@ -94,6 +100,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     var ItemCount:Int = 1
     
     
+    
     let userDefaults = UserDefaults.standard//ダメージ管理用のuserdefaults
     
     //衝突判定のためのビットマスク作成
@@ -129,6 +136,12 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         numberLabel.position = CGPoint(x: 448, y: 364)// 表示するポジションを指定.今回は中央
         numberLabel.text = "0"
         self.addChild(numberLabel)//シーンに追加
+        
+        waveLabel.fontSize = 35// フォントサイズを設定.
+        waveLabel.fontColor = UIColor.black// 色を指定(青).
+        waveLabel.position = CGPoint(x: 748, y: 364)// 表示するポジションを指定.今回は中央
+        waveLabel.text = "wave: \(waveNumber) / \(maxWaveNumber) "
+        self.addChild(waveLabel)//シーンに追加
         
         
         self.MainTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.mainTimerupdate), userInfo: nil, repeats: true)
@@ -473,22 +486,10 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         AllyArray.append(ally2)
         AllyArray.append(ally3)
         
-        //敵作成
-        let Queen1 = self.makeQueen(position: CGPoint(x: 600,y: 250))
-        self.addChild(Queen1)
-        Queen1.id = EnemyArray.count
-        EnemyArray.append(Queen1)
         
-        let Soilder1 = self.makeSoiler(position: CGPoint(x: 700,y: 150))
-        self.addChild(Soilder1)
-        Soilder1.id = EnemyArray.count
-        EnemyArray.append(Soilder1)
+        Stage = self.makeStage(stage: 1)
         
-        let Bom1 = self.makeBom(position: CGPoint(x: 450,y: 250))
-        self.addChild(Bom1)
-        Bom1.id = EnemyArray.count
-        EnemyArray.append(Bom1)
-        
+        self.addEnemy()
         
         self.start() //始める時の処理
 
@@ -1021,6 +1022,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                                 savei = i
                             }
                         }
+                        
                         if shortestDistance >= 50 { //距離が遠い時は近づく
                             
                             var relativepostion:CGPoint = CGPoint(x: 0,y: 0)
@@ -1234,7 +1236,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
             }
             
-            
         }
     }
     
@@ -1286,7 +1287,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             bullet.name  = "bullet"
                             bullet.userData = NSMutableDictionary()
                             bullet.userData?.setValue( PhysicsCategory.Bullet, forKey: "category")
-                            bullet.damage = 400
+                            bullet.damage = 1000  //400
                             //bullet.physicsBody = SKPhysicsBody(rectangleOf: bullet.size)
                             bullet.physicsBody?.categoryBitMask = PhysicsCategory.Bullet //衝突判定に使用する値の設定
                             bullet.physicsBody?.collisionBitMask = PhysicsCategory.Enemy
@@ -2129,13 +2130,26 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 }
                 
                 if EnemyArray.count == 0 {
-                    self.gameover(side: "ally")
+                    
+                    waveNumber = waveNumber + 1
+                    
+                    if waveNumber < maxWaveNumber {
+                        
+                        self.addEnemy()
+                        waveLabel.text = "wave: \(waveNumber + 1) / \(maxWaveNumber) "
+                        
+                    } else {
+                        
+                        self.gameover(side: "enemy")
+                        
+                    }
+                    
                 }
                 
             }
             
             if enemy.type == "Queen" {//女王は一発で倒さないと失敗。
-                if EnemyArray[Index].hp! >= 0 {
+                if enemy.hp! > 0 {
                     self.gameover(side: "ally")
                 }
             }
@@ -2285,7 +2299,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             gameclearBack.name = " gameclear"
             gameclearBack.position = CGPoint(x: 448, y: 207)
             gameclearBack.zPosition = 6
-            self.addChild( gameclearBack)
+            self.addChild(gameclearBack)
             
             if MainTimer?.isValid == true {
                 MainTimer?.invalidate()
@@ -2320,6 +2334,59 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         damageLabel.run(SKAction.sequence([wait,fadeout,remove]))
         damageEffectBack.run(SKAction.sequence([wait,fadeout,remove]))
         
+    }
+    
+    func addEnemy() {
+        
+        for enemy in Stage[waveNumber] {
+            
+            enemy.alpha = 0.0
+            self.addChild(enemy)
+            
+            let fadeIn = SKAction.fadeIn(withDuration: 1.0)
+            enemy.run(fadeIn)
+            
+        }
+        
+        EnemyArray = Stage[waveNumber]
+        
+    }
+    
+    func makeStage(stage:Int) -> [[Enemy]] {
+        
+        var stagearray:[[Enemy]] = []
+        
+        if stage == 1 {
+            
+            var firstArray:[Enemy] = []
+            
+            let Soilder1 = self.makeSoiler(position: CGPoint(x: 700,y: 150))
+            Soilder1.id = firstArray.count
+            firstArray.append(Soilder1)
+            
+            let Bom1 = self.makeBom(position: CGPoint(x: 450,y: 250))
+            Bom1.id = firstArray.count
+            firstArray.append(Bom1)
+            
+            stagearray.append(firstArray)
+            
+            var secondArray:[Enemy] = []
+            
+            let Queen1 = self.makeQueen(position: CGPoint(x: 600,y: 250))
+            Queen1.id = secondArray.count
+            secondArray.append(Queen1)
+            
+            stagearray.append(secondArray)
+            
+            maxWaveNumber = stagearray.count
+            
+            waveLabel.text = "wave: \(waveNumber + 1) / \(maxWaveNumber) "
+            
+            return stagearray
+            
+        }
+        
+        return stagearray
     }
     
     //////////////////////////敵作成系メソッド集/////////////////////////////////
