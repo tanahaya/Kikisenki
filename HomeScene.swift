@@ -27,6 +27,7 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
     
     var levelup = SKSpriteNode(imageNamed: "levelup")
     
+    let userDefaults = UserDefaults.standard//管理用のuserdefaults
     
     override func didMove(to view: SKView) {
         
@@ -178,28 +179,40 @@ class HomeScene : SKScene, SKPhysicsContactDelegate{
             switch self.atPoint(location).name  {//可変レベル
                 
             case "mapIcon1":
+                userDefaults.set(1, forKey: "world")
                 self.gotoSelectScene()
             case "mapIcon2":
+                userDefaults.set(2, forKey: "world")
                 self.gotoSelectScene()
             case "mapIcon3":
+                userDefaults.set(3, forKey: "world")
                 self.gotoSelectScene()
             case "mapIcon4":
+                userDefaults.set(4, forKey: "world")
                 self.gotoSelectScene()
             case "mapIcon5":
+                userDefaults.set(5, forKey: "world")
                 self.gotoSelectScene()
             case "mapIcon6":
+                userDefaults.set(6, forKey: "world")
                 self.gotoSelectScene()
             case "mapIcon7":
+                userDefaults.set(7, forKey: "world")
                 self.gotoSelectScene()
             case "mapIcon8":
+                userDefaults.set(8, forKey: "world")
                 self.gotoSelectScene()
             case "mapIcon9":
+                userDefaults.set(9, forKey: "world")
                 self.gotoSelectScene()
             case "mapIcon10":
+                userDefaults.set(10, forKey: "world")
                 self.gotoSelectScene()
             case "mapIcon11":
+                userDefaults.set(11, forKey: "world")
                 self.gotoSelectScene()
             case "levelup":
+                userDefaults.set(12, forKey: "world")
                 self.gotoStatesScene()
             default:
                 print("nomalarea")

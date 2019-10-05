@@ -21,7 +21,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         View.showsFPS = true
         View.showsNodeCount = true
         View.isMultipleTouchEnabled = false
-        View.showsPhysics = true
+        //View.showsPhysics = true
+        View.showsPhysics = false
         
         View.presentScene(startScene)
         

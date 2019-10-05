@@ -21,12 +21,49 @@ class ConversationScene : SKScene, SKPhysicsContactDelegate{
     var pageNumber:Int = 0
     
     var maxPageNumber = 0
- 
+    
+    let userDefaults = UserDefaults.standard//管理用のuserdefaults
+    
     override func didMove(to view: SKView) {
         
         var list:[String] = []//一度入れる。
         
-        let path = Bundle.main.path(forResource: "story1", ofType: "csv")
+        let world:Int = userDefaults.integer(forKey: "world")
+        let story:Int = userDefaults.integer(forKey: "story")
+        
+        var path = Bundle.main.path(forResource: "story1", ofType: "csv")
+        
+        if world == 1 {
+            
+            if story == 1 {
+                path = Bundle.main.path(forResource: "story1", ofType: "csv")
+            } else if story == 2 {
+                path = Bundle.main.path(forResource: "story2", ofType: "csv")
+            }
+            
+        } else if world == 2 {
+            
+        } else if world == 3 {
+                   
+        } else if world == 4 {
+                   
+        } else if world == 5 {
+                   
+        } else if world == 6 {
+                   
+        } else if world == 7 {
+                   
+        } else if world == 8 {
+                   
+        } else if world == 9 {
+                   
+        } else if world == 10 {
+                   
+        } else if world == 11 {
+                   
+        } else if world == 12 {
+                   
+        }
         
         do {
             let text = try String(contentsOfFile: path!, encoding: String.Encoding.utf8)
@@ -114,7 +151,9 @@ class ConversationScene : SKScene, SKPhysicsContactDelegate{
     func text(page:Int) {
         
         let detail = serifArray[page].components(separatedBy: ",")
+        
         nameLabel.text = "\(detail[1])"
+        serifLabel.numberOfLines = 2
         serifLabel.text = "\(detail[5])"
         
     }
