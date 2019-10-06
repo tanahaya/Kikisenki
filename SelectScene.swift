@@ -88,7 +88,7 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
             let battlearrow2 = SKSpriteNode(imageNamed: "battlearrow1-2")
             
             battlearrow2.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "battlearrow1-2"), size: battlearrow2.size)
-            battlearrow2.name = "storyarrow2"
+            battlearrow2.name = "battlearrow2"
             battlearrow2.position = CGPoint(x: 657,y: 130)
             battlearrow2.physicsBody?.categoryBitMask = 0
             battlearrow2.physicsBody?.collisionBitMask = 0

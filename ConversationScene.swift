@@ -15,6 +15,7 @@ class ConversationScene : SKScene, SKPhysicsContactDelegate{
     
     let nameLabel = SKLabelNode()
     let serifLabel = SKLabelNode()//文字を表示する。
+    let serifLabel2 = SKLabelNode()
     
     var serifArray:[String] = []
     
@@ -85,7 +86,7 @@ class ConversationScene : SKScene, SKPhysicsContactDelegate{
                 
                 let detail = data.components(separatedBy: ",")
                 
-                print("【id】\(detail[0]) 【名前】\(detail[1]) 【位置】\(detail[2]) 【左画像】\(detail[3])【右画像】\(detail[4])【セリフ】\(detail[5]) ")
+                print("【id】\(detail[0]) 【名前】\(detail[1]) 【位置】\(detail[2]) 【左画像】\(detail[3])【右画像】\(detail[4])【セリフ】\(detail[5])")
                 
                 serifArray.append(data)
                 
@@ -116,17 +117,17 @@ class ConversationScene : SKScene, SKPhysicsContactDelegate{
         self.addChild(nameLabel)//シーンに追加
         
         
-        serifLabel.fontSize = 27 // フォントサイズを設定.
+        serifLabel.fontSize = 24 // フォントサイズを設定.
         serifLabel.fontColor = UIColor.black// 色を指定(青).
         serifLabel.horizontalAlignmentMode = .left
-        if serifLabel.numberOfLines == 1 {
-            serifLabel.position = CGPoint(x: 80, y: 120)// 表示するポジションを指定.今回は中央
-        } else if serifLabel.numberOfLines == 2 {
-            serifLabel.position = CGPoint(x: 80, y: 70)// 表示するポジションを指定.今回は中央
-        } else if serifLabel.numberOfLines == 3 {
-            serifLabel.position = CGPoint(x: 80, y: 70)// 表示するポジションを指定.今回は中央
-        }
+        serifLabel.position = CGPoint(x: 80, y: 120)// 表示するポジションを指定.今回は中央
         self.addChild(serifLabel)//シーンに追加
+        
+        serifLabel2.fontSize = 24 // フォントサイズを設定.
+        serifLabel2.fontColor = UIColor.black// 色を指定(青).
+        serifLabel2.horizontalAlignmentMode = .left
+        serifLabel2.position = CGPoint(x: 80, y: 80)// 表示するポジションを指定.今回は中央
+        self.addChild(serifLabel2)//シーンに追加
         
         self.text(page: pageNumber)
         
@@ -153,8 +154,14 @@ class ConversationScene : SKScene, SKPhysicsContactDelegate{
         let detail = serifArray[page].components(separatedBy: ",")
         
         nameLabel.text = "\(detail[1])"
-        serifLabel.numberOfLines = 2
-        serifLabel.text = "\(detail[5])"
+        
+        if detail.count ==  6 {
+            serifLabel.text = "\(detail[5])"
+            serifLabel2.text = ""
+        } else if detail.count == 7 {
+            serifLabel.text = "\(detail[5])"
+            serifLabel2.text = "\(detail[6])"
+        }
         
     }
     
