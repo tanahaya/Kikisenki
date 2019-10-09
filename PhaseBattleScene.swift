@@ -2044,6 +2044,38 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
             }
             
+        } else if world == 3 {
+            
+            if stage == 1 {
+                
+                var firstArray:[Enemy] = []
+                
+                let tank1 = self.makeTank(position: CGPoint(x: 650,y: 250))
+                tank1.id = firstArray.count
+                firstArray.append(tank1)
+                
+                stagearray.append(firstArray)
+                
+                maxWaveNumber = stagearray.count
+                
+                waveLabel.text = "wave: \(waveNumber + 1) / \(maxWaveNumber) "
+                
+            } else if stage == 2 { //とりあえず、stage1と同じにしています。
+                
+                var firstArray:[Enemy] = []
+                
+                let tank1 = self.makeTank(position: CGPoint(x: 650,y: 250))
+                tank1.id = firstArray.count
+                firstArray.append(tank1)
+                
+                stagearray.append(firstArray)
+                
+                maxWaveNumber = stagearray.count
+                
+                waveLabel.text = "wave: \(waveNumber + 1) / \(maxWaveNumber) "
+                
+            }
+            
         }
         
         return stagearray
@@ -2070,7 +2102,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Soldier.grade = 2
         Soldier.hp = 700
         Soldier.type = "Soldier"
-        Soldier.maxHp = 1000//敵1の最大のHp
+        Soldier.maxHp = 1000//最大のHp
         
         let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
         
@@ -2127,7 +2159,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Queen.grade = 2
         Queen.hp = 1000
         Queen.type = "Queen"
-        Queen.maxHp = 1000//敵1の最大のHp
+        Queen.maxHp = 1000//最大のHp
         
         let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
         
@@ -2184,7 +2216,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Bom.grade = 2
         Bom.hp = 100
         Bom.type = "Bom"
-        Bom.maxHp = 100//敵1の最大のHp
+        Bom.maxHp = 100//最大のHp
         
         let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
         
@@ -2241,7 +2273,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Warp.grade = 2
         Warp.hp = 500
         Warp.type = "Warp"
-        Warp.maxHp = 500//敵1の最大のHp
+        Warp.maxHp = 500//最大のHp
         
         let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
         
@@ -2296,9 +2328,9 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         WarpBoss.xScale = 1.5
         WarpBoss.yScale = 1.5
         WarpBoss.grade = 2
-        WarpBoss.hp = 2000
+        WarpBoss.hp = 1000
         WarpBoss.type = "WarpBoss"
-        WarpBoss.maxHp = 2000//敵1の最大のHp
+        WarpBoss.maxHp = 1000//最大のHp
         
         let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
         
@@ -2333,6 +2365,63 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
         
         return WarpBoss
+        
+    }
+    
+    func makeTank(position:CGPoint) -> Enemy  {
+        
+        let Tank = Enemy(imageNamed: "Tank")
+        
+        Tank.name = "Tank"
+        Tank.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Tank"), size: Tank.size)
+        Tank.physicsBody?.isDynamic = false
+        Tank.physicsBody?.restitution = 1.0
+        Tank.position = position
+        Tank.userData = NSMutableDictionary()
+        Tank.userData?.setValue( PhysicsCategory.Enemy, forKey: "category")
+        Tank.physicsBody?.categoryBitMask = PhysicsCategory.Enemy //衝突判定に使用する値の設定
+        Tank.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet
+        Tank.physicsBody?.collisionBitMask = PhysicsCategory.Enemy //衝突させたい物体Enemy
+        Tank.xScale = 1.5
+        Tank.yScale = 1.5
+        Tank.grade = 2
+        Tank.hp = 3000
+        Tank.type = "Tank"
+        Tank.maxHp = 3000//最大のHp
+        
+        let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
+        
+        HpBarBack.name = "HpBarBack"
+        HpBarBack.position = CGPoint(x: -5,y: -25)
+        Tank.addChild(HpBarBack)
+        
+        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))//敵2のhpの量を表示
+        
+        HpBar.name = "HpBar"
+        HpBar.position = CGPoint(x: -5,y: -25)
+        HpBar.zPosition = 1
+        HpBar.xScale = CGFloat( Double(Tank.hp!) / Double(Tank.maxHp!) )//x方向の倍率
+        Tank.addChild(HpBar)
+        
+        let GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
+        
+        GradeIcon.name = "Gradeicon"
+        GradeIcon.position = CGPoint(x: -37, y: -25)
+        GradeIcon.xScale = 0.3
+        GradeIcon.yScale = 0.3
+        Tank.addChild(GradeIcon)
+        
+        let GradeLabel = SKLabelNode()
+        
+        GradeLabel.name = "GradeLabel"
+        GradeLabel.fontSize = 20// フォントサイズを設定.
+        GradeLabel.fontColor = UIColor.black// 色を指定(赤).
+        GradeLabel.position = CGPoint(x: -37, y: -30)// 表示するポジションを指定.
+        GradeLabel.text = " \(Tank.grade!)"
+        Tank.addChild(GradeLabel)
+        
+        
+        return Tank
         
     }
     
@@ -2441,6 +2530,28 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
                 if enemy.type == "WarpBoss" {
                     //移動しない。
+                }
+                
+                if enemy.type == "Tank"  {
+                    
+                    if phasenumber == 20 {
+                        
+                        var shortestDistance:CGFloat = 50000.0 //大きい数字をとりあえず、代入します。
+                        var savei:Int = 0
+                        
+                        for i in 0 ..< AllyArray.count {
+                            if shortestDistance >= length(v: CGPoint(x: enemy.position.x - AllyArray[i].position.x,y: enemy.position.y - AllyArray[i].position.y)) {
+                                shortestDistance = length(v: CGPoint(x: enemy.position.x - AllyArray[i].position.x,y: enemy.position.y - AllyArray[i].position.y))
+                                savei = i
+                            }
+                        }
+                        
+                        let travelTime = SKAction.move(to: CGPoint(x: enemy.position.x,y: AllyArray[savei].position.y), duration: 5.0)
+                        
+                        enemy.run(travelTime)
+                        
+                    }
+                    
                 }
                 
                 if enemy.type == "Queen" {
@@ -2773,6 +2884,52 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         }
                         
                     }
+                    
+                }
+                
+            }
+            
+            if enemy.type == "Tank" {
+                
+                if phasenumber == 24 {
+                    
+                    let alert = SKSpriteNode(color: UIColor.red, size: CGSize(width: enemy.position.x - 10 - (enemy.size.width / 2), height: 50.0))
+                    alert.position = CGPoint(x: (enemy.position.x - 10 - (enemy.size.width / 2)) / 2,y: enemy.position.y) //生成位置の設定
+                    alert.name  = "alert"
+                    alert.physicsBody?.categoryBitMask = 0
+                    alert.physicsBody?.collisionBitMask = 0
+                    alert.physicsBody?.contactTestBitMask = 0
+                    alert.alpha = 0.0
+                    self.addChild(alert)
+                    
+                    let fadeIn = SKAction.fadeIn(withDuration: 0.2)
+                    let fadeOut = SKAction.fadeOut(withDuration: 0.2)
+                    
+                    alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                    
+                }
+                
+                if phasenumber == 40 {
+                    
+                    let bulletdamage:Int = 400
+                    
+                    let bullet1 = Bullet(color: UIColor.black, size: CGSize(width:  30.0, height: 15.0))//skill1の四角
+                    bullet1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Back"), size: bullet1.size)
+                    bullet1.position = CGPoint(x: enemy.position.x,y: enemy.position.y) //生成位置の設定
+                    bullet1.name  = "bullet"
+                    bullet1.userData = NSMutableDictionary()
+                    bullet1.userData?.setValue( PhysicsCategory.eBullet, forKey: "category")
+                    bullet1.damage = bulletdamage
+                    bullet1.physicsBody?.categoryBitMask = PhysicsCategory.eBullet //衝突判定に使用する値の設定
+                    bullet1.physicsBody?.collisionBitMask = PhysicsCategory.Enemy
+                    bullet1.physicsBody?.contactTestBitMask = PhysicsCategory.eBullet
+                    self.addChild(bullet1)//Bullet表示
+                    
+                    let travelTime1 = SKAction.moveTo(x: enemy.position
+                        .x - self.size.width, duration: 0.6)
+                    let actionDone = SKAction.removeFromParent()
+                    
+                    bullet1.run(SKAction.sequence([travelTime1,actionDone]))
                     
                 }
                 
