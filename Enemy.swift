@@ -18,6 +18,7 @@ class Enemy : SKSpriteNode {
     var grade:Int?//現在のgradeを保存する。
     var moveEnable:Bool = true//移動できるかどうか判定する。
     var type: String?//敵の種類を把握する。
+    var defence: Int?
     
     func test() -> String {
         return "Hello"

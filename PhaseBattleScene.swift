@@ -228,8 +228,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
                 if ItemCount <= 3 {
                     
-                    ItemCount = ItemCount + 1
-                    
                     if Int.random(in: 0 ..< 2) == 0 { //毎ターン回復アイテムかgradeupアイテムがフィールドに現れる。
                         
                         print("makeheart")
@@ -687,20 +685,32 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             }
                             
                             print("targetenemy: \(EnemyArray[savei].id!)")
-                            
+                            var damage = 0
                             if ally1.grade! == 0 {
-                                self.changeEnemyHp(change: -( 10 + Int( 0.2 * shortestDistance )), id: EnemyArray[savei].id!)
-                                self.damageEffect(damageposition: EnemyArray[savei].position, damage: -( 10 + Int( 0.2 * shortestDistance )))
+                                damage = -( 10 + Int( 0.2 * shortestDistance )) + EnemyArray[savei].defence!
+                                if damage > 0 {
+                                    damage = 0
+                                }
+                                self.changeEnemyHp(change: damage, id: EnemyArray[savei].id!)
+                                self.damageEffect(damageposition: EnemyArray[savei].position, damage: damage)
                             } else if ally1.grade! == 1 {
-                                print("ally2Skill1")
-                                self.changeEnemyHp(change: -( 70 + Int( 0.25 * shortestDistance )), id: EnemyArray[savei].id!)
-                                self.damageEffect(damageposition: EnemyArray[savei].position, damage: -( 70 + Int( 0.25 * shortestDistance )))
+                                damage = -( 70 + Int( 0.25 * shortestDistance )) + EnemyArray[savei].defence!
+                                if damage > 0 {
+                                    damage = 0
+                                }
+                                self.changeEnemyHp(change: damage, id: EnemyArray[savei].id!)
+                                self.damageEffect(damageposition: EnemyArray[savei].position, damage: damage)
                             } else if ally1.grade! == 2 {
                                 print("ally2Skill1G1")
-                                self.changeEnemyHp(change: -( 300 + Int( shortestDistance )), id: EnemyArray[savei].id!)
-                                self.damageEffect(damageposition: EnemyArray[savei].position, damage: -( 300 + Int(shortestDistance )))
+                                damage = -( 300 + Int( shortestDistance )) + EnemyArray[savei].defence!
+                                if damage > 0 {
+                                    damage = 0
+                                }
+                                self.changeEnemyHp(change: damage, id: EnemyArray[savei].id!)
+                                self.damageEffect(damageposition: EnemyArray[savei].position, damage: damage)
                             } else if ally1.grade! == 3 {
                                 print("ally2Skill1G2")
+                                damage = -3000 //防御貫通攻撃。
                                 self.changeEnemyHp(change: -3000, id: EnemyArray[savei].id!)
                                 self.damageEffect(damageposition: EnemyArray[savei].position, damage: -3000)
                             }
@@ -897,7 +907,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                         }
                         
-                        if self.atPoint(location).name == "ally2Skill2" {//skill2の発動。範囲内の敵を全員攻撃する。
+                        if self.atPoint(location).name == "ally2Skill2" {//skill2の発動。毒霧で攻撃する。敵のグレードを下げる。
                             
                             let poison = Bullet(color: UIColor.black, size: CGSize(width:  50.0, height: 50.0))
                             
@@ -921,28 +931,45 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                         }
                         
-                        if self.atPoint(location).name == "ally2Skill3" {//skill3の発動。毒霧で攻撃する。敵のグレードを下げる。
+                        if self.atPoint(location).name == "ally2Skill3" {//skill3の発動。範囲内の敵を全員攻撃する。
                             
                             
                             for i in 0 ..< EnemyArray.count {
                                 if 300 >= length(v: CGPoint(x: ally2.position.x - EnemyArray[i].position.x,y: ally2.position.y - EnemyArray[i].position.y)) {
-                                    
+                                    var damage = 0
                                     if ally2.grade! == 0 {
                                         print("ally2Skill2")
-                                        self.changeEnemyHp(change: -15, id: EnemyArray[i].id!)
-                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: -15 )
+                                        damage = -15 + EnemyArray[i].defence!
+                                        if damage > 0 {
+                                            damage = 0
+                                        }
+                                        self.changeEnemyHp(change: damage
+                                            , id: EnemyArray[i].id!)
+                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: damage )
                                     } else if ally2.grade! == 1 {
                                         print("ally2Skill2")
-                                        self.changeEnemyHp(change: -80, id: EnemyArray[i].id!)
-                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: -80 )
+                                        damage = -80 + EnemyArray[i].defence!
+                                        if damage > 0 {
+                                            damage = 0
+                                        }
+                                        self.changeEnemyHp(change: damage, id: EnemyArray[i].id!)
+                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: damage )
                                     } else if ally2.grade! == 2 {
                                         print("ally2Skill2G2")
-                                        self.changeEnemyHp(change: -250, id: EnemyArray[i].id!)
-                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: -250 )
+                                        damage = -250 + EnemyArray[i].defence!
+                                        if damage > 0 {
+                                            damage = 0
+                                        }
+                                        self.changeEnemyHp(change: damage, id: EnemyArray[i].id!)
+                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: damage )
                                     } else if ally2.grade! == 3 {
                                         print("ally2Skill2G3")
-                                        self.changeEnemyHp(change: -1400, id: EnemyArray[i].id!)
-                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: -1400 )
+                                        damage = -1400 + EnemyArray[i].defence!
+                                        if damage > 0 {
+                                            damage = 0
+                                        }
+                                        self.changeEnemyHp(change: damage, id: EnemyArray[i].id!)
+                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: damage )
                                     }
                                     
                                     ally2.grade! = 1 //gradeをリセットする。
@@ -1172,23 +1199,39 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                             for i in 0 ..< EnemyArray.count {
                                 if 200 >= length(v: CGPoint(x: ally3.position.x - EnemyArray[i].position.x,y: ally3.position.y - EnemyArray[i].position.y)) {
-                                    
+                                    var damage = 0
                                     if ally3.grade! == 0 {
                                         print("ally3Skill4G0")
-                                        self.changeEnemyHp(change: -10, id: EnemyArray[i].id!)
-                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: -10 )
+                                        damage = -10 + EnemyArray[i].defence!
+                                        if damage > 0 {
+                                            damage = 0
+                                        }
+                                        self.changeEnemyHp(change: damage, id: EnemyArray[i].id!)
+                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: damage )
                                     } else if ally3.grade! == 1 {
                                         print("ally3Skill4")
-                                        self.changeEnemyHp(change: -60, id: EnemyArray[i].id!)
-                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: -60 )
+                                        damage = -60 + EnemyArray[i].defence!
+                                        if damage > 0 {
+                                            damage = 0
+                                        }
+                                        self.changeEnemyHp(change: damage, id: EnemyArray[i].id!)
+                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: damage )
                                     } else if ally3.grade! == 2 {
                                         print("ally3Skill4G1")
-                                        self.changeEnemyHp(change: -160, id: EnemyArray[i].id!)
-                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: -160 )
+                                        damage = -160 + EnemyArray[i].defence!
+                                        if damage > 0 {
+                                            damage = 0
+                                        }
+                                        self.changeEnemyHp(change: damage, id: EnemyArray[i].id!)
+                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: damage )
                                     } else if ally3.grade! == 3 {
                                         print("ally3Skill4G2")
-                                        self.changeEnemyHp(change: -1000, id: EnemyArray[i].id!)
-                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: -1000 )
+                                        damage = -1000 + EnemyArray[i].defence!
+                                        if damage > 0 {
+                                            damage = 0
+                                        }
+                                        self.changeEnemyHp(change: damage, id: EnemyArray[i].id!)
+                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: damage )
                                     }
                                     
                                     ally3.grade! = 1//gradeをリセットする。
@@ -1250,9 +1293,15 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                     if nodeA.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Bullet {
                         
-                        self.changeEnemyHp(change: -(nodeA as! Bullet).damage!, id: (nodeB as! Enemy).id!)
+                        var damage = -(nodeA as! Bullet).damage! + (nodeB as! Enemy).defence!
                         
-                        self.damageEffect(damageposition: nodeA.position,damage: (nodeA as! Bullet).damage!)
+                        if damage > 0 {
+                            damage = 0
+                        }
+                        
+                        self.changeEnemyHp(change: damage, id: (nodeB as! Enemy).id!)
+                        
+                        self.damageEffect(damageposition: nodeA.position,damage: -damage)
                         
                         if nodeA.name == "poison" {
                             
@@ -1304,11 +1353,16 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         
                     } else if nodeB.userData?.value(forKey: "category") as! UInt32 == PhysicsCategory.Bullet {
                         
-                        print((nodeB as! Bullet).damage!)
-                        print((nodeA as! Enemy).id!)
-                        self.changeEnemyHp(change: -(nodeB as! Bullet).damage!, id: (nodeA as! Enemy).id!)
+                        var damage = -(nodeB as! Bullet).damage! + (nodeA as! Enemy).defence!
                         
-                        self.damageEffect(damageposition: nodeB.position,damage: (nodeB as! Bullet).damage!)
+                        if damage > 0 {
+                            damage = 0
+                        }
+                        
+                        self.changeEnemyHp(change: damage, id: (nodeA as! Enemy).id!)
+                        
+                        self.damageEffect(damageposition: nodeB.position,damage: -damage)
+
                         
                         if nodeB.name == "poison" {
                             
@@ -1443,27 +1497,27 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     }
                     
                     if nodeA.name == "gradeup" || nodeB.name == "gradeup" {
-                        //Itemを取った時の処理
+                        
                         print("getgradeupItem")
                         ItemCount = ItemCount - 1
                         
                         if nodeA.name == "Ally1" || nodeB.name == "Ally1" {
                             
-                            if ally1.grade! <= 1 {
+                            if ally1.grade! < 3 {
                                 ally1.grade! = ally1.grade! + 1
                             }
                             ally1GradeLabel.text =  "\(ally1.grade!)"
                             
                         } else if nodeA.name == "Ally2" || nodeB.name == "Ally2" {
                             
-                            if ally2.grade! <= 1 {
+                            if ally2.grade! < 3 {
                                 ally2.grade! = ally2.grade! + 1
                             }
                             ally2GradeLabel.text =  "\(ally2.grade!)"
                             
                         } else if nodeA.name == "Ally3" || nodeB.name == "Ally3" {
                             
-                            if ally3.grade! <= 1 {
+                            if ally3.grade! < 3 {
                                 ally3.grade! = ally3.grade! + 1
                             }
                             ally3GradeLabel.text =  "\(ally3.grade!)"
@@ -1529,6 +1583,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     MoveMarker1.removeFromParent()
                     
                 }
+                
                 if AllyArray.count == 0 {
                     self.gameover(side: "ally")
                 }
@@ -1799,20 +1854,22 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
         Heart.physicsBody?.usesPreciseCollisionDetection = true//精度の高い衝突判定を行う。
         Heart.physicsBody?.friction = 0//摩擦係数を0にする
-        Heart.name = "haert"
+        Heart.name = "heart"
         Heart.physicsBody?.isDynamic = false
         Heart.physicsBody?.restitution = 1.0 // 1.0にしたい。
         Heart.physicsBody?.allowsRotation = false
         Heart.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "heart.png"), size: Heart.size)
-        Heart.physicsBody?.categoryBitMask = 0//物体のカテゴリ次元をHeart
-        Heart.physicsBody?.contactTestBitMask = PhysicsCategory.Ally //衝突を検知するカテゴリ
-        Heart.physicsBody?.collisionBitMask = 0 //衝突させたい物体＝＞なし
+        Heart.physicsBody?.categoryBitMask = PhysicsCategory.eBullet
+        Heart.physicsBody?.collisionBitMask = PhysicsCategory.Ally
+        Heart.physicsBody?.contactTestBitMask = PhysicsCategory.eBullet
         Heart.position = CGPoint(x: 50 + x,y: 50 + y)
         Heart.userData = NSMutableDictionary()
         Heart.userData?.setValue( PhysicsCategory.Item, forKey: "category")
         Heart.xScale = 0.7
         Heart.yScale = 0.7
         self.addChild(Heart)
+        
+        ItemCount = ItemCount + 1
         
     }
     
@@ -1821,21 +1878,23 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         let GradeItem = SKSpriteNode(imageNamed: "gradeup")
         
         GradeItem.physicsBody?.usesPreciseCollisionDetection = true//精度の高い衝突判定を行う。
-        GradeItem.physicsBody?.friction = 0//摩擦係数を0にする
+        GradeItem.physicsBody?.friction = 0 //摩擦係数を0にする
         GradeItem.name = "gradeup"
         GradeItem.physicsBody?.isDynamic = false
         GradeItem.physicsBody?.restitution = 1.0 // 1.0にしたい。
         GradeItem.physicsBody?.allowsRotation = false
         GradeItem.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "gradeup.png"), size: GradeItem.size)
-        GradeItem.physicsBody?.categoryBitMask = 0//物体のカテゴリ次元をHeart
-        GradeItem.physicsBody?.contactTestBitMask = PhysicsCategory.Ally //衝突を検知するカテゴリ
-        GradeItem.physicsBody?.collisionBitMask = 0 //衝突させたい物体＝＞なし
+        GradeItem.physicsBody?.categoryBitMask = PhysicsCategory.eBullet //衝突判定に使用する値の設定
+        GradeItem.physicsBody?.collisionBitMask = PhysicsCategory.Ally
+        GradeItem.physicsBody?.contactTestBitMask = PhysicsCategory.eBullet
         GradeItem.position = CGPoint(x: 50 + x,y: 50 + y)
         GradeItem.userData = NSMutableDictionary()
         GradeItem.userData?.setValue( PhysicsCategory.Item, forKey: "category")
         GradeItem.xScale = 0.7
         GradeItem.yScale = 0.7
         self.addChild(GradeItem)
+        
+        ItemCount = ItemCount + 1
         
     }
     
@@ -2101,8 +2160,9 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Soldier.yScale = 1.0
         Soldier.grade = 2
         Soldier.hp = 700
+        Soldier.defence = 0
         Soldier.type = "Soldier"
-        Soldier.maxHp = 1000//最大のHp
+        Soldier.maxHp = 700//最大のHp
         
         let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
         
@@ -2158,6 +2218,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Queen.yScale = 1.0
         Queen.grade = 2
         Queen.hp = 1000
+        Queen.defence = 0
         Queen.type = "Queen"
         Queen.maxHp = 1000//最大のHp
         
@@ -2215,6 +2276,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Bom.yScale = 1.0
         Bom.grade = 2
         Bom.hp = 100
+        Bom.defence = 0
         Bom.type = "Bom"
         Bom.maxHp = 100//最大のHp
         
@@ -2272,6 +2334,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Warp.yScale = 1.0
         Warp.grade = 2
         Warp.hp = 500
+        Warp.defence = 0
         Warp.type = "Warp"
         Warp.maxHp = 500//最大のHp
         
@@ -2329,6 +2392,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         WarpBoss.yScale = 1.5
         WarpBoss.grade = 2
         WarpBoss.hp = 1000
+        WarpBoss.defence = 20
         WarpBoss.type = "WarpBoss"
         WarpBoss.maxHp = 1000//最大のHp
         
@@ -2386,6 +2450,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Tank.yScale = 1.5
         Tank.grade = 2
         Tank.hp = 3000
+        Tank.defence = 100
         Tank.type = "Tank"
         Tank.maxHp = 3000//最大のHp
         
@@ -2540,10 +2605,12 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         var savei:Int = 0
                         
                         for i in 0 ..< AllyArray.count {
+                            
                             if shortestDistance >= length(v: CGPoint(x: enemy.position.x - AllyArray[i].position.x,y: enemy.position.y - AllyArray[i].position.y)) {
                                 shortestDistance = length(v: CGPoint(x: enemy.position.x - AllyArray[i].position.x,y: enemy.position.y - AllyArray[i].position.y))
                                 savei = i
                             }
+                            
                         }
                         
                         let travelTime = SKAction.move(to: CGPoint(x: enemy.position.x,y: AllyArray[savei].position.y), duration: 5.0)
@@ -2832,7 +2899,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     bullet1.userData?.setValue( PhysicsCategory.eBullet, forKey: "category")
                     bullet1.damage = bulletdamage
                     bullet1.physicsBody?.categoryBitMask = PhysicsCategory.eBullet //衝突判定に使用する値の設定
-                    bullet1.physicsBody?.collisionBitMask = PhysicsCategory.Enemy
+                    bullet1.physicsBody?.collisionBitMask = PhysicsCategory.Ally
                     bullet1.physicsBody?.contactTestBitMask = PhysicsCategory.eBullet
                     self.addChild(bullet1)//Bullet表示
                     
@@ -2921,7 +2988,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     bullet1.userData?.setValue( PhysicsCategory.eBullet, forKey: "category")
                     bullet1.damage = bulletdamage
                     bullet1.physicsBody?.categoryBitMask = PhysicsCategory.eBullet //衝突判定に使用する値の設定
-                    bullet1.physicsBody?.collisionBitMask = PhysicsCategory.Enemy
+                    bullet1.physicsBody?.collisionBitMask = PhysicsCategory.Ally
                     bullet1.physicsBody?.contactTestBitMask = PhysicsCategory.eBullet
                     self.addChild(bullet1)//Bullet表示
                     
@@ -3391,10 +3458,10 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     func overlap(location:CGPoint) -> Bool {//ポイントの背面がbackgroundならtrueを返す。
         
         if self.atPoint(location).name == "Background" {
-            return true
+            return false
         }
         
-        return false
+        return true
         
     }
     
