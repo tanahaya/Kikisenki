@@ -20,7 +20,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     var maxWaveNumber:Int = 0
     
     var Stage:[[Enemy]] = []
-    var waveEnemyNumber:Int = 0
+    var waveEnemyNumber:Int = 0//敵の数を管理する。
+    var turn:Int = 1
     
     var MainTimer:Timer?
     var phasenumber:Int = 0
@@ -186,6 +187,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             
             if phaseFlag { //Attackphaseに切り替わる時。
                 
+                turn = turn + 1//turnを増やす。
+                
                 phaseFlag = false
                 phaseLabel.text = "AttackPhase"
                 
@@ -338,7 +341,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                         }else{//違う場合距離にして3づつ近づく
                             
-                            let speed:Double = 3 //移動速度を決定する。
+                            let speed:Double = 5 //移動速度を決定する。
                             
                             let travelTime = SKAction.move( to: CGPoint(x: ally2.position.x - CGFloat( speed * cos(Double(direction))),y: ally2.position.y
                                 + CGFloat( speed * sin(Double(direction)))), duration: 0.01)
@@ -401,7 +404,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             self.EnemyMove()
             
         }
-        
         
     }
     
@@ -811,7 +813,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             syuriken1.name  = "syuriken"
                             syuriken1.userData = NSMutableDictionary()
                             syuriken1.userData?.setValue( PhysicsCategory.Bullet, forKey: "category")
-                            syuriken1.damage = 60
                             syuriken1.physicsBody?.categoryBitMask = PhysicsCategory.Bullet //衝突判定に使用する値の設定
                             syuriken1.physicsBody?.collisionBitMask = PhysicsCategory.Enemy
                             syuriken1.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet
@@ -830,7 +831,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             syuriken2.name  = "syuriken"
                             syuriken2.userData = NSMutableDictionary()
                             syuriken2.userData?.setValue( PhysicsCategory.Bullet, forKey: "category")
-                            syuriken2.damage = 60
                             syuriken2.physicsBody?.categoryBitMask = PhysicsCategory.Bullet //衝突判定に使用する値の設定
                             syuriken2.physicsBody?.collisionBitMask = PhysicsCategory.Enemy
                             syuriken2.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet
@@ -847,7 +847,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             syuriken3.name  = "syuriken"
                             syuriken3.userData = NSMutableDictionary()
                             syuriken3.userData?.setValue( PhysicsCategory.Bullet, forKey: "category")
-                            syuriken3.damage = 60
                             syuriken3.physicsBody?.categoryBitMask = PhysicsCategory.Bullet //衝突判定に使用する値の設定
                             syuriken3.physicsBody?.collisionBitMask = PhysicsCategory.Enemy
                             syuriken3.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet
@@ -864,7 +863,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             syuriken4.name  = "syuriken"
                             syuriken4.userData = NSMutableDictionary()
                             syuriken4.userData?.setValue( PhysicsCategory.Bullet, forKey: "category")
-                            syuriken4.damage = 60
                             syuriken4.physicsBody?.categoryBitMask = PhysicsCategory.Bullet //衝突判定に使用する値の設定
                             syuriken4.physicsBody?.collisionBitMask = PhysicsCategory.Enemy
                             syuriken4.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet
@@ -882,22 +880,22 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                                 syuriken4.damage = 5
                             } else if ally2.grade! == 1 {
                                 print("ally2Skill1")
-                                syuriken1.damage = 60
-                                syuriken2.damage = 60
-                                syuriken3.damage = 60
-                                syuriken4.damage = 60
+                                syuriken1.damage = 80
+                                syuriken2.damage = 80
+                                syuriken3.damage = 80
+                                syuriken4.damage = 80
                             } else if ally2.grade! == 2 {
                                 print("ally2Skill1G2")
-                                syuriken1.damage = 200
-                                syuriken2.damage = 200
-                                syuriken3.damage = 200
-                                syuriken4.damage = 200
+                                syuriken1.damage = 240
+                                syuriken2.damage = 240
+                                syuriken3.damage = 240
+                                syuriken4.damage = 240
                             } else if ally2.grade! == 3 {
                                 print("ally2Skill1G3")
-                                syuriken1.damage = 500
-                                syuriken2.damage = 500
-                                syuriken3.damage = 500
-                                syuriken4.damage = 500
+                                syuriken1.damage = 600
+                                syuriken2.damage = 600
+                                syuriken3.damage = 600
+                                syuriken4.damage = 600
                             }
                             
                             ally2.grade! = 1 //gradeをリセットする。
@@ -2109,7 +2107,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
                 var firstArray:[Enemy] = []
                 
-                let tank1 = self.makeTank(position: CGPoint(x: 650,y: 250))
+                let tank1 = self.makeTank(position: CGPoint(x: 750,y: 200))
                 tank1.id = firstArray.count
                 firstArray.append(tank1)
                 
@@ -2123,7 +2121,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
                 var firstArray:[Enemy] = []
                 
-                let tank1 = self.makeTank(position: CGPoint(x: 650,y: 250))
+                let tank1 = self.makeTank(position: CGPoint(x: 750,y: 200))
                 tank1.id = firstArray.count
                 firstArray.append(tank1)
                 
@@ -2449,10 +2447,10 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Tank.xScale = 1.5
         Tank.yScale = 1.5
         Tank.grade = 2
-        Tank.hp = 3000
+        Tank.hp = 1500
         Tank.defence = 100
         Tank.type = "Tank"
-        Tank.maxHp = 3000//最大のHp
+        Tank.maxHp = 1500//最大のHp
         
         let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
         
@@ -2960,43 +2958,157 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
                 if phasenumber == 24 {
                     
-                    let alert = SKSpriteNode(color: UIColor.red, size: CGSize(width: enemy.position.x - 10 - (enemy.size.width / 2), height: 50.0))
-                    alert.position = CGPoint(x: (enemy.position.x - 10 - (enemy.size.width / 2)) / 2,y: enemy.position.y) //生成位置の設定
-                    alert.name  = "alert"
-                    alert.physicsBody?.categoryBitMask = 0
-                    alert.physicsBody?.collisionBitMask = 0
-                    alert.physicsBody?.contactTestBitMask = 0
-                    alert.alpha = 0.0
-                    self.addChild(alert)
-                    
                     let fadeIn = SKAction.fadeIn(withDuration: 0.2)
                     let fadeOut = SKAction.fadeOut(withDuration: 0.2)
                     
-                    alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                    if turn % 2 == 0 {//偶数ターン
+                        
+                        let alert = SKSpriteNode(color: UIColor.red, size: CGSize(width: enemy.position.x - 10 - (enemy.size.width / 2), height: 50.0))
+                        alert.position = CGPoint(x: (enemy.position.x - 10 - (enemy.size.width / 2)) / 2,y: enemy.position.y) //生成位置の設定
+                        alert.name  = "alert"
+                        alert.physicsBody?.categoryBitMask = 0
+                        alert.physicsBody?.collisionBitMask = 0
+                        alert.physicsBody?.contactTestBitMask = 0
+                        alert.alpha = 0.0
+                        self.addChild(alert)
+                        
+                        alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                        
+                    } else {//奇数ターン
+                        
+                        if 284 - enemy.position.y - (enemy.size.height / 2)  > 0 {
+                            
+                            let alert1 = SKSpriteNode(color: UIColor.red, size: CGSize(width: 60, height: 274 - enemy.position.y))
+                            alert1.position = CGPoint(x: enemy.position.x ,y: enemy.position.y / 2 + 167 ) //生成位置の設定
+                            alert1.name  = "alert"
+                            alert1.physicsBody?.categoryBitMask = 0
+                            alert1.physicsBody?.collisionBitMask = 0
+                            alert1.physicsBody?.contactTestBitMask = 0
+                            alert1.alpha = 0.0
+                            self.addChild(alert1)
+                            
+                            let alert3 = SKSpriteNode(color: UIColor.red, size: CGSize(width: enemy.position.x - 40, height: 60.0))
+                            alert3.position = CGPoint(x: enemy.position.x / 2 - 10,y: 274) //生成位置の設定
+                            alert3.name  = "alert"
+                            alert3.physicsBody?.categoryBitMask = 0
+                            alert3.physicsBody?.collisionBitMask = 0
+                            alert3.physicsBody?.contactTestBitMask = 0
+                            alert3.alpha = 0.0
+                            self.addChild(alert3)
+                            
+                            alert1.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                            alert3.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                            
+                        }
+                        
+                        if enemy.position.y - enemy.size.height / 2 - 70 > 0 {
+                            
+                            let alert2 = SKSpriteNode(color: UIColor.red, size: CGSize(width: 60, height: enemy.position.y - 80))
+                            alert2.position = CGPoint(x: enemy.position.x ,y: enemy.position.y / 2 - 10) //生成位置の設定
+                            alert2.name  = "alert"
+                            alert2.physicsBody?.categoryBitMask = 0
+                            alert2.physicsBody?.collisionBitMask = 0
+                            alert2.physicsBody?.contactTestBitMask = 0
+                            alert2.alpha = 0.0
+                            self.addChild(alert2)
+                            
+                            let alert4 = SKSpriteNode(color: UIColor.red, size: CGSize(width: enemy.position.x - 40, height: 60.0))
+                            alert4.position = CGPoint(x: enemy.position.x / 2 - 10,y: 60) //生成位置の設定
+                            alert4.name  = "alert"
+                            alert4.physicsBody?.categoryBitMask = 0
+                            alert4.physicsBody?.collisionBitMask = 0
+                            alert4.physicsBody?.contactTestBitMask = 0
+                            alert4.alpha = 0.0
+                            self.addChild(alert4)
+
+                            alert2.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                            alert4.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                            
+                        }
+                        
+                    }
                     
                 }
                 
                 if phasenumber == 40 {
                     
-                    let bulletdamage:Int = 400
-                    
-                    let bullet1 = Bullet(color: UIColor.black, size: CGSize(width:  30.0, height: 15.0))//skill1の四角
-                    bullet1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Back"), size: bullet1.size)
-                    bullet1.position = CGPoint(x: enemy.position.x,y: enemy.position.y) //生成位置の設定
-                    bullet1.name  = "bullet"
-                    bullet1.userData = NSMutableDictionary()
-                    bullet1.userData?.setValue( PhysicsCategory.eBullet, forKey: "category")
-                    bullet1.damage = bulletdamage
-                    bullet1.physicsBody?.categoryBitMask = PhysicsCategory.eBullet //衝突判定に使用する値の設定
-                    bullet1.physicsBody?.collisionBitMask = PhysicsCategory.Ally
-                    bullet1.physicsBody?.contactTestBitMask = PhysicsCategory.eBullet
-                    self.addChild(bullet1)//Bullet表示
-                    
-                    let travelTime1 = SKAction.moveTo(x: enemy.position
-                        .x - self.size.width, duration: 0.6)
-                    let actionDone = SKAction.removeFromParent()
-                    
-                    bullet1.run(SKAction.sequence([travelTime1,actionDone]))
+                    if turn % 2 == 0 {//偶数ターン
+                        
+                        let bulletdamage:Int = 400
+                        
+                        let bullet1 = Bullet(color: UIColor.black, size: CGSize(width:  30.0, height: 15.0))//skill1の四角
+                        bullet1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Back"), size: bullet1.size)
+                        bullet1.position = CGPoint(x: enemy.position.x,y: enemy.position.y) //生成位置の設定
+                        bullet1.name  = "bullet"
+                        bullet1.userData = NSMutableDictionary()
+                        bullet1.userData?.setValue( PhysicsCategory.eBullet, forKey: "category")
+                        bullet1.damage = bulletdamage
+                        bullet1.physicsBody?.categoryBitMask = PhysicsCategory.eBullet //衝突判定に使用する値の設定
+                        bullet1.physicsBody?.collisionBitMask = PhysicsCategory.Ally
+                        bullet1.physicsBody?.contactTestBitMask = PhysicsCategory.eBullet
+                        self.addChild(bullet1)//Bullet表示
+                        
+                        let travelTime = SKAction.moveTo(x: enemy.position
+                            .x - self.size.width, duration: 0.6)
+                        let actionDone = SKAction.removeFromParent()
+                        
+                        bullet1.run(SKAction.sequence([travelTime,actionDone]))
+                        
+                        let bullet2 = Bullet(color: UIColor.black, size: CGSize(width:  30.0, height: 15.0))//skill1の四角
+                        bullet2.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Back"), size: bullet1.size)
+                        bullet2.position = CGPoint(x: enemy.position.x,y: enemy.position.y) //生成位置の設定
+                        bullet2.name  = "bullet"
+                        bullet2.userData = NSMutableDictionary()
+                        bullet2.userData?.setValue( PhysicsCategory.eBullet, forKey: "category")
+                        bullet2.damage = bulletdamage
+                        bullet2.physicsBody?.categoryBitMask = PhysicsCategory.eBullet //衝突判定に使用する値の設定
+                        bullet2.physicsBody?.collisionBitMask = PhysicsCategory.Ally
+                        bullet2.physicsBody?.contactTestBitMask = PhysicsCategory.eBullet
+                        self.addChild(bullet2)//Bullet表示
+                        
+                        let wait = SKAction.wait(forDuration: 0.2)
+                        bullet2.run(SKAction.sequence([wait,travelTime,actionDone]))
+                        
+                    } else {//奇数ターン
+                        
+                        let bulletdamage:Int = 400
+                        
+                        let bullet1 = Bullet(color: UIColor.black, size: CGSize(width:  30.0, height: 15.0))//skill1の四角
+                        bullet1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Back"), size: bullet1.size)
+                        bullet1.position = CGPoint(x: enemy.position.x,y: enemy.position.y) //生成位置の設定
+                        bullet1.name  = "bullet"
+                        bullet1.userData = NSMutableDictionary()
+                        bullet1.userData?.setValue( PhysicsCategory.eBullet, forKey: "category")
+                        bullet1.damage = bulletdamage
+                        bullet1.physicsBody?.categoryBitMask = PhysicsCategory.eBullet //衝突判定に使用する値の設定
+                        bullet1.physicsBody?.collisionBitMask = PhysicsCategory.Ally
+                        bullet1.physicsBody?.contactTestBitMask = PhysicsCategory.eBullet
+                        self.addChild(bullet1)//Bullet表示
+                        
+                        let goup = SKAction.moveTo(y: 274, duration: 0.4)
+                        let travelTime = SKAction.moveTo(x: 10, duration: 0.6)
+                        let actionDone = SKAction.removeFromParent()
+                        
+                        bullet1.run(SKAction.sequence([goup,travelTime,actionDone]))
+                        
+                        let bullet2 = Bullet(color: UIColor.black, size: CGSize(width:  30.0, height: 15.0))//skill1の四角
+                        bullet2.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Back"), size: bullet1.size)
+                        bullet2.position = CGPoint(x: enemy.position.x,y: enemy.position.y) //生成位置の設定
+                        bullet2.name  = "bullet"
+                        bullet2.userData = NSMutableDictionary()
+                        bullet2.userData?.setValue( PhysicsCategory.eBullet, forKey: "category")
+                        bullet2.damage = bulletdamage
+                        bullet2.physicsBody?.categoryBitMask = PhysicsCategory.eBullet //衝突判定に使用する値の設定
+                        bullet2.physicsBody?.collisionBitMask = PhysicsCategory.Ally
+                        bullet2.physicsBody?.contactTestBitMask = PhysicsCategory.eBullet
+                        self.addChild(bullet2)//Bullet表示
+                        
+                        let godown = SKAction.moveTo(y: 70, duration: 0.4)
+                        
+                        bullet2.run(SKAction.sequence([godown,travelTime,actionDone]))
+                        
+                        
+                    }
                     
                 }
                 
