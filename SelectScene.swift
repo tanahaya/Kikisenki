@@ -157,6 +157,35 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
             self.addChild(battlearrow2)
             
             
+        } else if world == 4 {
+            
+            Background.texture = SKTexture(imageNamed: "selectview4.png")
+            
+            let battlearrow1 = SKSpriteNode(imageNamed: "battlearrow1-1")
+            
+            battlearrow1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "battlearrow1-1"), size: battlearrow1.size)
+            battlearrow1.name = "battlearrow1"
+            battlearrow1.position = CGPoint(x: 657,y: 230)
+            battlearrow1.physicsBody?.categoryBitMask = 0
+            battlearrow1.physicsBody?.collisionBitMask = 0
+            battlearrow1.physicsBody?.contactTestBitMask = 0
+            let rotateaction3 = SKAction.rotate(toAngle: CGFloat(Double.pi / 36), duration: 0.01)
+            battlearrow1.run(rotateaction3)
+            self.addChild(battlearrow1)
+            
+            let battlearrow2 = SKSpriteNode(imageNamed: "battlearrow1-2")
+            
+            battlearrow2.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "battlearrow1-2"), size: battlearrow2.size)
+            battlearrow2.name = "battlearrow2"
+            battlearrow2.position = CGPoint(x: 657,y: 130)
+            battlearrow2.physicsBody?.categoryBitMask = 0
+            battlearrow2.physicsBody?.collisionBitMask = 0
+            battlearrow2.physicsBody?.contactTestBitMask = 0
+            let rotateaction4 = SKAction.rotate(toAngle: -CGFloat(Double.pi / 36), duration: 0.01)
+            battlearrow2.run(rotateaction4)
+            self.addChild(battlearrow2)
+            
+            
         } else {
             
             let arrowtoPhaze = SKSpriteNode(imageNamed: "PhazeBattle")
@@ -236,14 +265,17 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
                     userDefaults.set(1, forKey: "story")
                     self.gotoConversationScene()
                 }
+                
                 if self.atPoint(location).name == "storyarrow2" {
                     userDefaults.set(2, forKey: "story")
                     self.gotoConversationScene()
                 }
+                
                 if self.atPoint(location).name == "battlearrow1" {
                     userDefaults.set(1, forKey: "stage")
                     self.gotoPhazeBattleScene()
                 }
+                
                 if self.atPoint(location).name == "battlearrow2" {
                     userDefaults.set(2, forKey: "stage")
                     self.gotoPhazeBattleScene()
@@ -255,6 +287,7 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
                     userDefaults.set(1, forKey: "stage")
                     self.gotoPhazeBattleScene()
                 }
+                
                 if self.atPoint(location).name == "battlearrow2" {
                     userDefaults.set(2, forKey: "stage")
                     self.gotoPhazeBattleScene()
@@ -266,12 +299,23 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
                     userDefaults.set(1, forKey: "stage")
                     self.gotoPhazeBattleScene()
                 }
+                
                 if self.atPoint(location).name == "battlearrow2" {
                     userDefaults.set(2, forKey: "stage")
                     self.gotoPhazeBattleScene()
                 }
                 
             } else if world == 4 {
+                
+                if self.atPoint(location).name == "battlearrow1" {
+                    userDefaults.set(1, forKey: "stage")
+                    self.gotoPhazeBattleScene()
+                }
+                
+                if self.atPoint(location).name == "battlearrow2" {
+                    userDefaults.set(2, forKey: "stage")
+                    self.gotoPhazeBattleScene()
+                }
                 
             } else if world == 5 {
                 

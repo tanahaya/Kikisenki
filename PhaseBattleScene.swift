@@ -27,7 +27,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     var phasenumber:Int = 0
     var phaseFlag = true //trueならMovePhase.falseならAttackPhase
     
-    var Background = SKSpriteNode(color: UIColor.white, size: CGSize(width:  876.0, height: 334.0))//skill1の四角
+    var Background = SKSpriteNode(imageNamed: "background")
     
     //ally1ここから
     var ally1  = Ally(imageNamed: "monster1a")//allyの追加
@@ -187,8 +187,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             
             if phaseFlag { //Attackphaseに切り替わる時。
                 
-                turn = turn + 1//turnを増やす。
-                
                 phaseFlag = false
                 phaseLabel.text = "AttackPhase"
                 
@@ -207,6 +205,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
                 
             }else { //Movephaseに切り替わる時。
+                
+                turn = turn + 1//turnを増やす。
                 
                 phaseFlag = true
                 phaseLabel.text = "MovePhase"
@@ -2133,9 +2133,42 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
             }
             
+        } else if world == 4 {
+            
+            if stage == 1 {
+                
+                var firstArray:[Enemy] = []
+                
+                let Senjin = self.makeSenjin(position: CGPoint(x: 750,y: 250))
+                Senjin.id = firstArray.count
+                firstArray.append(Senjin)
+                
+                stagearray.append(firstArray)
+                
+                maxWaveNumber = stagearray.count
+                
+                waveLabel.text = "wave: \(waveNumber + 1) / \(maxWaveNumber) "
+                
+            } else if stage == 2 { //とりあえず、stage1と同じにしています。
+                
+                var firstArray:[Enemy] = []
+                
+                let tank1 = self.makeTank(position: CGPoint(x: 750,y: 200))
+                tank1.id = firstArray.count
+                firstArray.append(tank1)
+                
+                stagearray.append(firstArray)
+                
+                maxWaveNumber = stagearray.count
+                
+                waveLabel.text = "wave: \(waveNumber + 1) / \(maxWaveNumber) "
+                
+            }
+            
         }
         
         return stagearray
+        
     }
     
     //////////////////////////敵作成系メソッド集/////////////////////////////////
@@ -2488,6 +2521,64 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
     }
     
+    func makeSenjin(position:CGPoint) -> Enemy  {
+        
+        let Senjin = Enemy(imageNamed: "Senjin")
+        
+        Senjin.name = "Senjin"
+        Senjin.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Senjin"), size: Senjin.size)
+        Senjin.physicsBody?.isDynamic = false
+        Senjin.physicsBody?.restitution = 1.0
+        Senjin.position = position
+        Senjin.userData = NSMutableDictionary()
+        Senjin.userData?.setValue( PhysicsCategory.Enemy, forKey: "category")
+        Senjin.physicsBody?.categoryBitMask = PhysicsCategory.Enemy //衝突判定に使用する値の設定
+        Senjin.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet
+        Senjin.physicsBody?.collisionBitMask = PhysicsCategory.Enemy //衝突させたい物体Enemy
+        Senjin.xScale = 1.0
+        Senjin.yScale = 1.0
+        Senjin.grade = 2
+        Senjin.hp = 1500
+        Senjin.defence = 100
+        Senjin.type = "Senjin"
+        Senjin.maxHp = 1500//最大のHp
+        
+        let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
+        
+        HpBarBack.name = "HpBarBack"
+        HpBarBack.position = CGPoint(x: -5,y: -25)
+        Senjin.addChild(HpBarBack)
+        
+        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))//敵2のhpの量を表示
+        
+        HpBar.name = "HpBar"
+        HpBar.position = CGPoint(x: -5,y: -25)
+        HpBar.zPosition = 1
+        HpBar.xScale = CGFloat( Double(Senjin.hp!) / Double(Senjin.maxHp!) )//x方向の倍率
+        Senjin.addChild(HpBar)
+        
+        let GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
+        
+        GradeIcon.name = "Gradeicon"
+        GradeIcon.position = CGPoint(x: -37, y: -25)
+        GradeIcon.xScale = 0.3
+        GradeIcon.yScale = 0.3
+        Senjin.addChild(GradeIcon)
+        
+        let GradeLabel = SKLabelNode()
+        
+        GradeLabel.name = "GradeLabel"
+        GradeLabel.fontSize = 20// フォントサイズを設定.
+        GradeLabel.fontColor = UIColor.black// 色を指定(赤).
+        GradeLabel.position = CGPoint(x: -37, y: -30)// 表示するポジションを指定.
+        GradeLabel.text = " \(Senjin.grade!)"
+        Senjin.addChild(GradeLabel)
+        
+        return Senjin
+        
+    }
+    
+    
     func EnemyMove() {
         
         for enemy in EnemyArray {
@@ -2614,6 +2705,164 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         let travelTime = SKAction.move(to: CGPoint(x: enemy.position.x,y: AllyArray[savei].position.y), duration: 5.0)
                         
                         enemy.run(travelTime)
+                        
+                    }
+                    
+                }
+                
+                if enemy.type == "Senjin" {
+                    
+                    if phasenumber == 20 {
+                        
+                        if turn % 6 == 1 {//右下に移動
+                            
+                            let godown = SKAction.moveTo(y: 100.0, duration: 5.0)
+                            enemy.run(godown)
+                            
+                        } else if turn % 6 == 2 {//右に行き、消える
+                            
+                            enemy.texture = SKTexture(imageNamed: "Senjin2.png")
+                            enemy.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Senjin2.png"), size: enemy.size)
+                            
+                            let goright = SKAction.moveTo(x: 1000.0, duration: 5.0)
+                            enemy.run(goright)
+                            
+                        } else if turn % 6 == 3 {//左上に現れる
+                            
+                            if MainTimer?.isValid == true {
+                                MainTimer?.invalidate()
+                            }
+                            
+                            var ally1gotoright = SKAction.moveTo(x: ally1.position.x  + 400, duration: 1.8)
+                            
+                            if ally1.position.x > 850 {
+                                
+                            } else if ally1.position.x + 400 > 850 {
+                                ally1gotoright = SKAction.moveTo(x: 850, duration: Double(1.8 * (850 - ally1.position.x) / 400))
+                            }
+                            
+                            ally1.run(ally1gotoright)
+                            
+                            var ally2gotoright = SKAction.moveTo(x: ally2.position.x  + 400, duration: 1.8)
+                            
+                            if ally2.position.x > 850 {
+                                
+                            } else if ally2.position.x + 400 > 850 {
+                                ally2gotoright = SKAction.moveTo(x: 850, duration: Double(1.8 * (850 - ally2.position.x) / 400))
+                            }
+                            
+                            ally2.run(ally2gotoright)
+                            
+                            var ally3gotoright = SKAction.moveTo(x: ally1.position.x  + 400, duration: 1.8)
+                            
+                            if ally3.position.x > 850 {
+                                
+                            } else if ally3.position.x + 400 > 850 {
+                                ally3gotoright = SKAction.moveTo(x: 850, duration: Double(1.8 * (850 - ally3.position.x) / 400))
+                            }
+                            
+                            ally3.run(ally3gotoright)
+                            
+                            let Backmove = SKAction.moveTo(x: Background.position.x + 400, duration: 1.8)
+                            Background.run(Backmove)
+                            
+                            let godown = SKAction.moveTo(y: -200.0, duration: 0.1)
+                            let goleft = SKAction.moveTo(x: -200.0, duration: 0.1)
+                            let goup = SKAction.moveTo(y: 250.0, duration: 0.1)
+                            enemy.run(SKAction.sequence([godown,goleft,goup]))
+                            
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                                let goright = SKAction.moveTo(x: 100, duration: 0.3)
+                                
+                                enemy.run(goright)
+                            }
+                            
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
+                                
+                                self.MoveMarker1.position = self.ally1.position
+                                self.MoveMarker2.position = self.ally2.position
+                                self.MoveMarker3.position = self.ally3.position
+                                
+                                self.MainTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.mainTimerupdate), userInfo: nil, repeats: true)
+                                
+                            }
+                            
+                            
+                        } else if turn % 6 == 4 {//左下に移動
+                            
+                            let godown = SKAction.moveTo(y: 100, duration: 5.0)
+                            enemy.run(godown)
+                            
+                        } else if turn % 6 == 5 {//左に行き、消える
+                            
+                            enemy.texture = SKTexture(imageNamed: "Senjin.png")
+                            enemy.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Senjin.png"), size: enemy.size)
+                            
+                            let goleft = SKAction.moveTo(x: -200, duration: 5.0)
+                            enemy.run(goleft)
+                            
+                        } else if turn % 6 == 0 {//右上に現れる
+                            
+                            if MainTimer?.isValid == true {
+                                MainTimer?.invalidate()
+                            }
+                            
+                            var ally1gotoright = SKAction.moveTo(x: ally1.position.x  - 400, duration: 1.8)
+                            
+                            if ally1.position.x < 50 {
+                                
+                            } else if ally1.position.x - 400 > 50 {
+                                ally1gotoright = SKAction.moveTo(x: 50, duration: Double(1.8 * (ally1.position.x - 50) / 400))
+                            }
+                            
+                            ally1.run(ally1gotoright)
+                            
+                            var ally2gotoright = SKAction.moveTo(x: ally2.position.x  - 400, duration: 1.8)
+                            
+                            if ally2.position.x < 50 {
+                                
+                            } else if ally2.position.x - 400 < 50 {
+                                ally2gotoright = SKAction.moveTo(x: 50, duration: Double(1.8 * (ally2.position.x - 50) / 400))
+                            }
+                            
+                            ally2.run(ally2gotoright)
+                            
+                            var ally3gotoright = SKAction.moveTo(x: ally1.position.x  - 400, duration: 1.8)
+                            
+                            if ally3.position.x  < 50 {
+                                
+                            } else if ally3.position.x - 400 < 50 {
+                                ally3gotoright = SKAction.moveTo(x: 50, duration: Double(1.8 * (ally3.position.x - 50) / 400))
+                            }
+                            
+                            ally3.run(ally3gotoright)
+                            
+                            let Backmove = SKAction.moveTo(x: Background.position.x - 400, duration: 1.8)
+                            Background.run(Backmove)
+                            
+                            let godown = SKAction.moveTo(y: -200.0, duration: 0.1)
+                            let goright = SKAction.moveTo(x: 1000.0, duration: 0.1)
+                            let goup = SKAction.moveTo(y: 250.0, duration: 0.1)
+                            enemy.run(SKAction.sequence([godown,goright,goup]))
+                            
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                                
+                                let goleft = SKAction.moveTo(x: 750, duration: 0.3)
+                                enemy.run(goleft)
+                                
+                            }
+                            
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
+                                
+                                self.MoveMarker1.position = self.ally1.position
+                                self.MoveMarker2.position = self.ally2.position
+                                self.MoveMarker3.position = self.ally3.position
+                                
+                                self.MainTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.mainTimerupdate), userInfo: nil, repeats: true)
+                                
+                            }
+                            
+                        }
                         
                     }
                     
@@ -3114,6 +3363,24 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
             }
             
+            if enemy.type == "Senjin" {
+                
+                if turn % 6 == 1 {//右下に移動
+                    
+                } else if turn % 6 == 2 {//右に行き、消える
+                    
+                } else if turn % 6 == 3 {//左上に現れる
+                    
+                } else if turn % 6 == 4 {//左下に移動
+                    
+                } else if turn % 6 == 5 {//左に行き、消える
+                    
+                } else if turn % 6 == 0 {//右上に現れる
+                    
+                }
+                
+            }
+            
             if enemy.type == "Queen" {
                 
             }
@@ -3516,8 +3783,9 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         LowerWall.userData?.setValue( PhysicsCategory.Wall, forKey: "category")
         self.addChild(LowerWall)
         
-        Background.anchorPoint = CGPoint(x: 0,y: 0)//ノードの位置配置などの起点を設定。
-        Background.position = CGPoint(x: 10,y: 10)
+        Background.anchorPoint = CGPoint(x:0,y:0)
+        Background.position = CGPoint(x: -390,y: 10)
+        Background.zPosition = -2
         Background.name = "Background"
         self.addChild(Background)
         
