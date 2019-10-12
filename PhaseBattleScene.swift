@@ -3321,6 +3321,26 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         
                     } else if turn % 6 == 3 {//画面外
                         
+                        let alert1 = self.makeAlert(position: CGPoint(x: 170,y: 177), size: CGSize(width: 50, height: 334))
+                        self.addChild(alert1)
+                        
+                        alert1.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                        
+                        let alert2 = self.makeAlert(position: CGPoint(x: 340,y: 177), size: CGSize(width: 50, height: 334))
+                        self.addChild(alert2)
+                        
+                        alert2.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                        
+                        let alert3 = self.makeAlert(position: CGPoint(x: 510,y: 177), size: CGSize(width: 50, height: 334))
+                        self.addChild(alert3)
+                        
+                        alert3.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                        
+                        let alert4 = self.makeAlert(position: CGPoint(x: 680,y: 177), size: CGSize(width: 50, height: 334))
+                        self.addChild(alert4)
+                        
+                        alert4.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                        
                     } else if turn % 6 == 4 {//左上
                         
                         let alert = self.makeAlert(position: CGPoint(x: 443 + enemy.position.x / 2 + enemy.size.width / 4 ,y: enemy.position.y), size: CGSize(width: 886 - enemy.position.x - enemy.size.width / 2, height: 50.0))
@@ -3336,6 +3356,24 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
                         
                     } else if turn % 6 == 0 {//画面外
+                        
+                        let alert1 = self.makeAlert(position: CGPoint(x: 260,y: 177), size: CGSize(width: 50, height: 334))
+                        self.addChild(alert1)
+                        
+                        alert1.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                        
+                        let alert2 = self.makeAlert(position: CGPoint(x: 430,y: 177), size: CGSize(width: 50, height: 334))
+                        self.addChild(alert2)
+                        
+                        alert2.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                        
+                        let alert3 = self.makeAlert(position: CGPoint(x: 600,y: 177), size: CGSize(width: 50, height: 334))
+                        self.addChild(alert3)
+                        
+                        alert3.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                        
+                        let alert4 = self.makeAlert(position: CGPoint(x: 770,y: 177), size: CGSize(width: 50, height: 334))
+                        self.addChild(alert4)
                         
                     }
                     
@@ -3371,6 +3409,33 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         
                     } else if turn % 6 == 3 {//画面外
                         
+                        let bulletdamage:Int = 200
+                        
+                        let goup = SKAction.moveTo(y: 500, duration: 1.5)
+                        let godown = SKAction.moveTo(y: 0, duration: 1.5)
+                        let remove = SKAction.removeFromParent()
+                        
+                        let bullet1 = self.makeeBullet(position: CGPoint(x: 170,y: -100), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
+                        self.addChild(bullet1)
+                        
+                        bullet1.run(SKAction.sequence([goup,remove]))
+                        
+                        let bullet2 = self.makeeBullet(position: CGPoint(x: 340,y: 500), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
+                        self.addChild(bullet2)
+                        
+                        bullet2.run(SKAction.sequence([godown,remove]))
+                        
+                        let bullet3 = self.makeeBullet(position: CGPoint(x: 510,y: -100), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
+                        self.addChild(bullet3)
+                        
+                        bullet3.run(SKAction.sequence([goup,remove]))
+                        
+                        let bullet4 = self.makeeBullet(position: CGPoint(x: 680,y: 500), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
+                        self.addChild(bullet4)
+                        
+                        bullet4.run(SKAction.sequence([godown,remove]))
+                        
+                        
                     } else if turn % 6 == 4 {//左上
                         
                         let bulletdamage:Int = 400
@@ -3398,6 +3463,32 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         bullet1.run(SKAction.sequence([travelTime,actionDone]))
                         
                     } else if turn % 6 == 0 {//画面外
+                        
+                        let bulletdamage:Int = 200
+                        
+                        let goup = SKAction.moveTo(y: 500, duration: 1.5)
+                        let godown = SKAction.moveTo(y: 0, duration: 1.5)
+                        let remove = SKAction.removeFromParent()
+                        
+                        let bullet1 = self.makeeBullet(position: CGPoint(x: 260,y: 500), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
+                        self.addChild(bullet1)
+                        
+                        bullet1.run(SKAction.sequence([godown,remove]))
+                        
+                        let bullet2 = self.makeeBullet(position: CGPoint(x: 430,y: -100), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
+                        self.addChild(bullet2)
+                        
+                        bullet2.run(SKAction.sequence([goup,remove]))
+                        
+                        let bullet3 = self.makeeBullet(position: CGPoint(x: 600,y: 500), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
+                        self.addChild(bullet3)
+                        
+                        bullet3.run(SKAction.sequence([godown,remove]))
+                        
+                        let bullet4 = self.makeeBullet(position: CGPoint(x: 770,y: -100), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
+                        self.addChild(bullet4)
+                        
+                        bullet4.run(SKAction.sequence([goup,remove]))
                         
                     }
                     
