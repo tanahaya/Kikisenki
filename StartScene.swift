@@ -25,9 +25,8 @@ class StartScene : SKScene, SKPhysicsContactDelegate{
         BackgroundImage.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "logo.png"), size: BackgroundImage.size)
         BackgroundImage.name = "BackgroundImage"
         BackgroundImage.position = CGPoint(x: 448,y: 207)
-        BackgroundImage.physicsBody?.categoryBitMask = 0
-        BackgroundImage.physicsBody?.contactTestBitMask = 0
-        BackgroundImage.physicsBody?.collisionBitMask = 0
+        BackgroundImage.physicsBody?.categoryBitMask = 0b00000000
+        BackgroundImage.physicsBody?.collisionBitMask = 0b00000000
         self.addChild(BackgroundImage)
         
         StartLabel.fontSize = 60// フォントサイズを設定.

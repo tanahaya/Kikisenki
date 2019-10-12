@@ -32,16 +32,14 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
         Background.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "selectbackground"), size: Background.size)
         Background.name = "Background"
         Background.position = CGPoint(x: 448,y: 207)
-        Background.physicsBody?.categoryBitMask = 0
-        Background.physicsBody?.collisionBitMask = 0
-        Background.physicsBody?.contactTestBitMask = 0
+        Background.physicsBody?.categoryBitMask = 0b00000000
+        Background.physicsBody?.collisionBitMask = 0b00000000
         self.addChild(Background)
         
         BackButton.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "BackButton.png"), size: BackButton.size)
         BackButton.name = "BackButton"
-        BackButton.physicsBody?.categoryBitMask = 0
-        BackButton.physicsBody?.collisionBitMask = 0
-        BackButton.physicsBody?.contactTestBitMask = 0
+        BackButton.physicsBody?.categoryBitMask = 0b00000000
+        BackButton.physicsBody?.collisionBitMask = 0b00000000
         BackButton.position = CGPoint(x: 816,y: 80)
         self.addChild(BackButton)
         
@@ -54,9 +52,8 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
             storyarrow1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "storyarrow1-1"), size: storyarrow1.size)
             storyarrow1.name = "storyarrow1"
             storyarrow1.position = CGPoint(x: 207,y: 230)
-            storyarrow1.physicsBody?.categoryBitMask = 0
-            storyarrow1.physicsBody?.collisionBitMask = 0
-            storyarrow1.physicsBody?.contactTestBitMask = 0
+            storyarrow1.physicsBody?.categoryBitMask = 0b00000000
+            storyarrow1.physicsBody?.collisionBitMask = 0b00000000
             let rotateaction1 = SKAction.rotate(toAngle: -CGFloat(Double.pi / 36), duration: 0.01)
             storyarrow1.run(rotateaction1)
             self.addChild(storyarrow1)
@@ -66,9 +63,8 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
             storyarrow2.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "storyarrow1-2"), size: storyarrow2.size)
             storyarrow2.name = "storyarrow2"
             storyarrow2.position = CGPoint(x: 207,y: 130)
-            storyarrow2.physicsBody?.categoryBitMask = 0
-            storyarrow2.physicsBody?.collisionBitMask = 0
-            storyarrow2.physicsBody?.contactTestBitMask = 0
+            storyarrow2.physicsBody?.categoryBitMask = 0b00000000
+            storyarrow2.physicsBody?.collisionBitMask = 0b00000000
             let rotateaction2 = SKAction.rotate(toAngle: CGFloat(Double.pi / 36), duration: 0.01)
             storyarrow2.run(rotateaction2)
             self.addChild(storyarrow2)
@@ -78,9 +74,8 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
             battlearrow1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "battlearrow1-1"), size: battlearrow1.size)
             battlearrow1.name = "battlearrow1"
             battlearrow1.position = CGPoint(x: 657,y: 230)
-            battlearrow1.physicsBody?.categoryBitMask = 0
-            battlearrow1.physicsBody?.collisionBitMask = 0
-            battlearrow1.physicsBody?.contactTestBitMask = 0
+            battlearrow1.physicsBody?.categoryBitMask = 0b00000000
+            battlearrow1.physicsBody?.collisionBitMask = 0b00000000
             let rotateaction3 = SKAction.rotate(toAngle: CGFloat(Double.pi / 36), duration: 0.01)
             battlearrow1.run(rotateaction3)
             self.addChild(battlearrow1)
@@ -90,9 +85,8 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
             battlearrow2.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "battlearrow1-2"), size: battlearrow2.size)
             battlearrow2.name = "battlearrow2"
             battlearrow2.position = CGPoint(x: 657,y: 130)
-            battlearrow2.physicsBody?.categoryBitMask = 0
-            battlearrow2.physicsBody?.collisionBitMask = 0
-            battlearrow2.physicsBody?.contactTestBitMask = 0
+            battlearrow2.physicsBody?.categoryBitMask = 0b00000000
+            battlearrow2.physicsBody?.collisionBitMask = 0b00000000
             let rotateaction4 = SKAction.rotate(toAngle: -CGFloat(Double.pi / 36), duration: 0.01)
             battlearrow2.run(rotateaction4)
             self.addChild(battlearrow2)
@@ -107,9 +101,8 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
             battlearrow1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "battlearrow1-1"), size: battlearrow1.size)
             battlearrow1.name = "battlearrow1"
             battlearrow1.position = CGPoint(x: 657,y: 230)
-            battlearrow1.physicsBody?.categoryBitMask = 0
-            battlearrow1.physicsBody?.collisionBitMask = 0
-            battlearrow1.physicsBody?.contactTestBitMask = 0
+            battlearrow1.physicsBody?.categoryBitMask = 0b00000000
+            battlearrow1.physicsBody?.collisionBitMask = 0b00000000
             let rotateaction3 = SKAction.rotate(toAngle: CGFloat(Double.pi / 36), duration: 0.01)
             battlearrow1.run(rotateaction3)
             self.addChild(battlearrow1)
@@ -119,9 +112,8 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
             battlearrow2.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "battlearrow1-2"), size: battlearrow2.size)
             battlearrow2.name = "battlearrow2"
             battlearrow2.position = CGPoint(x: 657,y: 130)
-            battlearrow2.physicsBody?.categoryBitMask = 0
-            battlearrow2.physicsBody?.collisionBitMask = 0
-            battlearrow2.physicsBody?.contactTestBitMask = 0
+            battlearrow2.physicsBody?.categoryBitMask = 0b00000000
+            battlearrow2.physicsBody?.collisionBitMask = 0b00000000
             let rotateaction4 = SKAction.rotate(toAngle: -CGFloat(Double.pi / 36), duration: 0.01)
             battlearrow2.run(rotateaction4)
             self.addChild(battlearrow2)
@@ -137,9 +129,8 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
             battlearrow1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "battlearrow1-1"), size: battlearrow1.size)
             battlearrow1.name = "battlearrow1"
             battlearrow1.position = CGPoint(x: 657,y: 230)
-            battlearrow1.physicsBody?.categoryBitMask = 0
-            battlearrow1.physicsBody?.collisionBitMask = 0
-            battlearrow1.physicsBody?.contactTestBitMask = 0
+            battlearrow1.physicsBody?.categoryBitMask = 0b00000000
+            battlearrow1.physicsBody?.collisionBitMask = 0b00000000
             let rotateaction3 = SKAction.rotate(toAngle: CGFloat(Double.pi / 36), duration: 0.01)
             battlearrow1.run(rotateaction3)
             self.addChild(battlearrow1)
@@ -149,9 +140,8 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
             battlearrow2.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "battlearrow1-2"), size: battlearrow2.size)
             battlearrow2.name = "battlearrow2"
             battlearrow2.position = CGPoint(x: 657,y: 130)
-            battlearrow2.physicsBody?.categoryBitMask = 0
-            battlearrow2.physicsBody?.collisionBitMask = 0
-            battlearrow2.physicsBody?.contactTestBitMask = 0
+            battlearrow2.physicsBody?.categoryBitMask = 0b00000000
+            battlearrow2.physicsBody?.collisionBitMask = 0b00000000
             let rotateaction4 = SKAction.rotate(toAngle: -CGFloat(Double.pi / 36), duration: 0.01)
             battlearrow2.run(rotateaction4)
             self.addChild(battlearrow2)
@@ -166,9 +156,8 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
             battlearrow1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "battlearrow1-1"), size: battlearrow1.size)
             battlearrow1.name = "battlearrow1"
             battlearrow1.position = CGPoint(x: 657,y: 230)
-            battlearrow1.physicsBody?.categoryBitMask = 0
-            battlearrow1.physicsBody?.collisionBitMask = 0
-            battlearrow1.physicsBody?.contactTestBitMask = 0
+            battlearrow1.physicsBody?.categoryBitMask = 0b00000000
+            battlearrow1.physicsBody?.collisionBitMask = 0b00000000
             let rotateaction3 = SKAction.rotate(toAngle: CGFloat(Double.pi / 36), duration: 0.01)
             battlearrow1.run(rotateaction3)
             self.addChild(battlearrow1)
@@ -178,9 +167,8 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
             battlearrow2.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "battlearrow1-2"), size: battlearrow2.size)
             battlearrow2.name = "battlearrow2"
             battlearrow2.position = CGPoint(x: 657,y: 130)
-            battlearrow2.physicsBody?.categoryBitMask = 0
-            battlearrow2.physicsBody?.collisionBitMask = 0
-            battlearrow2.physicsBody?.contactTestBitMask = 0
+            battlearrow2.physicsBody?.categoryBitMask = 0b00000000
+            battlearrow2.physicsBody?.collisionBitMask = 0b00000000
             let rotateaction4 = SKAction.rotate(toAngle: -CGFloat(Double.pi / 36), duration: 0.01)
             battlearrow2.run(rotateaction4)
             self.addChild(battlearrow2)
@@ -193,9 +181,8 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
             arrowtoPhaze.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "PhazeBattle"), size: arrowtoPhaze.size)
             arrowtoPhaze.name = "arrowtoPhaze"
             arrowtoPhaze.position = CGPoint(x: 207,y: 170)
-            arrowtoPhaze.physicsBody?.categoryBitMask = 0
-            arrowtoPhaze.physicsBody?.collisionBitMask = 0
-            arrowtoPhaze.physicsBody?.contactTestBitMask = 0
+            arrowtoPhaze.physicsBody?.categoryBitMask = 0b00000000
+            arrowtoPhaze.physicsBody?.collisionBitMask = 0b00000000
             let rotateaction1 = SKAction.rotate(toAngle: CGFloat(Double.pi / 36), duration: 0.01)
             arrowtoPhaze.run(rotateaction1)
             self.addChild(arrowtoPhaze)
@@ -205,9 +192,8 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
             arrowtoEnegy.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "EnegyBattle"), size: arrowtoEnegy.size)
             arrowtoEnegy.name = "arrowtoEnegy"
             arrowtoEnegy.position = CGPoint(x: 207,y: 60)
-            arrowtoEnegy.physicsBody?.categoryBitMask = 0
-            arrowtoEnegy.physicsBody?.collisionBitMask = 0
-            arrowtoEnegy.physicsBody?.contactTestBitMask = 0
+            arrowtoEnegy.physicsBody?.categoryBitMask = 0b00000000
+            arrowtoEnegy.physicsBody?.collisionBitMask = 0b00000000
             let rotateaction2 = SKAction.rotate(toAngle: -CGFloat(Double.pi / 36), duration: 0.01)
             arrowtoEnegy.run(rotateaction2)
             self.addChild(arrowtoEnegy)
@@ -217,9 +203,8 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
             arrowtoSample.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "SampleStory"), size: arrowtoSample.size)
             arrowtoSample.name = "arrowtoSample"
             arrowtoSample.position = CGPoint(x: 207,y: 250)
-            arrowtoSample.physicsBody?.categoryBitMask = 0
-            arrowtoSample.physicsBody?.collisionBitMask = 0
-            arrowtoSample.physicsBody?.contactTestBitMask = 0
+            arrowtoSample.physicsBody?.categoryBitMask = 0b00000000
+            arrowtoSample.physicsBody?.collisionBitMask = 0b00000000
             let rotateaction3 = SKAction.rotate(toAngle: CGFloat(Double.pi / 18), duration: 0.01)
             arrowtoSample.run(rotateaction3)
             self.addChild(arrowtoSample)
