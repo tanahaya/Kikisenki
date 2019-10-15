@@ -110,10 +110,10 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     //衝突判定のためのビットマスク作成
     struct PhysicsCategory {
         
-        static let Ally: UInt32 =  0b00000001 //味方
-        static let Enemy: UInt32 = 0b00000010 //敵
-        static let Bullet: UInt32 = 0b00000100 //ally用の弾
-        static let eBullet: UInt32 = 0b00001000 //enemy用の弾
+        static let Ally: UInt32 =  0b0001 //味方
+        static let Enemy: UInt32 = 0b0010 //敵
+        static let Bullet: UInt32 = 0b0100 //ally用の弾
+        static let eBullet: UInt32 = 0b1000 //enemy用の弾
         static let Item:UInt32 = 0b00010000 //アイテム
         static let Wall: UInt32 = 0b00100000 //壁
         
@@ -165,9 +165,11 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
         Stage = self.makeStage()
         
+        //敵の追加。
         self.addEnemy()
         
-        self.start() //始める時の処理
+        //始める時の処理。フラグ関係。
+        self.start()
         
     }
     
@@ -199,8 +201,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 ally2SkilledFlag = true
                 ally3SkilledFlag = true
                 
-                
-            }else { //Movephaseに切り替わる時。
+            } else { //Movephaseに切り替わる時。
                 
                 turn = turn + 1//turnを増やす。
                 
@@ -295,7 +296,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             ally1.position = MoveMarker1.position
                             MoveMarker1.alpha = 0.0
                             
-                        }else{//違う場合距離にして3づつ近づく。
+                        } else {//違う場合距離にして3づつ近づく。
                             
                             let speed:Double = 3 //移動速度を決定する。
                             let travelTime = SKAction.move( to: CGPoint(x: ally1.position.x - CGFloat( speed * cos(Double(direction))),y: ally1.position.y
@@ -335,7 +336,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             ally2.position = MoveMarker2.position
                             MoveMarker2.alpha = 0.0
                             
-                        }else{//違う場合距離にして3づつ近づく
+                        } else {//違う場合距離にして3づつ近づく
                             
                             let speed:Double = 5 //移動速度を決定する。
                             
@@ -376,7 +377,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             ally3.position = MoveMarker3.position
                             MoveMarker3.alpha = 0.0
                             
-                        }else{//違う場合距離にして3づつ近づく
+                        } else {//違う場合距離にして3づつ近づく
                             
                             let speed:Double = 3 //移動速度を決定する。
                             let travelTime = SKAction.move( to: CGPoint(x: ally3.position.x - CGFloat( speed * cos(Double(direction))),y: ally3.position.y
@@ -1124,10 +1125,11 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             bullet.name = "charge"
                             self.addChild(bullet)
                             
-                            var action = SKAction.moveTo(x: ally3.position.x + 300, duration: 1.0)//アクション作成(移動方向:Y,移動時間:1.0秒)
-                            if ally3.position.x + 300.0  > 866 {
+                            var action = SKAction.moveTo(x: ally3.position.x + 150, duration: 1.0)//アクション作成(移動方向:Y,移動時間:1.0秒)
+                            if ally3.position.x + 150.0  > 866 {
                                 action = SKAction.moveTo(x: 866, duration: 1.0)//アクション作成(移動方向:Y,移動時間:1.0秒)
                             }
+                            
                             let actionDone = SKAction.removeFromParent()
                             
                             bullet.run(SKAction.sequence([action,actionDone]))
@@ -1234,8 +1236,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     }
     
     func didBegin(_ contact: SKPhysicsContact) {//衝突の処理
-        
-        print("hello")
         
         if let nodeA = contact.bodyA.node {
             if let nodeB = contact.bodyB.node{
@@ -2447,6 +2447,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         GradeLabel.text = " \(Senjin.grade!)"
         Senjin.addChild(GradeLabel)
         
+        
         return Senjin
         
     }
@@ -2596,6 +2597,9 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                             enemy.texture = SKTexture(imageNamed: "Senjin2.png")
                             enemy.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Senjin2.png"), size: enemy.size)
+                            enemy.physicsBody?.categoryBitMask = PhysicsCategory.Enemy
+                            enemy.physicsBody?.collisionBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
+                            enemy.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
                             
                             let goright = SKAction.moveTo(x: 1000.0, duration: 5.0)
                             enemy.run(goright)
@@ -2670,6 +2674,9 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                             enemy.texture = SKTexture(imageNamed: "Senjin.png")
                             enemy.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Senjin.png"), size: enemy.size)
+                            enemy.physicsBody?.categoryBitMask = PhysicsCategory.Enemy
+                            enemy.physicsBody?.collisionBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
+                            enemy.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
                             
                             let goleft = SKAction.moveTo(x: -200, duration: 5.0)
                             enemy.run(goleft)
@@ -3442,6 +3449,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         bullet.physicsBody?.collisionBitMask = PhysicsCategory.Enemy | PhysicsCategory.Wall
         bullet.physicsBody?.contactTestBitMask = PhysicsCategory.Enemy | PhysicsCategory.Wall
         
+        
         return bullet
         
     }
@@ -3458,6 +3466,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         bullet.physicsBody?.collisionBitMask = PhysicsCategory.Ally | PhysicsCategory.Wall
         bullet.physicsBody?.contactTestBitMask = PhysicsCategory.Ally | PhysicsCategory.Wall
         
+        
         return bullet
         
     }
@@ -3472,6 +3481,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         alert.physicsBody?.contactTestBitMask = 0b00000000
         alert.alpha = 0.0
         
+        
         return alert
         
     }
@@ -3481,7 +3491,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
         ally1.name = "Ally1"
         ally1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "monster1a"), size: ally1.size)
-        ally1.physicsBody?.isDynamic = false
+        //ally1.physicsBody?.isDynamic = false
+        ally1.physicsBody?.allowsRotation = false
         ally1.physicsBody?.restitution = 1.0//反発値
         ally1.position = CGPoint(x: 100,y: 75)
         ally1.zPosition = 1 //movermarkerより上に来るようにz=1
@@ -3579,7 +3590,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
         ally2.name = "Ally2"
         ally2.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "monster2a"), size: ally2.size)
-        ally2.physicsBody?.isDynamic = false
+        //ally2.physicsBody?.isDynamic = false
+        ally2.physicsBody?.allowsRotation = false
         ally2.physicsBody?.restitution = 1.0//反発値
         ally2.position = CGPoint(x: 100,y: 225)
         ally2.zPosition = 1 //movermarkerより上に来るようにz=1
@@ -3678,7 +3690,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
         ally3.name = "Ally3"
         ally3.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "monster3a"), size: ally3.size)
-        ally3.physicsBody?.isDynamic = false
+        //ally3.physicsBody?.isDynamic = false
+        ally3.physicsBody?.allowsRotation = false
         ally3.physicsBody?.restitution = 1.0//反発値
         ally3.position = CGPoint(x: 150,y: 150)
         ally3.zPosition = 1 //movermarkerより上に来るようにz=1
@@ -3775,9 +3788,11 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     func makeWall() {
         
         //四つの壁
+        
         LeftWall.name = "LeftWall"
-        LeftWall.physicsBody?.restitution = 1.0//反発値
-        LeftWall.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
+        LeftWall.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Back"), size: LeftWall.size)
+        LeftWall.physicsBody?.restitution = 1.0 //反発値
+        LeftWall.physicsBody?.isDynamic = false //ぶつかったときに移動するかどうか =>しない
         LeftWall.physicsBody?.categoryBitMask = PhysicsCategory.Wall
         LeftWall.physicsBody?.collisionBitMask = PhysicsCategory.Ally | PhysicsCategory.Enemy | PhysicsCategory.Bullet | PhysicsCategory.eBullet | PhysicsCategory.Item
         LeftWall.physicsBody?.contactTestBitMask = PhysicsCategory.Ally | PhysicsCategory.Enemy | PhysicsCategory.Bullet | PhysicsCategory.eBullet | PhysicsCategory.Item
@@ -3786,7 +3801,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         self.addChild(LeftWall)
         
         RightWall.name = "WallRight"
-        RightWall.physicsBody?.restitution = 1.0//反発値
+        RightWall.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Back"), size: RightWall.size)
+        RightWall.physicsBody?.restitution = 1.0 //反発値
         RightWall.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
         RightWall.physicsBody?.categoryBitMask = PhysicsCategory.Wall
         RightWall.physicsBody?.collisionBitMask = PhysicsCategory.Ally | PhysicsCategory.Enemy | PhysicsCategory.Bullet | PhysicsCategory.eBullet | PhysicsCategory.Item
@@ -3796,7 +3812,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         self.addChild(RightWall)
         
         UpperWall.name = "UpperWall"
-        UpperWall.physicsBody?.restitution = 1.0//反発値
+        UpperWall.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Back"), size: UpperWall.size)
+        UpperWall.physicsBody?.restitution = 1.0 //反発値
         UpperWall.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
         UpperWall.physicsBody?.categoryBitMask = PhysicsCategory.Wall
         UpperWall.physicsBody?.collisionBitMask = PhysicsCategory.Ally | PhysicsCategory.Enemy | PhysicsCategory.Bullet | PhysicsCategory.eBullet | PhysicsCategory.Item
@@ -3806,7 +3823,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         self.addChild(UpperWall)
         
         LowerWall.name = "LowerWall"
-        LowerWall.physicsBody?.restitution = 1.0//反発値
+        LowerWall.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Back"), size: LowerWall.size)
+        LowerWall.physicsBody?.restitution = 1.0 //反発値
         LowerWall.physicsBody?.isDynamic = false//ぶつかったときに移動するかどうか =>しない
         LowerWall.physicsBody?.categoryBitMask = PhysicsCategory.Wall
         LowerWall.physicsBody?.collisionBitMask = PhysicsCategory.Ally | PhysicsCategory.Enemy | PhysicsCategory.Bullet | PhysicsCategory.eBullet | PhysicsCategory.Item

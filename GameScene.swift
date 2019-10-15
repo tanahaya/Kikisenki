@@ -81,9 +81,9 @@ class GameScene : SKScene, SKPhysicsContactDelegate{
     //衝突判定のためのビットマスク作成
     struct PhysicsCategory {
         static let Emeny: UInt32 = 1
-        static let Ball: UInt32 = 2
+        static let Ball: UInt32 = 0b0010
         static let Ally: UInt32 = 3
-        static let Wall: UInt32 = 4
+        static let Wall: UInt32 = 0b0100
         static let Button: UInt32 = 5
         static let SmallBall: UInt32 = 6
         static let Heart: UInt32 = 7
