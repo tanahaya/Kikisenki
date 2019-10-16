@@ -107,6 +107,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     
     let userDefaults = UserDefaults.standard//管理用のuserdefaults
     
+    let settingButton = SKSpriteNode(imageNamed: "setting")//設定ボタン。
+    
     //衝突判定のためのビットマスク作成
     struct PhysicsCategory {
         
@@ -145,23 +147,50 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         waveLabel.text = "wave: \(waveNumber) / \(maxWaveNumber) "
         self.addChild(waveLabel)//シーンに追加
         
+        //設定ボタンの処理
+        settingButton.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "setting"), size: settingButton.size)
+        settingButton.name = "setting"
+        settingButton.position = CGPoint(x: 50,y: 400)
+        settingButton.physicsBody?.categoryBitMask = 0b00000000
+        settingButton.physicsBody?.collisionBitMask = 0b00000000
+        settingButton.physicsBody?.contactTestBitMask = 0b00000000
+        settingButton.xScale = 0.3
+        settingButton.yScale = 0.3
+        self.addChild(settingButton)
+        
         
         self.MainTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.mainTimerupdate), userInfo: nil, repeats: true)
         
         //四つの壁
         self.makeWall()
-
-        //ally1の処理
-        self.makeAlly1()
-        AllyArray.append(ally1)
         
-        //ally2の処理
-        self.makeAlly2()
-        AllyArray.append(ally2)
+        let world:Int = userDefaults.integer(forKey: "world")
+        let stage:Int = userDefaults.integer(forKey: "stage")
         
-        //ally3の処理
-        self.makeAlly3()
-        AllyArray.append(ally3)
+        if world == 5 {
+            
+            if stage == 1 { //潜入捜査のため、ユニットは一人
+                //ally1の処理
+                self.makeAlly3(position: CGPoint(x: 75,y: 250))
+                AllyArray.append(ally3)
+            }
+            
+        } else {
+            
+            //ally1の処理
+            self.makeAlly1(position: CGPoint(x: 100,y: 75))
+            AllyArray.append(ally1)
+            
+            //ally2の処理
+            self.makeAlly2(position: CGPoint(x: 100,y: 225))
+            AllyArray.append(ally2)
+            
+            //ally3の処理
+            self.makeAlly3(position: CGPoint(x: 150,y: 150))
+            AllyArray.append(ally3)
+            
+        }
+        
         
         Stage = self.makeStage()
         
@@ -429,6 +458,14 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         if let touch = touches.first as UITouch? {
             let location = touch.location(in: self)
             
+            
+            if self.atPoint(location).name == "setting" {
+                
+                print("setting")
+                self.gotoSelectScene()
+                
+            }
+            
             if stopActionFlag {//途中動作
                 
                 aimPosition = location
@@ -688,12 +725,12 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                             self.addChild(bullet)//Bullet表示
                             
-                            let action = SKAction.moveTo(x: self.size.width, duration: 1.0)//アクション作成(移動方向:Y,移動時間:1.0秒)
+                            let action = SKAction.moveTo(x: self.size.width, duration: 1.0) //アクション作成(移動方向:Y,移動時間:1.0秒)
                             let actionDone = SKAction.removeFromParent()
                             
                             bullet.run(SKAction.sequence([action,actionDone]))
                             
-                            ally1SkilledFlag = false//Skillを使ったこと判定
+                            ally1SkilledFlag = false //Skillを使ったこと判定
                             
                         }
                         
@@ -2029,6 +2066,49 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 let Senjin = self.makeSenjin(position: CGPoint(x: 750,y: 250))
                 Senjin.id = firstArray.count
                 firstArray.append(Senjin)
+                
+                stagearray.append(firstArray)
+                
+                maxWaveNumber = stagearray.count
+                
+                waveLabel.text = "wave: \(waveNumber + 1) / \(maxWaveNumber) "
+                
+            } else if stage == 2 { //とりあえず、stage1と同じにしています。
+                
+                var firstArray:[Enemy] = []
+                
+                let tank1 = self.makeTank(position: CGPoint(x: 750,y: 200))
+                tank1.id = firstArray.count
+                firstArray.append(tank1)
+                
+                stagearray.append(firstArray)
+                
+                maxWaveNumber = stagearray.count
+                
+                waveLabel.text = "wave: \(waveNumber + 1) / \(maxWaveNumber) "
+                
+            }
+            
+        } else if world == 5 {
+            
+            if stage == 1 {
+                
+                //壁を作る
+                let wall1 = self.makeWall(position: CGPoint(x: 210,y: 244), size: CGSize(width: 40, height: 200))
+                self.addChild(wall1)
+                
+                let wall2 = self.makeWall(position: CGPoint(x: 410,y: 110), size: CGSize(width: 40, height: 200))
+                self.addChild(wall2)
+                
+                let wall3 = self.makeWall(position: CGPoint(x: 610,y: 294), size: CGSize(width: 40, height: 100))
+                self.addChild(wall3)
+                
+                
+                var firstArray:[Enemy] = []
+                
+                let Queen1 = self.makeQueen(position: CGPoint(x: 700,y: 70))
+                Queen1.id = firstArray.count
+                firstArray.append(Queen1)
                 
                 stagearray.append(firstArray)
                 
@@ -3485,16 +3565,34 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         return alert
         
     }
+    
+    func makeWall(position:CGPoint,size:CGSize) -> SKSpriteNode {
+        
+        let Wall = SKSpriteNode(color: UIColor.black, size: size)
+        
+        Wall.name = "Wall"
+        Wall.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Back"), size: Wall.size)
+        Wall.physicsBody?.restitution = 1.0 //反発値
+        Wall.physicsBody?.isDynamic = false //ぶつかったときに移動するかどうか =>しない
+        Wall.physicsBody?.categoryBitMask = PhysicsCategory.Wall
+        Wall.physicsBody?.collisionBitMask = PhysicsCategory.Ally | PhysicsCategory.Enemy | PhysicsCategory.Bullet | PhysicsCategory.eBullet | PhysicsCategory.Item
+        Wall.physicsBody?.contactTestBitMask = PhysicsCategory.Ally | PhysicsCategory.Enemy | PhysicsCategory.Bullet | PhysicsCategory.eBullet | PhysicsCategory.Item
+        Wall.physicsBody?.allowsRotation = false
+        Wall.position = position
+        
+        return Wall
+        
+    }
     //////////////////////////味方系メソッド集/////////////////////////////////
     
-    func makeAlly1() {
+    func makeAlly1(position:CGPoint) {
         
         ally1.name = "Ally1"
         ally1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "monster1a"), size: ally1.size)
         //ally1.physicsBody?.isDynamic = false
         ally1.physicsBody?.allowsRotation = false
         ally1.physicsBody?.restitution = 1.0//反発値
-        ally1.position = CGPoint(x: 100,y: 75)
+        ally1.position = position//CGPoint(x: 100,y: 75)
         ally1.zPosition = 1 //movermarkerより上に来るようにz=1
         ally1.physicsBody?.categoryBitMask = PhysicsCategory.Ally
         ally1.physicsBody?.collisionBitMask = PhysicsCategory.eBullet | PhysicsCategory.Item | PhysicsCategory.Wall | PhysicsCategory.Ally
@@ -3586,14 +3684,14 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
     }
     
-    func makeAlly2() {
+    func makeAlly2(position:CGPoint) {
         
         ally2.name = "Ally2"
         ally2.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "monster2a"), size: ally2.size)
         //ally2.physicsBody?.isDynamic = false
         ally2.physicsBody?.allowsRotation = false
         ally2.physicsBody?.restitution = 1.0//反発値
-        ally2.position = CGPoint(x: 100,y: 225)
+        ally2.position = position//CGPoint(x: 100,y: 225)
         ally2.zPosition = 1 //movermarkerより上に来るようにz=1
         ally2.physicsBody?.categoryBitMask = PhysicsCategory.Ally
         ally2.physicsBody?.collisionBitMask = PhysicsCategory.eBullet | PhysicsCategory.Item | PhysicsCategory.Wall | PhysicsCategory.Ally
@@ -3686,14 +3784,14 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
     }
     
-    func makeAlly3() {
+    func makeAlly3(position: CGPoint) {
         
         ally3.name = "Ally3"
         ally3.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "monster3a"), size: ally3.size)
         //ally3.physicsBody?.isDynamic = false
         ally3.physicsBody?.allowsRotation = false
         ally3.physicsBody?.restitution = 1.0//反発値
-        ally3.position = CGPoint(x: 150,y: 150)
+        ally3.position = position //CGPoint(x: 150,y: 150)
         ally3.zPosition = 1 //movermarkerより上に来るようにz=1
         ally3.physicsBody?.categoryBitMask = PhysicsCategory.Ally
         ally3.physicsBody?.collisionBitMask = PhysicsCategory.eBullet | PhysicsCategory.Item | PhysicsCategory.Wall | PhysicsCategory.Ally

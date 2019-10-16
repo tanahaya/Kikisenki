@@ -174,6 +174,32 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
             self.addChild(battlearrow2)
             
             
+        } else if world == 5 {
+            
+            Background.texture = SKTexture(imageNamed: "selectview5.png")
+            
+            let battlearrow1 = SKSpriteNode(imageNamed: "battlearrow1-1")
+            
+            battlearrow1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "battlearrow1-1"), size: battlearrow1.size)
+            battlearrow1.name = "battlearrow1"
+            battlearrow1.position = CGPoint(x: 657,y: 230)
+            battlearrow1.physicsBody?.categoryBitMask = 0b00000000
+            battlearrow1.physicsBody?.collisionBitMask = 0b00000000
+            let rotateaction3 = SKAction.rotate(toAngle: CGFloat(Double.pi / 36), duration: 0.01)
+            battlearrow1.run(rotateaction3)
+            self.addChild(battlearrow1)
+            
+            let battlearrow2 = SKSpriteNode(imageNamed: "battlearrow1-2")
+            
+            battlearrow2.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "battlearrow1-2"), size: battlearrow2.size)
+            battlearrow2.name = "battlearrow2"
+            battlearrow2.position = CGPoint(x: 657,y: 130)
+            battlearrow2.physicsBody?.categoryBitMask = 0b00000000
+            battlearrow2.physicsBody?.collisionBitMask = 0b00000000
+            let rotateaction4 = SKAction.rotate(toAngle: -CGFloat(Double.pi / 36), duration: 0.01)
+            battlearrow2.run(rotateaction4)
+            self.addChild(battlearrow2)
+            
         } else {
             
             let arrowtoPhaze = SKSpriteNode(imageNamed: "PhazeBattle")
@@ -208,30 +234,6 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
             let rotateaction3 = SKAction.rotate(toAngle: CGFloat(Double.pi / 18), duration: 0.01)
             arrowtoSample.run(rotateaction3)
             self.addChild(arrowtoSample)
-            
-        }
-        
-        if world == 2 {
-            
-        } else if world == 3 {
-            
-        } else if world == 4 {
-            
-        } else if world == 5 {
-            
-        } else if world == 6 {
-            
-        } else if world == 7 {
-            
-        } else if world == 8 {
-            
-        } else if world == 9 {
-            
-        } else if world == 10 {
-            
-        } else if world == 11 {
-            
-        } else if world == 12 {
             
         }
         
@@ -303,6 +305,16 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
                 }
                 
             } else if world == 5 {
+                
+                if self.atPoint(location).name == "battlearrow1" {
+                    userDefaults.set(1, forKey: "stage")
+                    self.gotoPhazeBattleScene()
+                }
+                
+                if self.atPoint(location).name == "battlearrow2" {
+                    userDefaults.set(2, forKey: "stage")
+                    self.gotoPhazeBattleScene()
+                }
                 
             } else if world == 6 {
                 
