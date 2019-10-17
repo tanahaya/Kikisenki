@@ -150,12 +150,12 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         //設定ボタンの処理
         settingButton.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "setting"), size: settingButton.size)
         settingButton.name = "setting"
-        settingButton.position = CGPoint(x: 50,y: 400)
+        settingButton.position = CGPoint(x: 50,y: 380)
         settingButton.physicsBody?.categoryBitMask = 0b00000000
         settingButton.physicsBody?.collisionBitMask = 0b00000000
         settingButton.physicsBody?.contactTestBitMask = 0b00000000
-        settingButton.xScale = 0.3
-        settingButton.yScale = 0.3
+        settingButton.xScale = 0.1
+        settingButton.yScale = 0.1
         self.addChild(settingButton)
         
         
@@ -496,8 +496,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     Ally2Flag = true
                     
                     if phaseFlag {
-                        MoveMarker1.alpha = 1.0
-                        MoveMarker1.position = ally1.position
+                        MoveMarker2.alpha = 1.0
+                        MoveMarker2.position = ally2.position
                     } else {
                         if ally2SkilledFlag {
                             ally2Skill1.alpha = 1.0
@@ -516,8 +516,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     Ally3Flag = true
                     
                     if phaseFlag {
-                        MoveMarker1.alpha = 1.0
-                        MoveMarker1.position = ally1.position
+                        MoveMarker3.alpha = 1.0
+                        MoveMarker3.position = ally3.position
                     } else {
                         if ally3SkilledFlag {
                             ally3Skill1.alpha = 1.0
@@ -1317,41 +1317,41 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         }
                     
                     if nodeB.physicsBody?.categoryBitMask == PhysicsCategory.Bullet {
+                        
+                        var damage = -(nodeB as! Bullet).damage! + (nodeA as! Enemy).defence!
                                             
-                            var damage = -(nodeB as! Bullet).damage! + (nodeA as! Enemy).defence!
+                        if damage > 0 {
+                            damage = 0
+                        }
                                             
-                            if damage > 0 {
-                                damage = 0
-                            }
+                        self.changeEnemyHp(change: damage, id: (nodeA as! Enemy).id!)
                                             
-                            self.changeEnemyHp(change: damage, id: (nodeA as! Enemy).id!)
-                                            
-                            self.damageEffect(damageposition: nodeB.position,damage: -damage)
+                        self.damageEffect(damageposition: nodeB.position,damage: -damage)
 
                                             
-                            if nodeB.name == "poison" {
-                                if (nodeA as! Enemy).grade! >= 1 {
+                        if nodeB.name == "poison" {
+                            if (nodeA as! Enemy).grade! >= 1 {
                                     
-                                    self.changeEnemyGrade(change: -1, id: (nodeA as! Enemy).id!)
+                                self.changeEnemyGrade(change: -1, id: (nodeA as! Enemy).id!)
                                                     
-                                    }
-                            }
-                                            
-                            if nodeB.name == "charge" {
-                            
-                                ally3.removeAction(forKey: "charge")
-                                self.MoveMarker3.position = self.ally3.position
-                                self.ally3.moveEnable = true
-                                                
-                            }
-                                            
-                            if nodeB.name == "ax" {
-                                
-                            }
-                                            
-                            nodeB.removeFromParent()
-                                    
+                                }
                         }
+                                            
+                        if nodeB.name == "charge" {
+                            
+                            ally3.removeAction(forKey: "charge")
+                            self.MoveMarker3.position = self.ally3.position
+                            self.ally3.moveEnable = true
+                                                
+                        }
+                                            
+                        if nodeB.name == "ax" {
+                                
+                        }
+                                            
+                        nodeB.removeFromParent()
+                                    
+                    }
                     
                 }
                 
@@ -1363,9 +1363,15 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                     if nodeA.physicsBody?.categoryBitMask == PhysicsCategory.eBullet {
                         
-                        self.changeAllyHp(change: -(nodeA as! Bullet).damage!, id: (nodeB as! Ally).id!)
-                        
-                        self.damageEffect(damageposition: nodeA.position,damage: (nodeA as! Bullet).damage!)
+                        if nodeA.name == "camera" {
+                            self.gameover(side: "ally")
+                        } else {
+
+                            self.changeAllyHp(change: -(nodeA as! Bullet).damage!, id: (nodeB as! Ally).id!)
+                            
+                            self.damageEffect(damageposition: nodeA.position,damage: (nodeA as! Bullet).damage!)
+                            
+                        }
                         
                         if nodeA.name == "poison" {
                             if (nodeB as! Ally).grade! >= 1 {
@@ -1386,8 +1392,16 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         
                     } else if nodeB.physicsBody?.categoryBitMask == PhysicsCategory.eBullet {
                         
-                        self.changeAllyHp(change: -(nodeB as! Bullet).damage!, id: (nodeA as! Ally).id!)
-                        self.damageEffect(damageposition: nodeB.position,damage: (nodeB as! Bullet).damage!)
+                        
+                        if nodeB.name == "camera" {
+                            self.gameover(side: "ally")
+                        } else {
+
+                            self.changeAllyHp(change: -(nodeB as! Bullet).damage!, id: (nodeA as! Ally).id!)
+                            self.damageEffect(damageposition: nodeB.position,damage: (nodeB as! Bullet).damage!)
+                            
+                        }
+                        
                         
                         if nodeB.name == "poison" {
                             if (nodeA as! Ally).grade! >= 1 {
@@ -1612,6 +1626,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     func changeEnemyHp(change:Int,id:Int) {//渡された値が正なら回復。負ならダメージを与える。
         
         var EnemyidArray:[Int] = []
+        var needKillFlag:Bool = false
         
         for i in EnemyArray {
             
@@ -1654,6 +1669,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             }
             
             if enemy.hp! <= 0 {
+                
                 //敵の消去処理
                 if let Index = EnemyArray.firstIndex(of: enemy) {
                     
@@ -1662,7 +1678,21 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                 }
                 
-                if EnemyArray.count == 0 {
+                for i in EnemyArray { //残っている敵が倒すべき敵かどうかを判定する。
+                    
+                    if i.needToKill {
+                        needKillFlag = true
+                    }
+                    
+                }
+                
+                if needKillFlag {} else { //残っている敵が倒さなくて良いなら
+                    
+                    for i in EnemyArray { //残りの敵を消す。
+                        i.removeFromParent()
+                    }
+                    
+                    EnemyArray = []
                     
                     waveNumber = waveNumber + 1
                     
@@ -1688,6 +1718,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         self.gameover(side: "enemy")
                         
                     }
+                    
                     
                 }
                 
@@ -2094,10 +2125,10 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             if stage == 1 {
                 
                 //壁を作る
-                let wall1 = self.makeWall(position: CGPoint(x: 210,y: 244), size: CGSize(width: 40, height: 200))
+                let wall1 = self.makeWall(position: CGPoint(x: 210,y: 269), size: CGSize(width: 40, height: 150))
                 self.addChild(wall1)
                 
-                let wall2 = self.makeWall(position: CGPoint(x: 410,y: 110), size: CGSize(width: 40, height: 200))
+                let wall2 = self.makeWall(position: CGPoint(x: 410,y: 85), size: CGSize(width: 40, height: 150))
                 self.addChild(wall2)
                 
                 let wall3 = self.makeWall(position: CGPoint(x: 610,y: 294), size: CGSize(width: 40, height: 100))
@@ -2106,7 +2137,25 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
                 var firstArray:[Enemy] = []
                 
-                let Queen1 = self.makeQueen(position: CGPoint(x: 700,y: 70))
+                let Camera1 = self.makeCamera(position: CGPoint(x: 200,y: 70))
+                Camera1.id = firstArray.count
+                firstArray.append(Camera1)
+                
+                let Camera2 = self.makeCamera(position: CGPoint(x: 400,y: 270))
+                Camera2.id = firstArray.count
+                firstArray.append(Camera2)
+                
+                let Camera3 = self.makeCamera(position: CGPoint(x: 600,y: 60))
+                Camera3.id = firstArray.count
+                firstArray.append(Camera3)
+                
+                let Camera4 = self.makeCamera(position: CGPoint(x: 800,y: 90))
+                Camera4.id = firstArray.count
+                firstArray.append(Camera4)
+                
+                
+                let Queen1 = self.makeQueen(position: CGPoint(x: 130,y: 280))
+                Queen1.hp = 100
                 Queen1.id = firstArray.count
                 firstArray.append(Queen1)
                 
@@ -2166,12 +2215,12 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         HpBarBack.position = CGPoint(x: -5,y: -25)
         Soldier.addChild(HpBarBack)
         
-        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))//敵2のhpの量を表示
+        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))
         
         HpBar.name = "HpBar"
         HpBar.position = CGPoint(x: -5,y: -25)
         HpBar.zPosition = 1
-        HpBar.xScale = CGFloat( Double(Soldier.hp!) / Double(Soldier.maxHp!) )//x方向の倍率
+        HpBar.xScale = CGFloat( Double(Soldier.hp!) / Double(Soldier.maxHp!) )
         Soldier.addChild(HpBar)
         
         let GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
@@ -2185,9 +2234,9 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         let GradeLabel = SKLabelNode()
         
         GradeLabel.name = "GradeLabel"
-        GradeLabel.fontSize = 20// フォントサイズを設定.
-        GradeLabel.fontColor = UIColor.black// 色を指定(赤).
-        GradeLabel.position = CGPoint(x: -37, y: -30)// 表示するポジションを指定.
+        GradeLabel.fontSize = 20
+        GradeLabel.fontColor = UIColor.black
+        GradeLabel.position = CGPoint(x: -37, y: -30)
         GradeLabel.text = " \(Soldier.grade!)"
         Soldier.addChild(GradeLabel)
         
@@ -2222,12 +2271,12 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         HpBarBack.position = CGPoint(x: -5,y: -25)
         Queen.addChild(HpBarBack)
         
-        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))//敵2のhpの量を表示
+        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))
         
         HpBar.name = "HpBar"
         HpBar.position = CGPoint(x: -5,y: -25)
         HpBar.zPosition = 1
-        HpBar.xScale = CGFloat( Double(Queen.hp!) / Double(Queen.maxHp!) )//x方向の倍率
+        HpBar.xScale = CGFloat( Double(Queen.hp!) / Double(Queen.maxHp!) )
         Queen.addChild(HpBar)
         
         let GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
@@ -2241,9 +2290,9 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         let GradeLabel = SKLabelNode()
         
         GradeLabel.name = "GradeLabel"
-        GradeLabel.fontSize = 20// フォントサイズを設定.
-        GradeLabel.fontColor = UIColor.black// 色を指定(赤).
-        GradeLabel.position = CGPoint(x: -37, y: -30)// 表示するポジションを指定.
+        GradeLabel.fontSize = 20
+        GradeLabel.fontColor = UIColor.black
+        GradeLabel.position = CGPoint(x: -37, y: -30)
         GradeLabel.text = " \(Queen.grade!)"
         Queen.addChild(GradeLabel)
         
@@ -2278,12 +2327,12 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         HpBarBack.position = CGPoint(x: -5,y: -25)
         Bom.addChild(HpBarBack)
         
-        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))//敵2のhpの量を表示
+        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))
         
         HpBar.name = "HpBar"
         HpBar.position = CGPoint(x: -5,y: -25)
         HpBar.zPosition = 1
-        HpBar.xScale = CGFloat( Double(Bom.hp!) / Double(Bom.maxHp!) )//x方向の倍率
+        HpBar.xScale = CGFloat( Double(Bom.hp!) / Double(Bom.maxHp!) )
         Bom.addChild(HpBar)
         
         let GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
@@ -2297,9 +2346,9 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         let GradeLabel = SKLabelNode()
         
         GradeLabel.name = "GradeLabel"
-        GradeLabel.fontSize = 20// フォントサイズを設定.
-        GradeLabel.fontColor = UIColor.black// 色を指定(赤).
-        GradeLabel.position = CGPoint(x: -37, y: -30)// 表示するポジションを指定.
+        GradeLabel.fontSize = 20
+        GradeLabel.fontColor = UIColor.black
+        GradeLabel.position = CGPoint(x: -37, y: -30)
         GradeLabel.text = " \(Bom.grade!)"
         Bom.addChild(GradeLabel)
         
@@ -2334,12 +2383,12 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         HpBarBack.position = CGPoint(x: -5,y: -25)
         Warp.addChild(HpBarBack)
         
-        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))//敵2のhpの量を表示
+        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))
         
         HpBar.name = "HpBar"
         HpBar.position = CGPoint(x: -5,y: -25)
         HpBar.zPosition = 1
-        HpBar.xScale = CGFloat( Double(Warp.hp!) / Double(Warp.maxHp!) )//x方向の倍率
+        HpBar.xScale = CGFloat( Double(Warp.hp!) / Double(Warp.maxHp!) )
         Warp.addChild(HpBar)
         
         let GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
@@ -2353,9 +2402,9 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         let GradeLabel = SKLabelNode()
         
         GradeLabel.name = "GradeLabel"
-        GradeLabel.fontSize = 20// フォントサイズを設定.
-        GradeLabel.fontColor = UIColor.black// 色を指定(赤).
-        GradeLabel.position = CGPoint(x: -37, y: -30)// 表示するポジションを指定.
+        GradeLabel.fontSize = 20
+        GradeLabel.fontColor = UIColor.black
+        GradeLabel.position = CGPoint(x: -37, y: -30)
         GradeLabel.text = " \(Warp.grade!)"
         Warp.addChild(GradeLabel)
         
@@ -2390,12 +2439,12 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         HpBarBack.position = CGPoint(x: -5,y: -25)
         WarpBoss.addChild(HpBarBack)
         
-        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))//敵2のhpの量を表示
+        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))
         
         HpBar.name = "HpBar"
         HpBar.position = CGPoint(x: -5,y: -25)
         HpBar.zPosition = 1
-        HpBar.xScale = CGFloat( Double(WarpBoss.hp!) / Double(WarpBoss.maxHp!) )//x方向の倍率
+        HpBar.xScale = CGFloat( Double(WarpBoss.hp!) / Double(WarpBoss.maxHp!) )
         WarpBoss.addChild(HpBar)
         
         let GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
@@ -2409,9 +2458,9 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         let GradeLabel = SKLabelNode()
         
         GradeLabel.name = "GradeLabel"
-        GradeLabel.fontSize = 20// フォントサイズを設定.
-        GradeLabel.fontColor = UIColor.black// 色を指定(赤).
-        GradeLabel.position = CGPoint(x: -37, y: -30)// 表示するポジションを指定.
+        GradeLabel.fontSize = 20
+        GradeLabel.fontColor = UIColor.black
+        GradeLabel.position = CGPoint(x: -37, y: -30)
         GradeLabel.text = " \(WarpBoss.grade!)"
         WarpBoss.addChild(GradeLabel)
         
@@ -2446,12 +2495,12 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         HpBarBack.position = CGPoint(x: -5,y: -25)
         Tank.addChild(HpBarBack)
         
-        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))//敵2のhpの量を表示
+        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))
         
         HpBar.name = "HpBar"
         HpBar.position = CGPoint(x: -5,y: -25)
         HpBar.zPosition = 1
-        HpBar.xScale = CGFloat( Double(Tank.hp!) / Double(Tank.maxHp!) )//x方向の倍率
+        HpBar.xScale = CGFloat( Double(Tank.hp!) / Double(Tank.maxHp!) )
         Tank.addChild(HpBar)
         
         let GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
@@ -2465,9 +2514,9 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         let GradeLabel = SKLabelNode()
         
         GradeLabel.name = "GradeLabel"
-        GradeLabel.fontSize = 20// フォントサイズを設定.
-        GradeLabel.fontColor = UIColor.black// 色を指定(赤).
-        GradeLabel.position = CGPoint(x: -37, y: -30)// 表示するポジションを指定.
+        GradeLabel.fontSize = 20
+        GradeLabel.fontColor = UIColor.black
+        GradeLabel.position = CGPoint(x: -37, y: -30)
         GradeLabel.text = " \(Tank.grade!)"
         Tank.addChild(GradeLabel)
         
@@ -2502,12 +2551,12 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         HpBarBack.position = CGPoint(x: -5,y: -25)
         Senjin.addChild(HpBarBack)
         
-        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))//敵2のhpの量を表示
+        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))
         
         HpBar.name = "HpBar"
         HpBar.position = CGPoint(x: -5,y: -25)
         HpBar.zPosition = 1
-        HpBar.xScale = CGFloat( Double(Senjin.hp!) / Double(Senjin.maxHp!) )//x方向の倍率
+        HpBar.xScale = CGFloat( Double(Senjin.hp!) / Double(Senjin.maxHp!) )
         Senjin.addChild(HpBar)
         
         let GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
@@ -2521,9 +2570,9 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         let GradeLabel = SKLabelNode()
         
         GradeLabel.name = "GradeLabel"
-        GradeLabel.fontSize = 20// フォントサイズを設定.
-        GradeLabel.fontColor = UIColor.black// 色を指定(赤).
-        GradeLabel.position = CGPoint(x: -37, y: -30)// 表示するポジションを指定.
+        GradeLabel.fontSize = 20
+        GradeLabel.fontColor = UIColor.black
+        GradeLabel.position = CGPoint(x: -37, y: -30)
         GradeLabel.text = " \(Senjin.grade!)"
         Senjin.addChild(GradeLabel)
         
@@ -2531,6 +2580,64 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         return Senjin
         
     }
+    
+    func makeCamera(position:CGPoint) -> (Enemy) {
+        
+        let Camera = Enemy(imageNamed: "Camera")
+        
+        Camera.name = "Camera"
+        Camera.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Camera"), size: Camera.size)
+        Camera.physicsBody?.isDynamic = false
+        Camera.physicsBody?.restitution = 1.0
+        Camera.position = position
+        Camera.physicsBody?.categoryBitMask = PhysicsCategory.Enemy
+        Camera.physicsBody?.collisionBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
+        Camera.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
+        Camera.xScale = 0.7
+        Camera.yScale = 0.7
+        Camera.grade = 2
+        Camera.hp = 1000
+        Camera.defence = 0
+        Camera.type = "Camera"
+        Camera.maxHp = 1000//最大のHp
+        Camera.needToKill = false //監視カメラは倒す必要はない
+        
+        let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
+        
+        HpBarBack.name = "HpBarBack"
+        HpBarBack.position = CGPoint(x: -5,y: -25)
+        Camera.addChild(HpBarBack)
+        
+        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))
+        
+        HpBar.name = "HpBar"
+        HpBar.position = CGPoint(x: -5,y: -25)
+        HpBar.zPosition = 1
+        HpBar.xScale = CGFloat( Double(Camera.hp!) / Double(Camera.maxHp!) )
+        Camera.addChild(HpBar)
+        
+        let GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
+        
+        GradeIcon.name = "Gradeicon"
+        GradeIcon.position = CGPoint(x: -37, y: -25)
+        GradeIcon.xScale = 0.3
+        GradeIcon.yScale = 0.3
+        Camera.addChild(GradeIcon)
+        
+        let GradeLabel = SKLabelNode()
+        
+        GradeLabel.name = "GradeLabel"
+        GradeLabel.fontSize = 20
+        GradeLabel.fontColor = UIColor.black
+        GradeLabel.position = CGPoint(x: -37, y: -30)
+        GradeLabel.text = " \(Camera.grade!)"
+        Camera.addChild(GradeLabel)
+        
+        
+        return Camera
+        
+    }
+    
     
     
     func EnemyMove() {
@@ -2828,6 +2935,10 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                 }
                 
+                if enemy.type == "Camera" {
+                    //移動しない
+                }
+                
                 if enemy.type == "Queen" {
                     //移動しない。
                 }
@@ -2839,6 +2950,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     }
     
     func EnemyAttack() {
+        
+        let remove = SKAction.removeFromParent()
         
         //敵の攻撃
         for enemy in EnemyArray {
@@ -2874,8 +2987,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                     let travelTime1 = SKAction.move( to: CGPoint(x: enemy.position.x - CGFloat( 300 * cos(Double(direction))),y: enemy.position.y
                         + CGFloat( 300 * sin(Double(direction)))), duration: 0.8)
-                    let actionDone = SKAction.removeFromParent()
-                    bullet1.run(SKAction.sequence([travelTime1,actionDone]))
+                    bullet1.run(SKAction.sequence([travelTime1,remove]))
                     
                     
                     let bullet2 = self.makeeBullet(position: CGPoint(x: enemy.position.x,y: enemy.position.y), damage: bulletdamage, size: CGSize(width:  30.0, height: 10.0))
@@ -2883,14 +2995,14 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                     let travelTime2 = SKAction.move( to: CGPoint(x: enemy.position.x - CGFloat( 300 * cos(Double(direction + 0.2))),y: enemy.position.y
                         + CGFloat( 300 * sin(Double(direction + 0.2)))), duration: 0.8)
-                    bullet2.run(SKAction.sequence([travelTime2,actionDone]))
+                    bullet2.run(SKAction.sequence([travelTime2,remove]))
                     
                     let bullet3 = self.makeeBullet(position: CGPoint(x: enemy.position.x,y: enemy.position.y), damage: bulletdamage, size: CGSize(width:  30.0, height: 10.0))
                     self.addChild(bullet3)//Bullet表示
                     
                     let travelTime3 = SKAction.move( to: CGPoint(x: enemy.position.x - CGFloat( 300 * cos(Double(direction - 0.2))),y: enemy.position.y
                         + CGFloat( 300 * sin(Double(direction - 0.2)))), duration: 0.8)
-                    bullet3.run(SKAction.sequence([travelTime3,actionDone]))
+                    bullet3.run(SKAction.sequence([travelTime3,remove]))
                     
                 }
                 
@@ -2925,56 +3037,55 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         self.addChild(bom1)
                         
                         let action1 = SKAction.move(to: CGPoint(x: BomPosition.x, y: BomPosition.y + 100), duration: 1.0)//上
-                        let actionDone = SKAction.removeFromParent()
-                        bom1.run(SKAction.sequence([action1,actionDone]))
+                        bom1.run(SKAction.sequence([action1,remove]))
                         
                         let bom2 = makeeBullet(position: CGPoint(x: BomPosition.x,y: BomPosition.y), damage: bomDamage, size: CGSize(width:  20.0, height: 20.0))
                         self.addChild(bom2)
                         
                         let action2 = SKAction.move(to: CGPoint(x: BomPosition.x + 100, y: BomPosition.y + 100), duration: 1.0)//右上
-                        bom2.run(SKAction.sequence([action2,actionDone]))
+                        bom2.run(SKAction.sequence([action2,remove]))
                         
                         
                         let bom3 = makeeBullet(position: CGPoint(x: BomPosition.x,y: BomPosition.y), damage: bomDamage, size: CGSize(width:  20.0, height: 20.0))
                         self.addChild(bom3)
                         
                         let action3 = SKAction.move(to: CGPoint(x: BomPosition.x + 100, y: BomPosition.y), duration: 1.0)//右
-                        bom3.run(SKAction.sequence([action3,actionDone]))
+                        bom3.run(SKAction.sequence([action3,remove]))
                                                 
                         
                         let bom4 = makeeBullet(position: CGPoint(x: BomPosition.x,y: BomPosition.y), damage: bomDamage, size: CGSize(width:  20.0, height: 20.0))
                         self.addChild(bom4)
                         
                         let action4 = SKAction.move(to: CGPoint(x: BomPosition.x + 100, y: BomPosition.y - 100), duration: 1.0)//右下
-                        bom4.run(SKAction.sequence([action4,actionDone]))
+                        bom4.run(SKAction.sequence([action4,remove]))
                         
                         
                         let bom5 = makeeBullet(position: CGPoint(x: BomPosition.x,y: BomPosition.y), damage: bomDamage, size: CGSize(width:  20.0, height: 20.0))
                         self.addChild(bom5)
                         
                         let action5 = SKAction.move(to: CGPoint(x: BomPosition.x, y: BomPosition.y - 100), duration: 1.0)//した
-                        bom5.run(SKAction.sequence([action5,actionDone]))
+                        bom5.run(SKAction.sequence([action5,remove]))
                         
                         
                         let bom6 = makeeBullet(position: CGPoint(x: BomPosition.x,y: BomPosition.y), damage: bomDamage, size: CGSize(width:  20.0, height: 20.0))
                         self.addChild(bom6)
                         
                         let action6 = SKAction.move(to: CGPoint(x: BomPosition.x - 100, y: BomPosition.y - 100), duration: 1.0)//左した
-                        bom6.run(SKAction.sequence([action6,actionDone]))
+                        bom6.run(SKAction.sequence([action6,remove]))
                         
                         
                         let bom7 = makeeBullet(position: CGPoint(x: BomPosition.x,y: BomPosition.y), damage: bomDamage, size: CGSize(width:  20.0, height: 20.0))
                         self.addChild(bom7)
                         
                         let action7 = SKAction.move(to: CGPoint(x: BomPosition.x - 100, y: BomPosition.y), duration: 1.0)//左
-                        bom7.run(SKAction.sequence([action7,actionDone]))
+                        bom7.run(SKAction.sequence([action7,remove]))
                         
                         
                         let bom8 = makeeBullet(position: CGPoint(x: BomPosition.x,y: BomPosition.y), damage: bomDamage, size: CGSize(width:  20.0, height: 20.0))
                         self.addChild(bom8)
                         
                         let action8 = SKAction.move(to: CGPoint(x: BomPosition.x - 100, y: BomPosition.y + 100), duration: 1.0)//左うえ
-                        bom8.run(SKAction.sequence([action8,actionDone]))
+                        bom8.run(SKAction.sequence([action8,remove]))
                         
                     }
                     
@@ -2992,12 +3103,11 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     let alert = self.makeAlert(position: CGPoint(x: enemy.position.x / 2 - enemy.size.width / 4 + 5 ,y: enemy.position.y), size: CGSize(width: enemy.position.x - 10 - enemy.size.width / 2, height: 30.0))
                     self.addChild(alert)
                     
-                    alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                    alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
                     
                 }
                 
                 if phasenumber == 40 {
-                    
                     
                     let bulletdamage:Int = 200
                     
@@ -3006,9 +3116,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                     let travelTime1 = SKAction.moveTo(x: enemy.position
                         .x - 400, duration: 0.5)
-                    let actionDone = SKAction.removeFromParent()
                     
-                    bullet1.run(SKAction.sequence([travelTime1,actionDone]))
+                    bullet1.run(SKAction.sequence([travelTime1,remove]))
                     
                 }
                 
@@ -3069,7 +3178,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         let alert = self.makeAlert(position: CGPoint(x: enemy.position.x / 2 - 5 - enemy.size.width / 4,y: enemy.position.y), size: CGSize(width: enemy.position.x - 10 - enemy.size.width / 2, height: 50.0))
                         self.addChild(alert)
                         
-                        alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                        alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
                         
                     } else {//奇数ターン
                         
@@ -3081,8 +3190,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             let alert3 = self.makeAlert(position: CGPoint(x: enemy.position.x / 2 - 10,y: 274), size: CGSize(width: enemy.position.x - 40, height: 60.0))
                             self.addChild(alert3)
                             
-                            alert1.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
-                            alert3.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                            alert1.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
+                            alert3.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
                             
                         }
                         
@@ -3095,8 +3204,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             alert4.alpha = 0.0
                             self.addChild(alert4)
 
-                            alert2.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
-                            alert4.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                            alert2.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
+                            alert4.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
                             
                         }
                         
@@ -3114,16 +3223,15 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         self.addChild(bullet1)//Bullet表示
                         
                         let travelTime = SKAction.moveTo(x: enemy.position.x - self.size.width, duration: 0.6)
-                        let actionDone = SKAction.removeFromParent()
                         
-                        bullet1.run(SKAction.sequence([travelTime,actionDone]))
+                        bullet1.run(SKAction.sequence([travelTime,remove]))
                         
                         
                         let bullet2 = self.makeeBullet(position: CGPoint(x: enemy.position.x,y: enemy.position.y), damage: bulletdamage, size: CGSize(width:  30.0, height: 15.0))
                         self.addChild(bullet2)//Bullet表示
                         
                         let wait = SKAction.wait(forDuration: 0.2)
-                        bullet2.run(SKAction.sequence([wait,travelTime,actionDone]))
+                        bullet2.run(SKAction.sequence([wait,travelTime,remove]))
                         
                     } else {//奇数ターン
                         
@@ -3134,16 +3242,15 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         
                         let goup = SKAction.moveTo(y: 274, duration: 0.4)
                         let travelTime = SKAction.moveTo(x: 10, duration: 0.6)
-                        let actionDone = SKAction.removeFromParent()
                         
-                        bullet1.run(SKAction.sequence([goup,travelTime,actionDone]))
+                        bullet1.run(SKAction.sequence([goup,travelTime,remove]))
                         
                         let bullet2 = self.makeeBullet(position: CGPoint(x: enemy.position.x,y: enemy.position.y), damage: bulletdamage, size: CGSize(width:  30.0, height: 15.0))
                         self.addChild(bullet2)//Bullet表示
                         
                         let godown = SKAction.moveTo(y: 70, duration: 0.4)
                         
-                        bullet2.run(SKAction.sequence([godown,travelTime,actionDone]))
+                        bullet2.run(SKAction.sequence([godown,travelTime,remove]))
                         
                         
                     }
@@ -3165,7 +3272,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             let alert = self.makeAlert(position: CGPoint(x: (enemy.position.x - 10 - (enemy.size.width / 2)) / 2,y: enemy.position.y), size: CGSize(width: enemy.position.x - 10 - (enemy.size.width / 2), height: 50.0))
                             self.addChild(alert)
                             
-                            alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                            alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
                             
                         } else {//hpが30%より少ない時の攻撃
                             
@@ -3178,7 +3285,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             let alert = self.makeAlert(position: CGPoint(x: (enemy.position.x - 10 - (enemy.size.width / 2)) / 2,y: enemy.position.y), size: CGSize(width: enemy.position.x - 10 - (enemy.size.width / 2), height: 50.0))
                             self.addChild(alert)
                             
-                            alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                            alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
                             
                         } else {//hpが30%より少ない時の攻撃
                             
@@ -3189,22 +3296,22 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         let alert1 = self.makeAlert(position: CGPoint(x: 170,y: 177), size: CGSize(width: 50, height: 334))
                         self.addChild(alert1)
                         
-                        alert1.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                        alert1.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
                         
                         let alert2 = self.makeAlert(position: CGPoint(x: 340,y: 177), size: CGSize(width: 50, height: 334))
                         self.addChild(alert2)
                         
-                        alert2.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                        alert2.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
                         
                         let alert3 = self.makeAlert(position: CGPoint(x: 510,y: 177), size: CGSize(width: 50, height: 334))
                         self.addChild(alert3)
                         
-                        alert3.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                        alert3.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
                         
                         let alert4 = self.makeAlert(position: CGPoint(x: 680,y: 177), size: CGSize(width: 50, height: 334))
                         self.addChild(alert4)
                         
-                        alert4.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                        alert4.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
                         
                     } else if turn % 6 == 4 {//左上
                         
@@ -3212,7 +3319,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             let alert = self.makeAlert(position: CGPoint(x: 443 + enemy.position.x / 2 + enemy.size.width / 4 ,y: enemy.position.y), size: CGSize(width: 886 - enemy.position.x - enemy.size.width / 2, height: 50.0))
                             self.addChild(alert)
                             
-                            alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                            alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
                         } else {//hpが30%より少ない時の攻撃
                             
                         }
@@ -3224,7 +3331,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             let alert = self.makeAlert(position: CGPoint(x: 443 + enemy.position.x / 2 + enemy.size.width / 4 ,y: enemy.position.y), size: CGSize(width: 886 - enemy.position.x - enemy.size.width / 2, height: 50.0))
                             self.addChild(alert)
                             
-                            alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                            alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
                             
                         } else {//hpが30%より少ない時の攻撃
                             
@@ -3235,20 +3342,22 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         let alert1 = self.makeAlert(position: CGPoint(x: 260,y: 177), size: CGSize(width: 50, height: 334))
                         self.addChild(alert1)
                         
-                        alert1.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                        alert1.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
                         
                         let alert2 = self.makeAlert(position: CGPoint(x: 430,y: 177), size: CGSize(width: 50, height: 334))
                         self.addChild(alert2)
                         
-                        alert2.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                        alert2.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
                         
                         let alert3 = self.makeAlert(position: CGPoint(x: 600,y: 177), size: CGSize(width: 50, height: 334))
                         self.addChild(alert3)
                         
-                        alert3.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut]))
+                        alert3.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
                         
                         let alert4 = self.makeAlert(position: CGPoint(x: 770,y: 177), size: CGSize(width: 50, height: 334))
                         self.addChild(alert4)
+                        
+                        alert4.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
                         
                     }
                     
@@ -3267,9 +3376,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                             let travelTime = SKAction.moveTo(x: enemy.position
                                 .x - self.size.width, duration: 0.6)
-                            let actionDone = SKAction.removeFromParent()
                             
-                            bullet1.run(SKAction.sequence([travelTime,actionDone]))
+                            bullet1.run(SKAction.sequence([travelTime,remove]))
                             
                         } else {//hpが30%より少ない時の攻撃
                             
@@ -3279,7 +3387,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             self.addChild(bullet1)
                             
                             let goleft = SKAction.moveTo(x: 10, duration: 15.0)
-                            let remove = SKAction.removeFromParent()
                             
                             bullet1.run(SKAction.sequence([goleft,remove]))
                             
@@ -3304,9 +3411,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                             let travelTime = SKAction.moveTo(x: enemy.position
                                 .x - self.size.width, duration: 0.6)
-                            let actionDone = SKAction.removeFromParent()
                             
-                            bullet1.run(SKAction.sequence([travelTime,actionDone]))
+                            bullet1.run(SKAction.sequence([travelTime,remove]))
                             
                         } else {//hpが30%より少ない時の攻撃
                             
@@ -3316,7 +3422,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             self.addChild(bullet1)
                             
                             let goleft = SKAction.moveTo(x: 10, duration: 15.0)
-                            let remove = SKAction.removeFromParent()
                             
                             bullet1.run(SKAction.sequence([goleft,remove]))
                             
@@ -3336,7 +3441,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         
                         let goup = SKAction.moveTo(y: 500, duration: 1.5)
                         let godown = SKAction.moveTo(y: 0, duration: 1.5)
-                        let remove = SKAction.removeFromParent()
                         
                         let bullet1 = self.makeeBullet(position: CGPoint(x: 170,y: -100), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
                         self.addChild(bullet1)
@@ -3370,9 +3474,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                             let travelTime = SKAction.moveTo(x: self.size.width - enemy.position
                             .x, duration: 0.6)
-                            let actionDone = SKAction.removeFromParent()
                             
-                            bullet1.run(SKAction.sequence([travelTime,actionDone]))
+                            bullet1.run(SKAction.sequence([travelTime,remove]))
                             
                         } else {//hpが30%より少ない時の攻撃
                             
@@ -3382,7 +3485,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             self.addChild(bullet1)
                             
                             let goright = SKAction.moveTo(x: 880, duration: 15.0)
-                            let remove = SKAction.removeFromParent()
                             
                             bullet1.run(SKAction.sequence([goright,remove]))
                             
@@ -3407,9 +3509,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                             let travelTime = SKAction.moveTo(x: self.size.width - enemy.position
                             .x, duration: 0.6)
-                            let actionDone = SKAction.removeFromParent()
                             
-                            bullet1.run(SKAction.sequence([travelTime,actionDone]))
+                            bullet1.run(SKAction.sequence([travelTime,remove]))
                             
                         } else {//hpが30%より少ない時の攻撃
                             
@@ -3419,7 +3520,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             self.addChild(bullet1)
                             
                             let goright = SKAction.moveTo(x: 880, duration: 15.0)
-                            let remove = SKAction.removeFromParent()
                             
                             bullet1.run(SKAction.sequence([goright,remove]))
                             
@@ -3439,7 +3539,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         
                         let goup = SKAction.moveTo(y: 500, duration: 1.5)
                         let godown = SKAction.moveTo(y: 0, duration: 1.5)
-                        let remove = SKAction.removeFromParent()
                         
                         let bullet1 = self.makeeBullet(position: CGPoint(x: 260,y: 500), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
                         self.addChild(bullet1)
@@ -3462,6 +3561,24 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         bullet4.run(SKAction.sequence([goup,remove]))
                         
                     }
+                    
+                }
+                
+            }
+            
+            if enemy.type == "Camera" {
+                
+                if phasenumber == 30 { //監視する
+                    
+                    let bullet = self.makeeBullet(position: enemy.position, damage: 40, size: CGSize(width: 10, height: 240))
+                    bullet.zPosition = -1
+                    bullet.name = "camera"
+                    bullet.physicsBody?.isDynamic = false
+                    self.addChild(bullet)
+                    
+                    let rotateAction = SKAction.rotate(byAngle: self.DegreeToRadian(Degree: -1080), duration: 8)
+                    
+                    bullet.run(SKAction.sequence([rotateAction,remove]))
                     
                 }
                 
@@ -3529,7 +3646,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         bullet.physicsBody?.collisionBitMask = PhysicsCategory.Enemy | PhysicsCategory.Wall
         bullet.physicsBody?.contactTestBitMask = PhysicsCategory.Enemy | PhysicsCategory.Wall
         
-        
         return bullet
         
     }
@@ -3546,7 +3662,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         bullet.physicsBody?.collisionBitMask = PhysicsCategory.Ally | PhysicsCategory.Wall
         bullet.physicsBody?.contactTestBitMask = PhysicsCategory.Ally | PhysicsCategory.Wall
         
-        
         return bullet
         
     }
@@ -3560,7 +3675,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         alert.physicsBody?.collisionBitMask = 0b00000000
         alert.physicsBody?.contactTestBitMask = 0b00000000
         alert.alpha = 0.0
-        
         
         return alert
         
@@ -3991,6 +4105,13 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
         return true
         
+    }
+
+    func DegreeToRadian(Degree : Double!)-> CGFloat{//度数からラジアンに変換するメソッド
+
+
+        return CGFloat(Degree) / CGFloat(180.0 * M_1_PI)
+
     }
     
 }

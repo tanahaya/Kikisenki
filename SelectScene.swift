@@ -326,10 +326,6 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
                 
             } else if world == 10 {
                 
-            } else if world == 11 {
-                
-            } else if world == 12 {
-                
             }
             
             if self.atPoint(location).name == "arrowtoPhaze" {

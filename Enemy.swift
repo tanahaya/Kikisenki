@@ -19,6 +19,7 @@ class Enemy : SKSpriteNode {
     var moveEnable:Bool = true//移動できるかどうか判定する。
     var type: String?//敵の種類を把握する。
     var defence: Int?
+    var needToKill:Bool = true//倒す必要があるかどうかを判定するメソッド
     
     func test() -> String {
         return "Hello"
