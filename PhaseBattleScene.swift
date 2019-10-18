@@ -334,6 +334,13 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                         }
                         
+                        ally1.alpha = 0.0
+                        if self.atPoint(ally1.position).name == "poison" {
+                            self.changeAllyHp(change: -50, id: 1)
+                            self.damageEffect(damageposition: ally1.position, damage: 50)
+                        }
+                        ally1.alpha = 1.0
+                        
                     }
                 }
                 
@@ -375,6 +382,13 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                         }
                         
+                        ally2.alpha = 0.0
+                        if self.atPoint(ally2.position).name == "poison" {
+                            self.changeAllyHp(change: -50, id: 2)
+                            self.damageEffect(damageposition: ally2.position, damage: 50)
+                        }
+                        ally2.alpha = 1.0
+                        
                     }
                 }
                 
@@ -414,6 +428,13 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             ally3.run(travelTime)
                             
                         }
+                        
+                        ally3.alpha = 0.0
+                        if self.atPoint(ally3.position).name == "poison" {
+                            self.changeAllyHp(change: -50, id: 3)
+                            self.damageEffect(damageposition: ally3.position, damage: 50)
+                        }
+                        ally3.alpha = 1.0
                         
                     }
                 }
@@ -456,8 +477,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
         if let touch = touches.first as UITouch? {
-            let location = touch.location(in: self)
             
+            let location = touch.location(in: self)
             
             if self.atPoint(location).name == "setting" {
                 
@@ -720,15 +741,15 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                                 bullet = self.makeBullet(position: CGPoint(x: ally1.position.x,y: ally1.position.y), damage: 800, size: CGSize(width:  30.0, height: 10.0))
                             }
                             
-                            ally1.grade! = 1//gradeをリセットする。
+                            ally1.grade! = 1 //gradeをリセットする。
                             ally1GradeLabel.text = "\(ally1.grade!)"
                             
-                            self.addChild(bullet)//Bullet表示
+                            self.addChild(bullet) //Bullet表示
                             
                             let action = SKAction.moveTo(x: self.size.width, duration: 1.0) //アクション作成(移動方向:Y,移動時間:1.0秒)
-                            let actionDone = SKAction.removeFromParent()
+                            let remove = SKAction.removeFromParent()
                             
-                            bullet.run(SKAction.sequence([action,actionDone]))
+                            bullet.run(SKAction.sequence([action,remove]))
                             
                             ally1SkilledFlag = false //Skillを使ったこと判定
                             
@@ -822,7 +843,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     }
                 }
                 
-                ally1Skill1.alpha = 0.0//name判定より後にしないと判定がされなくなる。
+                ally1Skill1.alpha = 0.0 //name判定より後にしないと判定がされなくなる。
                 ally1Skill2.alpha = 0.0
                 ally1Skill3.alpha = 0.0
                 ally1Skill4.alpha = 0.0
@@ -2124,17 +2145,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             
             if stage == 1 {
                 
-                //壁を作る
-                let wall1 = self.makeWall(position: CGPoint(x: 210,y: 269), size: CGSize(width: 40, height: 150))
-                self.addChild(wall1)
-                
-                let wall2 = self.makeWall(position: CGPoint(x: 410,y: 85), size: CGSize(width: 40, height: 150))
-                self.addChild(wall2)
-                
-                let wall3 = self.makeWall(position: CGPoint(x: 610,y: 294), size: CGSize(width: 40, height: 100))
-                self.addChild(wall3)
-                
-                
                 var firstArray:[Enemy] = []
                 
                 let Camera1 = self.makeCamera(position: CGPoint(x: 200,y: 70))
@@ -2165,15 +2175,103 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
                 waveLabel.text = "wave: \(waveNumber + 1) / \(maxWaveNumber) "
                 
-            } else if stage == 2 { //とりあえず、stage1と同じにしています。
+            }
+            
+            
+        } else if world == 6 {
+            
+            if stage == 1 {
                 
+                //1
                 var firstArray:[Enemy] = []
                 
-                let tank1 = self.makeTank(position: CGPoint(x: 750,y: 200))
-                tank1.id = firstArray.count
-                firstArray.append(tank1)
+                let Flog1 = self.makeFlog(position: CGPoint(x: 550,y: 200))
+                Flog1.id = firstArray.count
+                firstArray.append(Flog1)
                 
                 stagearray.append(firstArray)
+                
+                //2
+                var secondArray:[Enemy] = []
+                
+                let Oni1 = self.makeOni(position: CGPoint(x: 550,y: 200))
+                Oni1.id = secondArray.count
+                secondArray.append(Oni1)
+                
+                stagearray.append(secondArray)
+                
+                //3
+                var thirdArray:[Enemy] = []
+                
+                let Soilder3 = self.makeSoiler(position: CGPoint(x: 650,y: 150))
+                Soilder3.id = thirdArray.count
+                thirdArray.append(Soilder3)
+                
+                stagearray.append(thirdArray)
+                
+                
+                var fourthArray:[Enemy] = []
+                
+                let Soilder4 = self.makeSoiler(position: CGPoint(x: 650,y: 150))
+                Soilder4.id = fourthArray.count
+                fourthArray.append(Soilder4)
+                
+                stagearray.append(fourthArray)
+                
+                
+                var fifthArray:[Enemy] = []
+                
+                let Soilder5 = self.makeSoiler(position: CGPoint(x: 650,y: 150))
+                Soilder5.id = fifthArray.count
+                fifthArray.append(Soilder5)
+                
+                stagearray.append(fifthArray)
+                
+                
+                var sixthArray:[Enemy] = []
+                
+                let Soilder6 = self.makeSoiler(position: CGPoint(x: 650,y: 150))
+                Soilder6.id = sixthArray.count
+                sixthArray.append(Soilder6)
+                
+                stagearray.append(sixthArray)
+                
+                
+                var seventhArray:[Enemy] = []
+                
+                let Soilder7 = self.makeSoiler(position: CGPoint(x: 650,y: 150))
+                Soilder7.id = seventhArray.count
+                seventhArray.append(Soilder7)
+                
+                stagearray.append(seventhArray)
+                
+                
+                var eighthArray:[Enemy] = []
+                
+                let Soilder8 = self.makeSoiler(position: CGPoint(x: 650,y: 150))
+                Soilder8.id = eighthArray.count
+                eighthArray.append(Soilder8)
+                
+                stagearray.append(eighthArray)
+                
+                
+                var ninethArray:[Enemy] = []
+                
+                let Soilder9 = self.makeSoiler(position: CGPoint(x: 650,y: 150))
+                Soilder9.id = ninethArray.count
+                ninethArray.append(Soilder9)
+                
+                stagearray.append(ninethArray)
+                
+                
+                var tenthArray:[Enemy] = []
+                
+                let Soilder10 = self.makeSoiler(position: CGPoint(x: 650,y: 150))
+                Soilder10.id = tenthArray.count
+                tenthArray.append(Soilder10)
+                
+                stagearray.append(tenthArray)
+                
                 
                 maxWaveNumber = stagearray.count
                 
@@ -2638,7 +2736,117 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
     }
     
+    func makeOni(position:CGPoint) -> (Enemy) {
+        
+        let Oni = Enemy(imageNamed: "Oni")
+        
+        Oni.name = "Oni"
+        Oni.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Oni"), size: Oni.size)
+        Oni.physicsBody?.isDynamic = false
+        Oni.physicsBody?.restitution = 1.0
+        Oni.position = position
+        Oni.physicsBody?.categoryBitMask = PhysicsCategory.Enemy
+        Oni.physicsBody?.collisionBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
+        Oni.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
+        Oni.xScale = 1.5
+        Oni.yScale = 1.5
+        Oni.grade = 2
+        Oni.hp = 1000
+        Oni.defence = 0
+        Oni.type = "Oni"
+        Oni.maxHp = 1000//最大のHp
+        
+        let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
+        
+        HpBarBack.name = "HpBarBack"
+        HpBarBack.position = CGPoint(x: -5,y: -25)
+        Oni.addChild(HpBarBack)
+        
+        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))
+        
+        HpBar.name = "HpBar"
+        HpBar.position = CGPoint(x: -5,y: -25)
+        HpBar.zPosition = 1
+        HpBar.xScale = CGFloat( Double(Oni.hp!) / Double(Oni.maxHp!) )
+        Oni.addChild(HpBar)
+        
+        let GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
+        
+        GradeIcon.name = "Gradeicon"
+        GradeIcon.position = CGPoint(x: -37, y: -25)
+        GradeIcon.xScale = 0.3
+        GradeIcon.yScale = 0.3
+        Oni.addChild(GradeIcon)
+        
+        let GradeLabel = SKLabelNode()
+        
+        GradeLabel.name = "GradeLabel"
+        GradeLabel.fontSize = 20
+        GradeLabel.fontColor = UIColor.black
+        GradeLabel.position = CGPoint(x: -37, y: -30)
+        GradeLabel.text = " \(Oni.grade!)"
+        Oni.addChild(GradeLabel)
+        
+        
+        return Oni
+        
+    }
     
+    func makeFlog(position:CGPoint) -> (Enemy) {
+        
+        let Flog = Enemy(imageNamed: "Flog")
+        
+        Flog.name = "Flog"
+        Flog.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Flog"), size: Flog.size)
+        Flog.physicsBody?.isDynamic = false
+        Flog.physicsBody?.restitution = 1.0
+        Flog.position = position
+        Flog.physicsBody?.categoryBitMask = PhysicsCategory.Enemy
+        Flog.physicsBody?.collisionBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
+        Flog.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
+        Flog.xScale = 1.0
+        Flog.yScale = 1.0
+        Flog.grade = 2
+        Flog.hp = 1000
+        Flog.defence = 0
+        Flog.type = "Flog"
+        Flog.maxHp = 1000//最大のHp
+        
+        let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
+        
+        HpBarBack.name = "HpBarBack"
+        HpBarBack.position = CGPoint(x: -5,y: -25)
+        Flog.addChild(HpBarBack)
+        
+        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))
+        
+        HpBar.name = "HpBar"
+        HpBar.position = CGPoint(x: -5,y: -25)
+        HpBar.zPosition = 1
+        HpBar.xScale = CGFloat( Double(Flog.hp!) / Double(Flog.maxHp!) )
+        Flog.addChild(HpBar)
+        
+        let GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
+        
+        GradeIcon.name = "Gradeicon"
+        GradeIcon.position = CGPoint(x: -37, y: -25)
+        GradeIcon.xScale = 0.3
+        GradeIcon.yScale = 0.3
+        Flog.addChild(GradeIcon)
+        
+        let GradeLabel = SKLabelNode()
+        
+        GradeLabel.name = "GradeLabel"
+        GradeLabel.fontSize = 20
+        GradeLabel.fontColor = UIColor.black
+        GradeLabel.position = CGPoint(x: -37, y: -30)
+        GradeLabel.text = " \(Flog.grade!)"
+        Flog.addChild(GradeLabel)
+        
+        
+        return Flog
+        
+    }
     
     func EnemyMove() {
         
@@ -2937,6 +3145,70 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
                 if enemy.type == "Camera" {
                     //移動しない
+                }
+                
+                if enemy.type == "Oni" {
+                    
+                    var shortestDistance:CGFloat = 50000.0 //大きい数字をとりあえず、代入します。
+                    var savei:Int = 0
+                    
+                    for i in 0 ..< AllyArray.count {
+                        if shortestDistance >= length(v: CGPoint(x: enemy.position.x - AllyArray[i].position.x,y: enemy.position.y - AllyArray[i].position.y)) {
+                            shortestDistance = length(v: CGPoint(x: enemy.position.x - AllyArray[i].position.x,y: enemy.position.y - AllyArray[i].position.y))
+                            savei = i
+                        }
+                    }
+                    
+                    var relativepostion:CGPoint = CGPoint(x: 0,y: 0)
+                    
+                    relativepostion.x = AllyArray[savei].position.x - enemy.position.x
+                    relativepostion.y = AllyArray[savei].position.y - enemy.position.y
+                    
+                    let direction :CGFloat = vector2radian(vector: relativepostion)
+                    
+                    if shortestDistance >= 50 { //距離が遠い時は近づく。xy方向に
+                        
+                        let travelTime = SKAction.move( to: CGPoint(x: enemy.position.x - CGFloat( 1 * cos(Double(direction))),y: enemy.position.y
+                            + CGFloat( 1 * sin(Double(direction)))), duration: 0.01)
+                        enemy.run(travelTime)
+                        
+                    } else { //距離が近い時は近づかない。y方向に
+                        
+                        let travelTime = SKAction.move( to: CGPoint(x: enemy.position.x,y: enemy.position.y + CGFloat( 1 * sin(Double(direction)))), duration: 0.01)
+                        enemy.run(travelTime)
+                        
+                    }
+                    
+                }
+                
+                if enemy.type == "Flog" { //ジグザグに動く
+                    
+                    if phasenumber == 10 {
+                        
+                        var  move = SKAction.move(to: CGPoint(x: enemy.position.x,y: enemy.position.y), duration: 0.01)
+                        
+                        if turn % 2 == 0 { //偶数ターン
+                            
+                            if enemy.position.x - 120 < 80 {
+                                move = SKAction.move(to: CGPoint(x: enemy.position.x,y: 100), duration: 7.0)
+                            } else {
+                                move = SKAction.move(to: CGPoint(x: enemy.position.x - 120,y: 100), duration: 7.0)
+                            }
+                            
+                        } else { //奇数ターン
+                            
+                            if enemy.position.x - 120 < 80 {
+                                move = SKAction.move(to: CGPoint(x: enemy.position.x,y: 30), duration: 7.0)
+                            } else {
+                                move = SKAction.move(to: CGPoint(x: enemy.position.x - 120,y: 300), duration: 7.0)
+                            }
+                            
+                        }
+                        
+                        enemy.run(move)
+                        
+                    }
+                    
                 }
                 
                 if enemy.type == "Queen" {
@@ -3579,6 +3851,76 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     let rotateAction = SKAction.rotate(byAngle: self.DegreeToRadian(Degree: -1080), duration: 8)
                     
                     bullet.run(SKAction.sequence([rotateAction,remove]))
+                    
+                }
+                
+            }
+            
+            if enemy.type == "Oni" {
+                
+                if phasenumber == 14 {
+                    
+                    let fadeIn = SKAction.fadeIn(withDuration: 0.2)
+                    let fadeOut = SKAction.fadeOut(withDuration: 0.2)
+                    
+                    let alert = self.makeAlert(position: CGPoint(x: enemy.position.x - 80,y: enemy.position.y), size: CGSize(width: 160, height: 120.0))
+                    self.addChild(alert)
+                    
+                    alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
+                    
+                }
+                
+                if phasenumber == 30 || phasenumber == 60 || phasenumber == 90{
+                    
+                    //Oniの挙動、棒を振る。
+                    let bulletdamage:Int = 200
+                    
+                    let bullet1 = self.makeeBullet(position: CGPoint(x: enemy.position.x,y: enemy.position.y), damage: bulletdamage, size: CGSize(width:  10.0, height: 120.0))
+                    self.addChild(bullet1)//Bullet表示
+                    
+                    let travelTime1 = SKAction.moveTo(x: enemy.position.x - 160, duration: 0.2)
+                    bullet1.run(SKAction.sequence([travelTime1,remove]))
+                    
+                }
+                
+            }
+            
+            if enemy.type == "Flog" {
+                
+                if phasenumber == 24 {
+                    
+                    let fadeIn = SKAction.fadeIn(withDuration: 0.2)
+                    let fadeOut = SKAction.fadeOut(withDuration: 0.2)
+                    
+                    let alert = self.makeAlert(position: CGPoint(x: enemy.position.x - 130,y: enemy.position.y), size: CGSize(width: 160, height: 120.0))
+                    self.addChild(alert)
+                    
+                    alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
+                    
+                }
+                
+                if phasenumber == 40 {
+                    
+                    let bulletdamage = 100
+                    
+                    let move  = SKAction.move(to: CGPoint(x: enemy.position.x - 200,y: enemy.position.y - 50), duration: 1.5)
+                    let scaleup = SKAction.scale(by: 2.5, duration: 1.5)
+                    
+                    let bullet1 = self.makeeBullet(position: CGPoint(x: enemy.position.x - 60,y: enemy.position.y + 50), damage: bulletdamage, size: CGSize(width:  50.0, height: 30.0))
+                    bullet1.color = UIColor.purple
+                    bullet1.name = "poison"
+                    self.addChild(bullet1)//Bullet表示
+                    
+                    bullet1.run(SKAction.group([move,scaleup]))
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                        
+                        bullet1.physicsBody?.categoryBitMask = 0
+                        bullet1.physicsBody?.collisionBitMask = 0
+                        bullet1.physicsBody?.contactTestBitMask = 0
+                        
+                        bullet1.zPosition = -1
+                    }
                     
                 }
                 
