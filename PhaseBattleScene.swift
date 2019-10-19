@@ -99,15 +99,15 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     var UpperWall = SKSpriteNode(color: UIColor.black, size: CGSize(width: 896, height: 10))
     var LowerWall = SKSpriteNode(color: UIColor.black, size: CGSize(width: 896, height: 10))
     
-    var ItemCount:Int = 1//Itemの数を管理する。
+    var ItemCount:Int = 1 //Itemの数を管理する。
     
     var stopActionFlag:Bool = false
     var stopActionNumber = 0
     var aimPosition:CGPoint = CGPoint(x:0,y:0)
     
-    let userDefaults = UserDefaults.standard//管理用のuserdefaults
+    let userDefaults = UserDefaults.standard //管理用のuserdefaults
     
-    let settingButton = SKSpriteNode(imageNamed: "setting")//設定ボタン。
+    let settingButton = SKSpriteNode(imageNamed: "setting") //設定ボタン。
     
     //衝突判定のためのビットマスク作成
     struct PhysicsCategory {
@@ -2185,9 +2185,9 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 //1
                 var firstArray:[Enemy] = []
                 
-                let Flog1 = self.makeFlog(position: CGPoint(x: 550,y: 200))
-                Flog1.id = firstArray.count
-                firstArray.append(Flog1)
+                let Pig1 = self.makePig(position: CGPoint(x: 550,y: 200))
+                Pig1.id = firstArray.count
+                firstArray.append(Pig1)
                 
                 stagearray.append(firstArray)
                 
@@ -2203,9 +2203,9 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 //3
                 var thirdArray:[Enemy] = []
                 
-                let Soilder3 = self.makeSoiler(position: CGPoint(x: 650,y: 150))
-                Soilder3.id = thirdArray.count
-                thirdArray.append(Soilder3)
+                let Flog1 = self.makeFlog(position: CGPoint(x: 550,y: 200))
+                Flog1.id = thirdArray.count
+                thirdArray.append(Flog1)
                 
                 stagearray.append(thirdArray)
                 
@@ -2848,6 +2848,62 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
     }
     
+    func makePig(position:CGPoint) -> (Enemy) {
+        
+        let Pig = Enemy(imageNamed: "Pig")
+        
+        Pig.name = "Pig"
+        Pig.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Pig"), size: Pig.size)
+        Pig.physicsBody?.isDynamic = false
+        Pig.physicsBody?.restitution = 1.0
+        Pig.position = position
+        Pig.physicsBody?.categoryBitMask = PhysicsCategory.Enemy
+        Pig.physicsBody?.collisionBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
+        Pig.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
+        Pig.xScale = 1.0
+        Pig.yScale = 1.0
+        Pig.grade = 2
+        Pig.hp = 600
+        Pig.defence = 0
+        Pig.type = "Pig"
+        Pig.maxHp = 600//最大のHp
+        
+        let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
+        
+        HpBarBack.name = "HpBarBack"
+        HpBarBack.position = CGPoint(x: -5,y: -25)
+        Pig.addChild(HpBarBack)
+        
+        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))
+        
+        HpBar.name = "HpBar"
+        HpBar.position = CGPoint(x: -5,y: -25)
+        HpBar.zPosition = 1
+        HpBar.xScale = CGFloat( Double(Pig.hp!) / Double(Pig.maxHp!) )
+        Pig.addChild(HpBar)
+        
+        let GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
+        
+        GradeIcon.name = "Gradeicon"
+        GradeIcon.position = CGPoint(x: -37, y: -25)
+        GradeIcon.xScale = 0.3
+        GradeIcon.yScale = 0.3
+        Pig.addChild(GradeIcon)
+        
+        let GradeLabel = SKLabelNode()
+        
+        GradeLabel.name = "GradeLabel"
+        GradeLabel.fontSize = 20
+        GradeLabel.fontColor = UIColor.black
+        GradeLabel.position = CGPoint(x: -37, y: -30)
+        GradeLabel.text = " \(Pig.grade!)"
+        Pig.addChild(GradeLabel)
+        
+        
+        return Pig
+        
+    }
+    
     func EnemyMove() {
         
         for enemy in EnemyArray {
@@ -3211,6 +3267,32 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                 }
                 
+                if enemy.type == "Pig" {
+                    //移動しない
+                }
+                
+                if enemy.type == "Boar" {
+                    
+                    if enemy.position.x > 100  && enemy.position.x < 850 {
+                        
+                    } else {
+                        
+                        if phasenumber == 5 { //画面外に居る時に横から出てくる。
+                            
+                            let moveDown = SKAction.moveTo(y: -100, duration: 0.1)
+                            let moveRight = SKAction.moveTo(x: 1000, duration: 0.1)
+                            
+                            let moveUp = SKAction.moveTo(y: CGFloat(Int.random(in: 50 ..< 280)), duration: 0.1)
+                            let moveLeft = SKAction.moveTo(x: 700, duration: 3.0)
+                            
+                            enemy.run(SKAction.sequence([moveDown,moveRight,moveUp,moveLeft]))
+                            
+                        }
+                        
+                    }
+                    
+                }
+                
                 if enemy.type == "Queen" {
                     //移動しない。
                 }
@@ -3368,14 +3450,18 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             if enemy.type == "Warp" {
                 
                 if phasenumber == 24 {
-                    
-                    let fadeIn = SKAction.fadeIn(withDuration: 0.2)
-                    let fadeOut = SKAction.fadeOut(withDuration: 0.2)
-                    
-                    let alert = self.makeAlert(position: CGPoint(x: enemy.position.x / 2 - enemy.size.width / 4 + 5 ,y: enemy.position.y), size: CGSize(width: enemy.position.x - 10 - enemy.size.width / 2, height: 30.0))
-                    self.addChild(alert)
-                    
-                    alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
+                        
+                    if enemy.position.x - 10 - enemy.size.width / 2 > 0 {
+                        
+                        let fadeIn = SKAction.fadeIn(withDuration: 0.2)
+                        let fadeOut = SKAction.fadeOut(withDuration: 0.2)
+                        
+                        let alert = self.makeAlert(position: CGPoint(x: enemy.position.x / 2 - enemy.size.width / 4 + 5 ,y: enemy.position.y), size: CGSize(width: enemy.position.x - 10 - enemy.size.width / 2, height: 30.0))
+                        self.addChild(alert)
+                        
+                        alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
+                        
+                    }
                     
                 }
                 
@@ -3870,7 +3956,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                 }
                 
-                if phasenumber == 30 || phasenumber == 60 || phasenumber == 90{
+                if phasenumber == 30 || phasenumber == 60 || phasenumber == 90 { //近距離に強めの攻撃。
                     
                     //Oniの挙動、棒を振る。
                     let bulletdamage:Int = 200
@@ -3899,7 +3985,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                 }
                 
-                if phasenumber == 40 {
+                if phasenumber == 40 { //毒を吐き出す。
                     
                     let bulletdamage = 100
                     
@@ -3924,6 +4010,83 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                 }
                 
+            }
+            
+            if enemy.type == "Pig" {
+                
+                if phasenumber == 80 {
+                    if Double(enemy.hp!) / Double(enemy.maxHp!) < 0.5 {//hpが半分以下の時にイノシシに変身する。
+                        
+                        enemy.texture = SKTexture(imageNamed: "Boar.png")
+                        enemy.type = "Boar"
+                        enemy.physicsBody?.categoryBitMask = PhysicsCategory.Enemy
+                        enemy.physicsBody?.collisionBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
+                        enemy.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
+                        enemy.maxHp = 1500
+                        self.changeEnemyHp(change: 1500, id: enemy.id!)//hpを回復する。
+                        
+                    }
+                }
+                
+                if phasenumber == 24 {
+                    
+                    let fadeIn = SKAction.fadeIn(withDuration: 0.2)
+                    let fadeOut = SKAction.fadeOut(withDuration: 0.2)
+                    
+                    let alert = self.makeAlert(position: CGPoint(x: enemy.position.x - 130,y: enemy.position.y), size: CGSize(width: 160, height: 120.0))
+                    self.addChild(alert)
+                    
+                    alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
+                }
+                
+                if phasenumber == 40 { //弱めの攻撃。
+                    
+                    let bulletdamage = 100
+                    
+                    let move  = SKAction.move(to: CGPoint(x: enemy.position.x - 200,y: enemy.position.y), duration: 1.0)
+                    
+                    let bullet1 = self.makeeBullet(position: CGPoint(x: enemy.position.x,y: enemy.position.y), damage: bulletdamage, size: CGSize(width:  50.0, height: 30.0))
+                    self.addChild(bullet1)//Bullet表示
+                    
+                    bullet1.run(SKAction.sequence([move,remove]))
+                    
+                }
+                
+            }
+            
+            if enemy.type == "Boar" { //突進する。
+                
+                if phasenumber == 14 {
+                    
+                    if enemy.position.x / 2 > 5 {
+                        
+                        let fadeIn = SKAction.fadeIn(withDuration: 0.2)
+                        let fadeOut = SKAction.fadeOut(withDuration: 0.2)
+                        
+                        let alert = self.makeAlert(position: CGPoint(x: enemy.position.x / 2 - 5,y: enemy.position.y), size: CGSize(width: enemy.position.x - 10, height: 100))
+                        self.addChild(alert)
+                        
+                        alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
+                        
+                    }
+                    
+                }
+                
+                if phasenumber == 30 {
+                    
+                    var bullet = Bullet()
+                    
+                    bullet = self.makeBullet(position: CGPoint(x: enemy.position.x,y: enemy.position.y), damage: 400, size: CGSize(width:  150.0, height: 150.0))
+                    
+                    bullet.name = "charge"
+                    self.addChild(bullet)
+                    
+                    let move = SKAction.moveTo(x: -100, duration: 1.0)
+                    
+                    bullet.run(SKAction.sequence([move,remove]))
+                    enemy.run(move)
+                    
+                }
             }
             
             if enemy.type == "Queen" {
