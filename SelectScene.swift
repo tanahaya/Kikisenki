@@ -204,6 +204,21 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
             battlearrow1.run(rotateaction3)
             self.addChild(battlearrow1)
             
+        } else if world == 7 {
+            
+            Background.texture = SKTexture(imageNamed: "selectview7.png")
+            
+            let battlearrow1 = SKSpriteNode(imageNamed: "battlearrow1-1")
+            
+            battlearrow1.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "battlearrow1-1"), size: battlearrow1.size)
+            battlearrow1.name = "battlearrow1"
+            battlearrow1.position = CGPoint(x: 657,y: 230)
+            battlearrow1.physicsBody?.categoryBitMask = 0b00000000
+            battlearrow1.physicsBody?.collisionBitMask = 0b00000000
+            let rotateaction3 = SKAction.rotate(toAngle: CGFloat(Double.pi / 36), duration: 0.01)
+            battlearrow1.run(rotateaction3)
+            self.addChild(battlearrow1)
+            
         } else {
             
             let arrowtoPhaze = SKSpriteNode(imageNamed: "PhazeBattle")
@@ -333,6 +348,16 @@ class SelectScene : SKScene, SKPhysicsContactDelegate {
                 }
                 
             } else if world == 7 {
+                
+                if self.atPoint(location).name == "battlearrow1" {
+                    userDefaults.set(1, forKey: "stage")
+                    self.gotoPhazeBattleScene()
+                }
+                
+                if self.atPoint(location).name == "battlearrow2" {
+                    userDefaults.set(2, forKey: "stage")
+                    self.gotoPhazeBattleScene()
+                }
                 
             } else if world == 8 {
                 

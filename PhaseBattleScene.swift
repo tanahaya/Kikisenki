@@ -107,6 +107,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     
     let userDefaults = UserDefaults.standard //管理用のuserdefaults
     
+    var battleFlag1:Bool = false
+    
     let settingButton = SKSpriteNode(imageNamed: "setting") //設定ボタン。
     
     //衝突判定のためのビットマスク作成
@@ -190,7 +192,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             AllyArray.append(ally3)
             
         }
-        
         
         Stage = self.makeStage()
         
@@ -2344,6 +2345,27 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
             }
             
+        } else if world == 7 {
+            
+            if stage == 1 {
+                
+                var firstArray:[Enemy] = []
+                
+                let RedDragon = self.makeRedDragon(position: CGPoint(x: 400,y: 50))
+                RedDragon.id = firstArray.count
+                firstArray.append(RedDragon)
+                
+                let BlueDragon = self.makeBlueDragon(position: CGPoint(x: 400,y: 200))
+                BlueDragon.id = firstArray.count
+                firstArray.append(BlueDragon)
+                
+                stagearray.append(firstArray)
+                
+                maxWaveNumber = stagearray.count
+                
+                waveLabel.text = "wave: \(waveNumber + 1) / \(maxWaveNumber) "
+                
+            }
         }
         
         return stagearray
@@ -3146,6 +3168,117 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
     }
     
+    func makeRedDragon(position:CGPoint) -> (Enemy) {
+        
+        let RedDragon = Enemy(imageNamed: "RedDragon")
+        
+        RedDragon.name = "RedDragon"
+        RedDragon.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "RedDragon"), size: RedDragon.size)
+        RedDragon.physicsBody?.isDynamic = false
+        RedDragon.physicsBody?.restitution = 1.0
+        RedDragon.position = position
+        RedDragon.physicsBody?.categoryBitMask = PhysicsCategory.Enemy
+        RedDragon.physicsBody?.collisionBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
+        RedDragon.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
+        RedDragon.xScale = 1.0
+        RedDragon.yScale = 1.0
+        RedDragon.grade = 1
+        RedDragon.hp = 100
+        RedDragon.defence = 0
+        RedDragon.type = "RedDragon"
+        RedDragon.maxHp = 100 //最大のHp
+        
+        let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
+        
+        HpBarBack.name = "HpBarBack"
+        HpBarBack.position = CGPoint(x: -5,y: -25)
+        RedDragon.addChild(HpBarBack)
+        
+        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))
+        
+        HpBar.name = "HpBar"
+        HpBar.position = CGPoint(x: -5,y: -25)
+        HpBar.zPosition = 1
+        HpBar.xScale = CGFloat( Double(RedDragon.hp!) / Double(RedDragon.maxHp!) )
+        RedDragon.addChild(HpBar)
+        
+        let GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
+        
+        GradeIcon.name = "Gradeicon"
+        GradeIcon.position = CGPoint(x: -37, y: -25)
+        GradeIcon.xScale = 0.3
+        GradeIcon.yScale = 0.3
+        RedDragon.addChild(GradeIcon)
+        
+        let GradeLabel = SKLabelNode()
+        
+        GradeLabel.name = "GradeLabel"
+        GradeLabel.fontSize = 20
+        GradeLabel.fontColor = UIColor.black
+        GradeLabel.position = CGPoint(x: -37, y: -30)
+        GradeLabel.text = " \(RedDragon.grade!)"
+        RedDragon.addChild(GradeLabel)
+        
+        
+        return RedDragon
+        
+    }
+    
+    func makeBlueDragon(position:CGPoint) -> (Enemy) {
+        
+        let BlueDragon = Enemy(imageNamed: "BlueDragon")
+        
+        BlueDragon.name = "BlueDragon"
+        BlueDragon.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "BlueDragon"), size: BlueDragon.size)
+        BlueDragon.physicsBody?.isDynamic = false
+        BlueDragon.physicsBody?.restitution = 1.0
+        BlueDragon.position = position
+        BlueDragon.physicsBody?.categoryBitMask = PhysicsCategory.Enemy
+        BlueDragon.physicsBody?.collisionBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
+        BlueDragon.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
+        BlueDragon.xScale = 1.0
+        BlueDragon.yScale = 1.0
+        BlueDragon.grade = 1
+        BlueDragon.hp = 100
+        BlueDragon.defence = 0
+        BlueDragon.type = "BlueDragon"
+        BlueDragon.maxHp = 100 //最大のHp
+        
+        let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
+        
+        HpBarBack.name = "HpBarBack"
+        HpBarBack.position = CGPoint(x: -5,y: -25)
+        BlueDragon.addChild(HpBarBack)
+        
+        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))
+        
+        HpBar.name = "HpBar"
+        HpBar.position = CGPoint(x: -5,y: -25)
+        HpBar.zPosition = 1
+        HpBar.xScale = CGFloat( Double(BlueDragon.hp!) / Double(BlueDragon.maxHp!) )
+        BlueDragon.addChild(HpBar)
+        
+        let GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
+        
+        GradeIcon.name = "Gradeicon"
+        GradeIcon.position = CGPoint(x: -37, y: -25)
+        GradeIcon.xScale = 0.3
+        GradeIcon.yScale = 0.3
+        BlueDragon.addChild(GradeIcon)
+        
+        let GradeLabel = SKLabelNode()
+        
+        GradeLabel.name = "GradeLabel"
+        GradeLabel.fontSize = 20
+        GradeLabel.fontColor = UIColor.black
+        GradeLabel.position = CGPoint(x: -37, y: -30)
+        GradeLabel.text = " \(BlueDragon.grade!)"
+        BlueDragon.addChild(GradeLabel)
+        
+        
+        return BlueDragon
+        
+    }
     
     func EnemyMove() {
         
@@ -3546,6 +3679,14 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
                 if enemy.type == "Cannon" {
                     //移動しない
+                }
+                
+                if enemy.type == "RedDragon" {
+                    //移動多め
+                }
+                
+                if enemy.type == "BlueDragon" {
+                    //移動多め
                 }
                 
                 if enemy.type == "Queen" {
@@ -4538,7 +4679,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             if enemy.type == "Hull" {
                 
                 if phasenumber == 40 {//鬼を生成する。
-                    if enemy.grade == 0 {} else { //gradeが0なら爆弾を生成しない。
+                    if enemy.grade == 0 {} else { //gradeが0なら鬼を生成しない。
                         
                         let Oni = self.makeOni(position: CGPoint(x: 650,y: 130))
                         Oni.id = waveEnemyNumber
@@ -4686,6 +4827,64 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                     bullet1.run(SKAction.sequence([move,remove]))
                     
+                }
+                
+            }
+            
+            if enemy.type == "RedDragon" {
+                
+                if phasenumber == 5 {
+                    
+                    var enemys:[String] = []
+                    for i in EnemyArray {
+                        enemys.append(i.type!)
+                    }
+                    
+                    if let i = enemys.firstIndex(of: "BlueDragon") {
+                        print(i)
+                    } else { //BlueDragonがいなかったら復活させる。
+                        
+                        let BlueDragon = self.makeBlueDragon(position: CGPoint(x: 400,y: 200))
+                        BlueDragon.id = waveEnemyNumber
+                        waveEnemyNumber = waveEnemyNumber + 1
+                        EnemyArray.append(BlueDragon)
+                        
+                        BlueDragon.alpha = 0.0
+                        self.addChild(BlueDragon)
+                        
+                        let fadeIn = SKAction.fadeIn(withDuration: 0.5)
+                        BlueDragon.run(fadeIn)
+                        
+                    }
+                }
+                
+            }
+            
+            if enemy.type == "BlueDragon" {
+                
+                if phasenumber == 5 {
+                    
+                    var enemys:[String] = []
+                    for i in EnemyArray {
+                        enemys.append(i.type!)
+                    }
+                    
+                    if let i = enemys.firstIndex(of: "RedDragon") {
+                        print(i)
+                    } else { //RedDragonがいなかったら復活させる。
+                        
+                        let RedDragon = self.makeRedDragon(position: CGPoint(x: 400,y: 50))
+                        RedDragon.id = waveEnemyNumber
+                        waveEnemyNumber = waveEnemyNumber + 1
+                        EnemyArray.append(RedDragon)
+                        
+                        RedDragon.alpha = 0.0
+                        self.addChild(RedDragon)
+                        
+                        let fadeIn = SKAction.fadeIn(withDuration: 0.5)
+                        RedDragon.run(fadeIn)
+                        
+                    }
                 }
                 
             }
