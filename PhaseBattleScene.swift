@@ -2351,11 +2351,11 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
                 var firstArray:[Enemy] = []
                 
-                let RedDragon = self.makeRedDragon(position: CGPoint(x: 400,y: 50))
+                let RedDragon = self.makeRedDragon(position: CGPoint(x: 700,y: 80))
                 RedDragon.id = firstArray.count
                 firstArray.append(RedDragon)
                 
-                let BlueDragon = self.makeBlueDragon(position: CGPoint(x: 400,y: 200))
+                let BlueDragon = self.makeBlueDragon(position: CGPoint(x: 700,y: 320))
                 BlueDragon.id = firstArray.count
                 firstArray.append(BlueDragon)
                 
@@ -3683,10 +3683,46 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
                 if enemy.type == "RedDragon" {
                     //移動多め
+                    if phasenumber == 0 || phasenumber == 60 {
+                        
+                        let move1 = SKAction.move(to: CGPoint(x: 700 + 40,y: 200 - 105), duration: 0.5)
+                        let move2 = SKAction.move(to: CGPoint(x: 700 + 70,y: 200 - 60), duration: 0.5)
+                        let move3 = SKAction.move(to: CGPoint(x: 700 + 80,y: 200), duration: 0.5)
+                        let move4 = SKAction.move(to: CGPoint(x: 700 + 70,y: 200 + 60), duration: 0.5)
+                        let move5 = SKAction.move(to: CGPoint(x: 700 + 40,y: 200 + 105), duration: 0.5)
+                        let move6 = SKAction.move(to: CGPoint(x: 700,y: 200 + 120), duration: 0.5)
+                        let move7 = SKAction.move(to: CGPoint(x: 700 - 40,y: 200 + 105), duration: 0.5)
+                        let move8 = SKAction.move(to: CGPoint(x: 700 - 70,y: 200 + 60), duration: 0.5)
+                        let move9 = SKAction.move(to: CGPoint(x: 700 - 80,y: 200), duration: 0.5)
+                        let move10 = SKAction.move(to: CGPoint(x: 700 - 70,y: 200 - 60), duration: 0.5)
+                        let move11 = SKAction.move(to: CGPoint(x: 700 - 40,y: 200 - 105), duration: 0.5)
+                        let move12 = SKAction.move(to: CGPoint(x: 700,y: 200 - 120), duration: 0.5)
+                        
+                        enemy.run(SKAction.sequence([move1,move2,move3,move4,move5,move6,move7,move8,move9,move10,move11,move12]))
+                        
+                    }
                 }
                 
                 if enemy.type == "BlueDragon" {
                     //移動多め
+                    if phasenumber == 0 || phasenumber == 60 {
+                        
+                        let move1 = SKAction.move(to: CGPoint(x: 700 + 40,y: 200 - 105), duration: 0.5)
+                        let move2 = SKAction.move(to: CGPoint(x: 700 + 70,y: 200 - 60), duration: 0.5)
+                        let move3 = SKAction.move(to: CGPoint(x: 700 + 80,y: 200), duration: 0.5)
+                        let move4 = SKAction.move(to: CGPoint(x: 700 + 70,y: 200 + 60), duration: 0.5)
+                        let move5 = SKAction.move(to: CGPoint(x: 700 + 40,y: 200 + 105), duration: 0.5)
+                        let move6 = SKAction.move(to: CGPoint(x: 700,y: 200 + 120), duration: 0.5)
+                        let move7 = SKAction.move(to: CGPoint(x: 700 - 40,y: 200 + 105), duration: 0.5)
+                        let move8 = SKAction.move(to: CGPoint(x: 700 - 70,y: 200 + 60), duration: 0.5)
+                        let move9 = SKAction.move(to: CGPoint(x: 700 - 80,y: 200), duration: 0.5)
+                        let move10 = SKAction.move(to: CGPoint(x: 700 - 70,y: 200 - 60), duration: 0.5)
+                        let move11 = SKAction.move(to: CGPoint(x: 700 - 40,y: 200 - 105), duration: 0.5)
+                        let move12 = SKAction.move(to: CGPoint(x: 700,y: 200 - 120), duration: 0.5)
+                        
+                        enemy.run(SKAction.sequence([move7,move8,move9,move10,move11,move12,move1,move2,move3,move4,move5,move6]))
+                        
+                    }
                 }
                 
                 if enemy.type == "Queen" {
@@ -4858,6 +4894,25 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     }
                 }
                 
+                if phasenumber == 0 || phasenumber == 60 {
+                    
+                    let move1 = SKAction.move(to: CGPoint(x: 700 + 40,y: 200 - 105), duration: 0.5)
+                    let move2 = SKAction.move(to: CGPoint(x: 700 + 70,y: 200 - 60), duration: 0.5)
+                    let move3 = SKAction.move(to: CGPoint(x: 700 + 80,y: 200), duration: 0.5)
+                    let move4 = SKAction.move(to: CGPoint(x: 700 + 70,y: 200 + 60), duration: 0.5)
+                    let move5 = SKAction.move(to: CGPoint(x: 700 + 40,y: 200 + 105), duration: 0.5)
+                    let move6 = SKAction.move(to: CGPoint(x: 700,y: 200 + 120), duration: 0.5)
+                    let move7 = SKAction.move(to: CGPoint(x: 700 - 40,y: 200 + 105), duration: 0.5)
+                    let move8 = SKAction.move(to: CGPoint(x: 700 - 70,y: 200 + 60), duration: 0.5)
+                    let move9 = SKAction.move(to: CGPoint(x: 700 - 80,y: 200), duration: 0.5)
+                    let move10 = SKAction.move(to: CGPoint(x: 700 - 70,y: 200 - 60), duration: 0.5)
+                    let move11 = SKAction.move(to: CGPoint(x: 700 - 40,y: 200 - 105), duration: 0.5)
+                    let move12 = SKAction.move(to: CGPoint(x: 700,y: 200 - 120), duration: 0.5)
+                    
+                    enemy.run(SKAction.sequence([move1,move2,move3,move4,move5,move6,move7,move8,move9,move10,move11,move12]))
+                    
+                }
+                
             }
             
             if enemy.type == "BlueDragon" {
@@ -4873,7 +4928,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         print(i)
                     } else { //RedDragonがいなかったら復活させる。
                         
-                        let RedDragon = self.makeRedDragon(position: CGPoint(x: 400,y: 50))
+                        let RedDragon = self.makeRedDragon(position: CGPoint(x: 650,y: 50))
                         RedDragon.id = waveEnemyNumber
                         waveEnemyNumber = waveEnemyNumber + 1
                         EnemyArray.append(RedDragon)
@@ -4886,6 +4941,26 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         
                     }
                 }
+                
+                if phasenumber == 0 || phasenumber == 60 {
+                    
+                    let move1 = SKAction.move(to: CGPoint(x: 700 + 40,y: 200 - 105), duration: 0.5)
+                    let move2 = SKAction.move(to: CGPoint(x: 700 + 70,y: 200 - 60), duration: 0.5)
+                    let move3 = SKAction.move(to: CGPoint(x: 700 + 80,y: 200), duration: 0.5)
+                    let move4 = SKAction.move(to: CGPoint(x: 700 + 70,y: 200 + 60), duration: 0.5)
+                    let move5 = SKAction.move(to: CGPoint(x: 700 + 40,y: 200 + 105), duration: 0.5)
+                    let move6 = SKAction.move(to: CGPoint(x: 700,y: 200 + 120), duration: 0.5)
+                    let move7 = SKAction.move(to: CGPoint(x: 700 - 40,y: 200 + 105), duration: 0.5)
+                    let move8 = SKAction.move(to: CGPoint(x: 700 - 70,y: 200 + 60), duration: 0.5)
+                    let move9 = SKAction.move(to: CGPoint(x: 700 - 80,y: 200), duration: 0.5)
+                    let move10 = SKAction.move(to: CGPoint(x: 700 - 70,y: 200 - 60), duration: 0.5)
+                    let move11 = SKAction.move(to: CGPoint(x: 700 - 40,y: 200 - 105), duration: 0.5)
+                    let move12 = SKAction.move(to: CGPoint(x: 700,y: 200 - 120), duration: 0.5)
+                    
+                    enemy.run(SKAction.sequence([move7,move8,move9,move10,move11,move12,move1,move2,move3,move4,move5,move6]))
+                    
+                }
+                
                 
             }
             
