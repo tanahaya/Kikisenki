@@ -4913,6 +4913,19 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                 }
                 
+                if phasenumber == 20 || phasenumber == 80 {
+                    
+                    let bulletdamage = 200
+                    
+                    var bullet = self.makeeBullet(position: enemy.position, damage: bulletdamage, size: CGSize(width: 80, height: 80))
+                    self.addChild(bullet)
+                    
+                    let move = SKAction.moveTo(x: 48.0, duration: TimeInterval(6.0 * (enemy.position.x - 48) / 800))
+                    bullet.run(SKAction.sequence([move,remove]))
+                    
+                }
+                
+                
             }
             
             if enemy.type == "BlueDragon" {
@@ -4961,6 +4974,17 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                 }
                 
+                if phasenumber == 20 || phasenumber == 80 {
+                    
+                    let bulletdamage = 200
+                    
+                    var bullet = self.makeeBullet(position: enemy.position, damage: bulletdamage, size: CGSize(width: 80, height: 80))
+                    self.addChild(bullet)
+                    
+                    let move = SKAction.moveTo(x: 48.0, duration: TimeInterval(6.0 * (enemy.position.x - 48) / 800))
+                    bullet.run(SKAction.sequence([move,remove]))
+                    
+                }
                 
             }
             
