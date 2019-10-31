@@ -2366,6 +2366,25 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 waveLabel.text = "wave: \(waveNumber + 1) / \(maxWaveNumber) "
                 
             }
+            
+        } else if world == 8 {
+            
+            if stage == 1 {
+                
+                var firstArray:[Enemy] = []
+                
+                let Reaper = self.makeReaper(position: CGPoint(x: 700,y: 80))
+                Reaper.id = firstArray.count
+                firstArray.append(Reaper)
+                
+                stagearray.append(firstArray)
+                
+                maxWaveNumber = stagearray.count
+                
+                waveLabel.text = "wave: \(waveNumber + 1) / \(maxWaveNumber) "
+                
+            }
+            
         }
         
         return stagearray
@@ -3279,6 +3298,63 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         return BlueDragon
         
     }
+    
+    func makeReaper(position:CGPoint) -> (Enemy) {
+        
+        let Reaper = Enemy(imageNamed: "Reaper")
+        
+        Reaper.name = "Reaper"
+        Reaper.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Reaper"), size: Reaper.size)
+        Reaper.physicsBody?.isDynamic = false
+        Reaper.physicsBody?.restitution = 1.0
+        Reaper.position = position
+        Reaper.physicsBody?.categoryBitMask = PhysicsCategory.Enemy
+        Reaper.physicsBody?.collisionBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
+        Reaper.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
+        Reaper.xScale = 1.0
+        Reaper.yScale = 1.0
+        Reaper.grade = 1
+        Reaper.hp = 100
+        Reaper.defence = 0
+        Reaper.type = "Reaper"
+        Reaper.maxHp = 100 //最大のHp
+        
+        let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
+        
+        HpBarBack.name = "HpBarBack"
+        HpBarBack.position = CGPoint(x: -5,y: -25)
+        Reaper.addChild(HpBarBack)
+        
+        let HpBar = SKSpriteNode(color: UIColor.green, size: CGSize(width: 40.0, height: 10.0))
+        
+        HpBar.name = "HpBar"
+        HpBar.position = CGPoint(x: -5,y: -25)
+        HpBar.zPosition = 1
+        HpBar.xScale = CGFloat( Double(Reaper.hp!) / Double(Reaper.maxHp!) )
+        Reaper.addChild(HpBar)
+        
+        let GradeIcon = SKSpriteNode(imageNamed: "gradeicon")
+        
+        GradeIcon.name = "Gradeicon"
+        GradeIcon.position = CGPoint(x: -37, y: -25)
+        GradeIcon.xScale = 0.3
+        GradeIcon.yScale = 0.3
+        Reaper.addChild(GradeIcon)
+        
+        let GradeLabel = SKLabelNode()
+        
+        GradeLabel.name = "GradeLabel"
+        GradeLabel.fontSize = 20
+        GradeLabel.fontColor = UIColor.black
+        GradeLabel.position = CGPoint(x: -37, y: -30)
+        GradeLabel.text = " \(Reaper.grade!)"
+        Reaper.addChild(GradeLabel)
+        
+        
+        return Reaper
+        
+    }
+    
     
     func EnemyMove() {
         
