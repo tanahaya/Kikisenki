@@ -42,7 +42,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     var ally1Skill2 = SKSpriteNode(imageNamed: "ally1skill2")
     var ally1Skill3 = SKSpriteNode(imageNamed: "ally1skill3")
     var ally1Skill4 = SKSpriteNode(imageNamed: "ally1skill4")
-    var ally1Skill5 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))//skill4の四角
+    var ally1Skill5 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))
+    var ally1LandSkill = SKSpriteNode(imageNamed: "allyLandSkill")
     var ally1SkilledFlag = true //スキルを使ったかどうかを判定するflag
     
     var Ally1Flag = true
@@ -62,7 +63,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     var ally2Skill2 = SKSpriteNode(imageNamed: "ally2skill2")
     var ally2Skill3 = SKSpriteNode(imageNamed: "ally2skill3")
     var ally2Skill4 = SKSpriteNode(imageNamed: "ally2skill4")
-    var ally2Skill5 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))//skill4の四角
+    var ally2Skill5 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))
+    var ally2LandSkill = SKSpriteNode(imageNamed: "allyLandSkill")
     var ally2SkilledFlag = true //スキルを使ったかどうかを判定するflag
     
     var Ally2Flag = true
@@ -82,7 +84,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     var ally3Skill2 = SKSpriteNode(imageNamed: "ally3skill2")
     var ally3Skill3 = SKSpriteNode(imageNamed: "ally3skill3")
     var ally3Skill4 = SKSpriteNode(imageNamed: "ally3skill4")
-    var ally3Skill5 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))//skill4の四角
+    var ally3Skill5 = SKSpriteNode(color: UIColor.green, size: CGSize(width: 50.0, height: 50.0))
+    var ally3LandSkill = SKSpriteNode(imageNamed: "allyLandSkill")
     var ally3SkilledFlag = true //スキルを使ったかどうかを判定するflag
     var axFlag:Bool = true //斧を持っているかどうか。trueは持っている。falseは持っていない。
     
@@ -106,6 +109,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     var aimPosition:CGPoint = CGPoint(x:0,y:0)
     
     let userDefaults = UserDefaults.standard //管理用のuserdefaults
+    var world:Int = 0
+    var stage:Int = 0
     
     var battleFlag1:Bool = false
     
@@ -166,8 +171,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         //四つの壁
         self.makeWall()
         
-        let world:Int = userDefaults.integer(forKey: "world")
-        let stage:Int = userDefaults.integer(forKey: "stage")
+        world = userDefaults.integer(forKey: "world")
+        stage = userDefaults.integer(forKey: "stage")
         
         if world == 5 {
             
@@ -243,18 +248,21 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 ally1Skill3.alpha = 0.0
                 ally1Skill4.alpha = 0.0
                 ally1Skill5.alpha = 0.0
+                ally1LandSkill.alpha = 0.0
                 
                 ally2Skill1.alpha = 0.0
                 ally2Skill2.alpha = 0.0
                 ally2Skill3.alpha = 0.0
                 ally2Skill4.alpha = 0.0
                 ally2Skill5.alpha = 0.0
+                ally2LandSkill.alpha = 0.0
                 
                 ally3Skill1.alpha = 0.0
                 ally3Skill2.alpha = 0.0
                 ally3Skill3.alpha = 0.0
                 ally3Skill4.alpha = 0.0
                 ally3Skill5.alpha = 0.0
+                ally3LandSkill.alpha = 0.0
                 
                 if ItemCount <= 3 {
                     
@@ -509,6 +517,13 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                                 ally1Skill3.alpha = 1.0
                             }
                             ally1Skill4.alpha = 1.0
+                            
+                            if world == 8 {//ワールド指定する。
+                                if rangeofField(minX: 48, maxX: 848, minY: 10, maxY: 344, location: ally1.position)  {
+                                    ally1LandSkill.alpha = 1.0
+                                }
+                            }
+                            
                         }
                     }
                     
@@ -528,6 +543,13 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             ally2Skill2.alpha = 1.0
                             ally2Skill3.alpha = 1.0
                             ally2Skill4.alpha = 1.0
+                            
+                            if world == 8 {//ワールド指定する。
+                                if rangeofField(minX: 48, maxX: 848, minY: 10, maxY: 344, location: ally2.position)  {
+                                    ally2LandSkill.alpha = 1.0
+                                }
+                            }
+                            
                         }
                     }
                     
@@ -550,6 +572,13 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             }
                             ally3Skill3.alpha = 1.0
                             ally3Skill4.alpha = 1.0
+                            
+                            if world == 8 {//ワールド指定する。
+                                if rangeofField(minX: 48, maxX: 848, minY: 10, maxY: 344, location: ally3.position)  {
+                                    ally3LandSkill.alpha = 1.0
+                                }
+                            }
+                            
                         }
                     }
                     
@@ -605,6 +634,13 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             ally1Skill5.alpha = 1.0
                         }
                         
+                        if world == 8 {//ワールド指定する。
+                            if rangeofField(minX: 48, maxX: 848, minY: 10, maxY: 344, location: ally1.position)  {
+                                ally1LandSkill.alpha = 1.0
+                            }
+                        }
+                        
+                        
                     } else {
                         
                     }
@@ -637,6 +673,12 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         ally2Skill3.alpha = 1.0
                         
                         ally2Skill4.alpha = 1.0
+                        
+                        if world == 8 {//ワールド指定する。
+                            if rangeofField(minX: 48, maxX: 848, minY: 10, maxY: 344, location: ally2.position)  {
+                                ally2LandSkill.alpha = 1.0
+                            }
+                        }
                         
                         if ally2.grade! == 5 {//必殺技のため、グレード最大の時のみ使用できる。
                             
@@ -680,6 +722,12 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         ally3Skill3.alpha = 1.0
                         
                         ally3Skill4.alpha = 1.0
+                        
+                        if world == 8 {//ワールド指定する。
+                            if rangeofField(minX: 48, maxX: 848, minY: 10, maxY: 344, location: ally3.position)  {
+                                ally3LandSkill.alpha = 1.0
+                            }
+                        }
                         
                         if ally3.grade! == 5 {//必殺技のため、グレード最大の時のみ使用できる。
                             
@@ -843,6 +891,14 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                         }
                         
+                        if self.atPoint(location).name == "ally1LandSkill" {//地形スキル
+                            
+                            print("ally1LandSkill")
+                            ally1SkilledFlag = false
+                            
+                        }
+                        
+                        
                     } else {
                         
                     }
@@ -853,6 +909,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 ally1Skill3.alpha = 0.0
                 ally1Skill4.alpha = 0.0
                 ally1Skill5.alpha = 0.0
+                ally1LandSkill.alpha = 0.0
                 
             }
             
@@ -1059,6 +1116,14 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                         }
                         
+                        if self.atPoint(location).name == "ally2LandSkill" {//地形スキル
+                            
+                            print("ally2LandSkill")
+                            ally2SkilledFlag = false
+                            
+                        }
+                        
+                        
                     } else {
                         
                     }
@@ -1069,6 +1134,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 ally2Skill3.alpha = 0.0
                 ally2Skill4.alpha = 0.0
                 ally2Skill5.alpha = 0.0
+                ally2LandSkill.alpha = 0.0
                 
             }
             
@@ -1270,6 +1336,14 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                         }
                         
+                        if self.atPoint(location).name == "ally3LandSkill" {//地形スキル
+                            
+                            print("ally3LandSkill")
+                            ally3SkilledFlag = false
+                            
+                        }
+                        
+                        
                     } else {
                         
                     }
@@ -1280,6 +1354,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 ally3Skill3.alpha = 0.0
                 ally3Skill4.alpha = 0.0
                 ally3Skill5.alpha = 0.0
+                ally3LandSkill.alpha = 0.0
                 
             }
             
@@ -1967,8 +2042,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     
     func makeStage() -> [[Enemy]] {
         
-        let world:Int = userDefaults.integer(forKey: "world")
-        let stage:Int = userDefaults.integer(forKey: "stage")
+        world = userDefaults.integer(forKey: "world")
+        stage = userDefaults.integer(forKey: "stage")
         
         
         var stagearray:[[Enemy]] = []
@@ -2227,12 +2302,12 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                                 
                 let Cannon4 = self.makeCannon(position: CGPoint(x: 550,y: 40))
                 Cannon4.id = firstArray.count
-                Cannon4.type = "Cannon2"
+                Cannon4.type = "cannon2"
                 firstArray.append(Cannon4)
                 
                 let Cannon5 = self.makeCannon(position: CGPoint(x: 750,y: 300))
                 Cannon5.id = firstArray.count
-                Cannon5.type = "Cannon3"
+                Cannon5.type = "cannon3"
                 firstArray.append(Cannon5)
                 
                 let Cannon6 = self.makeCannon(position: CGPoint(x: 650,y:250))
@@ -2373,7 +2448,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
                 var firstArray:[Enemy] = []
                 
-                let Reaper = self.makeReaper(position: CGPoint(x: 700,y: 80))
+                let Reaper = self.makeReaper(position: CGPoint(x: 750,y: 200))
                 Reaper.id = firstArray.count
                 firstArray.append(Reaper)
                 
@@ -2410,7 +2485,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Soldier.grade = 1
         Soldier.hp = 700
         Soldier.defence = 0
-        Soldier.type = "Soldier"
+        Soldier.type = "soldier"
         Soldier.maxHp = 700//最大のHp
         
         let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
@@ -2466,7 +2541,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Queen.grade = 1
         Queen.hp = 1000
         Queen.defence = 0
-        Queen.type = "Queen"
+        Queen.type = "queen"
         Queen.maxHp = 1000//最大のHp
         
         let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
@@ -2522,7 +2597,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Bom.grade = 3
         Bom.hp = 100
         Bom.defence = 0
-        Bom.type = "Bom"
+        Bom.type = "bom"
         Bom.maxHp = 100//最大のHp
         
         let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
@@ -2578,7 +2653,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Warp.grade = 1
         Warp.hp = 500
         Warp.defence = 0
-        Warp.type = "Warp"
+        Warp.type = "warp"
         Warp.maxHp = 500//最大のHp
         
         let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
@@ -2634,7 +2709,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         WarpBoss.grade = 1
         WarpBoss.hp = 1000
         WarpBoss.defence = 20
-        WarpBoss.type = "WarpBoss"
+        WarpBoss.type = "warpBoss"
         WarpBoss.maxHp = 1000//最大のHp
         
         let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
@@ -2690,7 +2765,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Tank.grade = 1
         Tank.hp = 1500
         Tank.defence = 100
-        Tank.type = "Tank"
+        Tank.type = "tank"
         Tank.maxHp = 1500//最大のHp
         
         let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
@@ -2746,7 +2821,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Senjin.grade = 1
         Senjin.hp = 1500
         Senjin.defence = 100
-        Senjin.type = "Senjin"
+        Senjin.type = "senjin"
         Senjin.maxHp = 1500//最大のHp
         
         let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
@@ -2802,7 +2877,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Camera.grade = 1
         Camera.hp = 1000
         Camera.defence = 0
-        Camera.type = "Camera"
+        Camera.type = "camera"
         Camera.maxHp = 1000//最大のHp
         Camera.needToKill = false //監視カメラは倒す必要はない
         
@@ -2859,7 +2934,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Oni.grade = 1
         Oni.hp = 1000
         Oni.defence = 0
-        Oni.type = "Oni"
+        Oni.type = "oni"
         Oni.maxHp = 1000//最大のHp
         
         let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
@@ -2915,7 +2990,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Flog.grade = 1
         Flog.hp = 1000
         Flog.defence = 0
-        Flog.type = "Flog"
+        Flog.type = "flog"
         Flog.maxHp = 1000//最大のHp
         
         let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
@@ -2971,7 +3046,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Pig.grade = 1
         Pig.hp = 600
         Pig.defence = 0
-        Pig.type = "Pig"
+        Pig.type = "pig"
         Pig.maxHp = 600//最大のHp
         
         let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
@@ -3027,7 +3102,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Hull.grade = 1
         Hull.hp = 600
         Hull.defence = 0
-        Hull.type = "Hull"
+        Hull.type = "hull"
         Hull.maxHp = 600//最大のHp
         
         let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
@@ -3084,7 +3159,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         BreakableWall.grade = 1
         BreakableWall.hp = 600
         BreakableWall.defence = 0
-        BreakableWall.type = "BreakableWall"
+        BreakableWall.type = "breakableWall"
         BreakableWall.maxHp = 600//最大のHp
         BreakableWall.needToKill = false //壊れる壁は倒す必要はない
         BreakableWall.zRotation = CGFloat( rotate  / 180.0 * Double.pi)
@@ -3147,7 +3222,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Cannon.grade = 1
         Cannon.hp = 600
         Cannon.defence = 0
-        Cannon.type = "Cannon"
+        Cannon.type = "cannon"
         Cannon.maxHp = 600 //最大のHp
         Cannon.needToKill = false //大砲は倒す必要なし
         
@@ -3204,7 +3279,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         RedDragon.grade = 1
         RedDragon.hp = 100
         RedDragon.defence = 0
-        RedDragon.type = "RedDragon"
+        RedDragon.type = "redDragon"
         RedDragon.maxHp = 100 //最大のHp
         
         let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
@@ -3260,7 +3335,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         BlueDragon.grade = 1
         BlueDragon.hp = 100
         BlueDragon.defence = 0
-        BlueDragon.type = "BlueDragon"
+        BlueDragon.type = "blueDragon"
         BlueDragon.maxHp = 100 //最大のHp
         
         let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
@@ -3316,7 +3391,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Reaper.grade = 1
         Reaper.hp = 100
         Reaper.defence = 0
-        Reaper.type = "Reaper"
+        Reaper.type = "reaper"
         Reaper.maxHp = 100 //最大のHp
         
         let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
@@ -3362,7 +3437,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
             
             if enemy.moveEnable {
                 
-                if enemy.type == "Soldier" {
+                if enemy.type == "soldier" {
                     
                     var shortestDistance:CGFloat = 50000.0 //大きい数字をとりあえず、代入します。
                     var savei:Int = 0
@@ -3393,7 +3468,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                 }
                 
-                if enemy.type == "Bom" {
+                if enemy.type == "bom" {
                     
                     var shortestDistance:CGFloat = 50000.0 //大きい数字をとりあえず、代入します。
                     var savei:Int = 0
@@ -3424,7 +3499,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                 }
                 
-                if enemy.type == "Warp" {
+                if enemy.type == "warp" {
                     
                     
                     if phasenumber == 50 {
@@ -3459,11 +3534,11 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                 }
                 
-                if enemy.type == "WarpBoss" {
+                if enemy.type == "warpBoss" {
                     //移動しない。
                 }
                 
-                if enemy.type == "Tank"  {
+                if enemy.type == "tank"  {
                     
                     if phasenumber == 20 {
                         
@@ -3487,7 +3562,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                 }
                 
-                if enemy.type == "Senjin" {
+                if enemy.type == "senjin" {
                     
                     if phasenumber == 20 {
                         
@@ -3651,11 +3726,11 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                 }
                 
-                if enemy.type == "Camera" {
+                if enemy.type == "camera" {
                     //移動しない
                 }
                 
-                if enemy.type == "Oni" {
+                if enemy.type == "oni" {
                     
                     var shortestDistance:CGFloat = 50000.0 //大きい数字をとりあえず、代入します。
                     var savei:Int = 0
@@ -3689,7 +3764,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                 }
                 
-                if enemy.type == "Flog" { //ジグザグに動く
+                if enemy.type == "flog" { //ジグザグに動く
                     
                     if phasenumber == 10 {
                         
@@ -3719,11 +3794,11 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                 }
                 
-                if enemy.type == "Pig" {
+                if enemy.type == "pig" {
                     //移動しない
                 }
                 
-                if enemy.type == "Boar" {
+                if enemy.type == "boar" {
                     
                     if enemy.position.x > 100  && enemy.position.x < 850 {
                         
@@ -3745,19 +3820,19 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                 }
                 
-                if enemy.type == "Hull" {
+                if enemy.type == "hull" {
                     //移動しない
                 }
                 
-                if enemy.type == "Wall" {
+                if enemy.type == "wall" {
                     //移動しない。
                 }
                 
-                if enemy.type == "Cannon" {
+                if enemy.type == "cannon" {
                     //移動しない
                 }
                 
-                if enemy.type == "RedDragon" {
+                if enemy.type == "redDragon" {
                     //移動多め
                     if phasenumber == 0 || phasenumber == 60 {
                         
@@ -3779,7 +3854,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     }
                 }
                 
-                if enemy.type == "BlueDragon" {
+                if enemy.type == "blueDragon" {
                     //移動多め
                     if phasenumber == 0 || phasenumber == 60 {
                         
@@ -3801,7 +3876,20 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     }
                 }
                 
-                if enemy.type == "Queen" {
+                if enemy.type == "reaper" {
+                    
+                    let basePosition = CGPoint(x: 630,y: 200) //基準位置750 - 120、r = cos30の関数で動きます。
+                    
+                    let Theta = DegreeToRadian(Degree: Double(phasenumber) * 3.0 )
+                    let r = 120.0 * cos( 3.0 * Theta)
+                    
+                    let move = SKAction.move(to: CGPoint(x: basePosition.x + r * cos(Theta), y: basePosition.y + r * sin(Theta)), duration: 0.1)
+                    
+                    enemy.run(move)
+                    
+                }
+                
+                if enemy.type == "queen" {
                     //移動しない。
                 }
                 
@@ -3818,7 +3906,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         //敵の攻撃
         for enemy in EnemyArray {
             
-            if enemy.type == "Soldier" {
+            if enemy.type == "soldier" {
                 
                 if phasenumber == 40 {
                     
@@ -3870,7 +3958,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
             }
             
-            if enemy.type == "Bom" {
+            if enemy.type == "bom" {
                 
                 if phasenumber == 20 {
                     
@@ -3955,7 +4043,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
             }
             
-            if enemy.type == "Warp" {
+            if enemy.type == "warp" {
                 
                 if phasenumber == 24 {
                         
@@ -4000,7 +4088,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
             }
             
-            if enemy.type == "WarpBoss" {
+            if enemy.type == "warpBoss" {
                 
                 if phasenumber == 40 {//爆弾を生成する。
                     if enemy.grade == 0 {} else { //gradeが0なら爆弾を生成しない。
@@ -4026,7 +4114,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                     for i in EnemyArray {
                         
-                        if i.type == "Bom" {
+                        if i.type == "bom" {
                             
                             let fadeOut = SKAction.fadeOut(withDuration: 0.6)
                             
@@ -4047,7 +4135,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
             }
             
-            if enemy.type == "Tank" {
+            if enemy.type == "tank" {
                 
                 if phasenumber == 24 {
                     
@@ -4162,7 +4250,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
             }
             
-            if enemy.type == "Senjin" {
+            if enemy.type == "senjin" {
                 
                 let fadeIn = SKAction.fadeIn(withDuration: 0.2)
                 let fadeOut = SKAction.fadeOut(withDuration: 0.2)
@@ -4576,7 +4664,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
             }
             
-            if enemy.type == "Camera" {
+            if enemy.type == "camera" {
                 
                 if phasenumber == 30 { //監視する
                     
@@ -4594,7 +4682,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
             }
             
-            if enemy.type == "Oni" {
+            if enemy.type == "oni" {
                 
                 if phasenumber == 14 {
                     
@@ -4636,7 +4724,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
             }
             
-            if enemy.type == "Flog" {
+            if enemy.type == "flog" {
                 
                 if phasenumber == 24 {
                     
@@ -4689,7 +4777,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
             }
             
-            if enemy.type == "Pig" {
+            if enemy.type == "pig" {
                 
                 if phasenumber == 80 {
                     if Double(enemy.hp!) / Double(enemy.maxHp!) < 0.5 {//hpが半分以下の時にイノシシに変身する。
@@ -4742,7 +4830,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
             }
             
-            if enemy.type == "Boar" { //突進する。
+            if enemy.type == "boar" { //突進する。
                 
                 if phasenumber == 14 {
                     
@@ -4788,7 +4876,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 }
             }
             
-            if enemy.type == "Hull" {
+            if enemy.type == "hull" {
                 
                 if phasenumber == 40 {//鬼を生成する。
                     if enemy.grade == 0 {} else { //gradeが0なら鬼を生成しない。
@@ -4813,11 +4901,11 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
             }
             
-            if enemy.type == "Wall" {
+            if enemy.type == "wall" {
                 //攻撃しない。
             }
             
-            if enemy.type == "Cannon" {
+            if enemy.type == "cannon" {
                 //右前方に直線上に弾を発射する。
                 
                 if phasenumber == 54 {
@@ -4858,7 +4946,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
             }
             
-            if enemy.type == "Cannon2" {
+            if enemy.type == "cannon2" {
                 //左上に向けて弾を発射する。
                 
                 if phasenumber == 54 {
@@ -4901,7 +4989,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
             }
             
-            if enemy.type == "Cannon3" {
+            if enemy.type == "cannon3" {
                 //左下に向けて弾を発射する。
                 
                 if phasenumber == 54 {
@@ -4943,7 +5031,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
             }
             
-            if enemy.type == "RedDragon" {
+            if enemy.type == "redDragon" {
                 
                 if phasenumber == 5 {
                     
@@ -4952,7 +5040,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         enemys.append(i.type!)
                     }
                     
-                    if let i = enemys.firstIndex(of: "BlueDragon") {
+                    if let i = enemys.firstIndex(of: "blueDragon") {
                         print(i)
                     } else { //BlueDragonがいなかったら復活させる。
                         
@@ -4993,7 +5081,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                     let bulletdamage = 200
                     
-                    var bullet = self.makeeBullet(position: enemy.position, damage: bulletdamage, size: CGSize(width: 80, height: 80))
+                    let bullet = self.makeeBullet(position: enemy.position, damage: bulletdamage, size: CGSize(width: 80, height: 80))
                     self.addChild(bullet)
                     
                     let move = SKAction.moveTo(x: 48.0, duration: TimeInterval(6.0 * (enemy.position.x - 48) / 800))
@@ -5004,7 +5092,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
             }
             
-            if enemy.type == "BlueDragon" {
+            if enemy.type == "blueDragon" {
                 
                 if phasenumber == 5 {
                     
@@ -5013,7 +5101,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         enemys.append(i.type!)
                     }
                     
-                    if let i = enemys.firstIndex(of: "RedDragon") {
+                    if let i = enemys.firstIndex(of: "redDragon") {
                         print(i)
                     } else { //RedDragonがいなかったら復活させる。
                         
@@ -5054,7 +5142,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                     let bulletdamage = 200
                     
-                    var bullet = self.makeeBullet(position: enemy.position, damage: bulletdamage, size: CGSize(width: 80, height: 80))
+                    let bullet = self.makeeBullet(position: enemy.position, damage: bulletdamage, size: CGSize(width: 80, height: 80))
                     self.addChild(bullet)
                     
                     let move = SKAction.moveTo(x: 48.0, duration: TimeInterval(6.0 * (enemy.position.x - 48) / 800))
@@ -5064,7 +5152,34 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
             }
             
-            if enemy.type == "Queen" {
+            if enemy.type == "reaper" {
+                
+                if phasenumber == 20 {
+                    
+                    let move1 = SKAction.moveTo(y: 300, duration: 0.3)
+                    let move2 = SKAction.moveTo(y: 200, duration: 0.3)
+                    let move3 = SKAction.moveTo(y: 100, duration: 0.3)
+                    let wait = SKAction.wait(forDuration: 1.2)
+                    
+                    enemy.run(SKAction.sequence([move1,wait,move2,wait,move3,wait,move2]))
+                    
+                }
+                
+                if phasenumber == 23 || phasenumber == 39 || phasenumber == 54 {
+                    
+                    let bulletdamage = 150
+                    
+                    let bullet = self.makeeBullet(position: enemy.position, damage: bulletdamage, size: CGSize(width: 20, height: 100))
+                    self.addChild(bullet)
+                    
+                    let move = SKAction.moveTo(x: 48.0, duration: TimeInterval(1.0 * (enemy.position.x - 48) / 800))
+                    bullet.run(SKAction.sequence([move,remove]))
+                    
+                }
+                
+            }
+            
+            if enemy.type == "queen" {
                 //攻撃しない
             }
             
@@ -5272,6 +5387,16 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         ally1Skill4.zPosition = 2
         ally1.addChild(ally1Skill4)
         
+        //右、地形スキル
+        ally1LandSkill.anchorPoint = CGPoint(x: 0, y: -50)
+        ally1LandSkill.xScale = 2 / 3
+        ally1LandSkill.yScale = 2 / 3
+        ally1LandSkill.name = "ally2LandSkill"
+        ally1LandSkill.alpha = 0.0
+        ally1LandSkill.zPosition = 2
+        ally1LandSkill.position = CGPoint(x: 15,y: 0)
+        ally1.addChild(ally1LandSkill)
+        
         //右
         ally1Skill5.anchorPoint = CGPoint(x: 0, y: 0)
         ally1Skill5.name = "ally1Skill5"
@@ -5372,6 +5497,16 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         ally2Skill4.zPosition = 2
         ally2Skill4.position = CGPoint(x: -115,y: -115)
         ally2.addChild(ally2Skill4)
+        
+        //右、地形スキル
+        ally2LandSkill.anchorPoint = CGPoint(x: 0, y: -50)
+        ally2LandSkill.xScale = 2 / 3
+        ally2LandSkill.yScale = 2 / 3
+        ally2LandSkill.name = "ally2LandSkill"
+        ally2LandSkill.alpha = 0.0
+        ally2LandSkill.zPosition = 2
+        ally2LandSkill.position = CGPoint(x: 15,y: 0)
+        ally2.addChild(ally2LandSkill)
         
         //右
         ally2Skill5.anchorPoint = CGPoint(x: 0, y: 0)
@@ -5474,6 +5609,16 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         ally3Skill4.zPosition = 2
         ally3Skill4.position = CGPoint(x: -115,y: -115)
         ally3.addChild(ally3Skill4)
+        
+        //右、地形スキル
+        ally3LandSkill.anchorPoint = CGPoint(x: 0, y: -50)
+        ally3LandSkill.xScale = 2 / 3
+        ally3LandSkill.yScale = 2 / 3
+        ally3LandSkill.name = "ally2LandSkill"
+        ally3LandSkill.alpha = 0.0
+        ally3LandSkill.zPosition = 2
+        ally3LandSkill.position = CGPoint(x: 15,y: 0)
+        ally3.addChild(ally3LandSkill)
         
         //右
         ally3Skill5.anchorPoint = CGPoint(x: 0, y: 0)
