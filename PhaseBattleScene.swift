@@ -125,6 +125,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         static let eBullet: UInt32 = 0b1000 //enemy用の弾
         static let Item:UInt32 = 0b00010000 //アイテム
         static let Wall: UInt32 = 0b00100000 //壁
+        static let VanishWall: UInt32 = 0b01000000 //消える壁
         
     }
     
@@ -894,6 +895,10 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         if self.atPoint(location).name == "ally1LandSkill" {//地形スキル
                             
                             print("ally1LandSkill")
+                            if world == 8 {
+                                
+                            }
+                            
                             ally1SkilledFlag = false
                             
                         }
@@ -1581,6 +1586,30 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     }
                     
                 }
+                
+                if nodeA.physicsBody?.categoryBitMask == PhysicsCategory.VanishWall && nodeB.physicsBody?.categoryBitMask == PhysicsCategory.Bullet || nodeA.physicsBody?.categoryBitMask == PhysicsCategory.Bullet && nodeB.physicsBody?.categoryBitMask == PhysicsCategory.VanishWall {
+                    
+                    //壁と弾が当たると消える。
+                    if nodeA.physicsBody?.categoryBitMask == PhysicsCategory.Bullet {
+                        nodeA.removeFromParent()
+                    } else if nodeB.physicsBody?.categoryBitMask == PhysicsCategory.Bullet {
+                        nodeB.removeFromParent()
+                    }
+                    
+                }
+                
+                if nodeA.physicsBody?.categoryBitMask == PhysicsCategory.VanishWall && nodeB.physicsBody?.categoryBitMask == PhysicsCategory.eBullet || nodeA.physicsBody?.categoryBitMask == PhysicsCategory.eBullet && nodeB.physicsBody?.categoryBitMask == PhysicsCategory.VanishWall {
+                    
+                    //壁と弾が当たると消える。
+                    if nodeA.physicsBody?.categoryBitMask == PhysicsCategory.eBullet {
+                        nodeA.removeFromParent()
+                    } else if nodeB.physicsBody?.categoryBitMask == PhysicsCategory.eBullet {
+                        nodeB.removeFromParent()
+                    }
+                    
+                }
+                
+            
             }
         }
     }
@@ -5290,6 +5319,24 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Wall.position = position
         
         return Wall
+        
+    }
+    
+    func makeVanishWall(position:CGPoint,size:CGSize) -> SKSpriteNode {
+        
+        let VanishWall = SKSpriteNode(color: UIColor.black, size: size)
+        
+        VanishWall.name = "VanishWall"
+        VanishWall.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Back"), size: VanishWall.size)
+        VanishWall.physicsBody?.restitution = 1.0 //反発値
+        VanishWall.physicsBody?.isDynamic = false //ぶつかったときに移動するかどうか =>しない
+        VanishWall.physicsBody?.categoryBitMask = PhysicsCategory.VanishWall
+        VanishWall.physicsBody?.collisionBitMask = PhysicsCategory.Ally | PhysicsCategory.Enemy | PhysicsCategory.Bullet | PhysicsCategory.eBullet | PhysicsCategory.Item
+        VanishWall.physicsBody?.contactTestBitMask = PhysicsCategory.Ally | PhysicsCategory.Enemy | PhysicsCategory.Bullet | PhysicsCategory.eBullet | PhysicsCategory.Item
+        VanishWall.physicsBody?.allowsRotation = false
+        VanishWall.position = position
+        
+        return VanishWall
         
     }
     
