@@ -523,7 +523,9 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                                 if rangeofField(minX: 48, maxX: 848, minY: 10, maxY: 344, location: ally1.position)  {
                                     ally1LandSkill.alpha = 1.0
                                 }
+                                ally1LandSkill.alpha = 1.0
                             }
+                            
                             
                         }
                     }
@@ -896,6 +898,9 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                             print("ally1LandSkill")
                             if world == 8 {
+                                print("makewall")
+                                let wall = self.makeVanishWall(position: CGPoint(x: 500,y: 172), size: CGSize(width: 30, height: 334))
+                                self.addChild(wall)
                                 
                             }
                             
@@ -1124,6 +1129,12 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         if self.atPoint(location).name == "ally2LandSkill" {//地形スキル
                             
                             print("ally2LandSkill")
+                            if world == 8 {
+                                print("makewall")
+                                let wall = self.makeVanishWall(position: CGPoint(x: 500,y: 172), size: CGSize(width: 30, height: 334))
+                                self.addChild(wall)
+                                
+                            }
                             ally2SkilledFlag = false
                             
                         }
@@ -1344,6 +1355,12 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         if self.atPoint(location).name == "ally3LandSkill" {//地形スキル
                             
                             print("ally3LandSkill")
+                            if world == 8 {
+                                print("makewall")
+                                let wall = self.makeVanishWall(position: CGPoint(x: 500,y: 172), size: CGSize(width: 30, height: 334))
+                                self.addChild(wall)
+                                
+                            }
                             ally3SkilledFlag = false
                             
                         }
@@ -5435,13 +5452,13 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         ally1.addChild(ally1Skill4)
         
         //右、地形スキル
-        ally1LandSkill.anchorPoint = CGPoint(x: 0, y: -50)
+        ally1LandSkill.anchorPoint = CGPoint(x: 0, y: 0)
         ally1LandSkill.xScale = 2 / 3
         ally1LandSkill.yScale = 2 / 3
-        ally1LandSkill.name = "ally2LandSkill"
+        ally1LandSkill.name = "ally1LandSkill"
         ally1LandSkill.alpha = 0.0
         ally1LandSkill.zPosition = 2
-        ally1LandSkill.position = CGPoint(x: 15,y: 0)
+        ally1LandSkill.position = CGPoint(x: 15,y: -50)
         ally1.addChild(ally1LandSkill)
         
         //右
@@ -5546,13 +5563,13 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         ally2.addChild(ally2Skill4)
         
         //右、地形スキル
-        ally2LandSkill.anchorPoint = CGPoint(x: 0, y: -50)
+        ally2LandSkill.anchorPoint = CGPoint(x: 0, y: 0)
         ally2LandSkill.xScale = 2 / 3
         ally2LandSkill.yScale = 2 / 3
         ally2LandSkill.name = "ally2LandSkill"
         ally2LandSkill.alpha = 0.0
         ally2LandSkill.zPosition = 2
-        ally2LandSkill.position = CGPoint(x: 15,y: 0)
+        ally2LandSkill.position = CGPoint(x: 15,y: -50)
         ally2.addChild(ally2LandSkill)
         
         //右
@@ -5658,13 +5675,13 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         ally3.addChild(ally3Skill4)
         
         //右、地形スキル
-        ally3LandSkill.anchorPoint = CGPoint(x: 0, y: -50)
+        ally3LandSkill.anchorPoint = CGPoint(x: 0, y: 0)
         ally3LandSkill.xScale = 2 / 3
         ally3LandSkill.yScale = 2 / 3
-        ally3LandSkill.name = "ally2LandSkill"
+        ally3LandSkill.name = "ally3LandSkill"
         ally3LandSkill.alpha = 0.0
         ally3LandSkill.zPosition = 2
-        ally3LandSkill.position = CGPoint(x: 15,y: 0)
+        ally3LandSkill.position = CGPoint(x: 15,y: -50)
         ally3.addChild(ally3LandSkill)
         
         //右
