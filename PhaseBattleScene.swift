@@ -11,7 +11,6 @@ import SpriteKit
 
 class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装用のScene
     
-    
     let numberLabel = SKLabelNode()//フェイズの時間を表示する。
     let phaseLabel = SKLabelNode()//フェイズを表示する。
     let waveLabel = SKLabelNode()//waveを表示する。
@@ -112,6 +111,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     var world:Int = 0
     var stage:Int = 0
     
+    var comboNumber:Int = 0
     var battleFlag1:Bool = false
     
     let settingButton = SKSpriteNode(imageNamed: "setting") //設定ボタン。
@@ -236,6 +236,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 ally1SkilledFlag = true
                 ally2SkilledFlag = true
                 ally3SkilledFlag = true
+                
+                comboNumber = 0
                 
             } else { //Movephaseに切り替わる時。
                 
@@ -1080,41 +1082,34 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                             for i in 0 ..< EnemyArray.count {
                                 if 300 >= length(v: CGPoint(x: ally2.position.x - EnemyArray[i].position.x,y: ally2.position.y - EnemyArray[i].position.y)) {
+                                    
+                                    comboNumber = comboNumber + 1
+                                    
                                     var damage = 0
                                     if ally2.grade! == 0 {
                                         print("ally2Skill2")
-                                        damage = -15 + EnemyArray[i].defence!
-                                        if damage > 0 {
-                                            damage = 0
-                                        }
-                                        self.changeEnemyHp(change: damage
-                                            , id: EnemyArray[i].id!)
-                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: damage )
+                                        damage = -15
                                     } else if ally2.grade! == 1 {
                                         print("ally2Skill2")
-                                        damage = -80 + EnemyArray[i].defence!
-                                        if damage > 0 {
-                                            damage = 0
-                                        }
-                                        self.changeEnemyHp(change: damage, id: EnemyArray[i].id!)
-                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: damage )
+                                        damage = -80
                                     } else if ally2.grade! == 2 {
                                         print("ally2Skill2G2")
-                                        damage = -250 + EnemyArray[i].defence!
-                                        if damage > 0 {
-                                            damage = 0
-                                        }
-                                        self.changeEnemyHp(change: damage, id: EnemyArray[i].id!)
-                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: damage )
+                                        damage = -250
                                     } else if ally2.grade! == 3 {
                                         print("ally2Skill2G3")
-                                        damage = -1400 + EnemyArray[i].defence!
-                                        if damage > 0 {
-                                            damage = 0
-                                        }
-                                        self.changeEnemyHp(change: damage, id: EnemyArray[i].id!)
-                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: damage )
+                                        damage = -1400
                                     }
+                                    
+                                    damage = damage + EnemyArray[i].defence!
+                                    if damage > 0 {
+                                        damage = 0
+                                    }
+                                    
+                                    damage = self.damageAjust(damage: damage)
+                                    
+                                    self.changeEnemyHp(change: damage, id: EnemyArray[i].id!)
+                                    self.damageEffect(damageposition: EnemyArray[i].position, damage: damage)
+                                    self.comboEffect(comboPosition: CGPoint(x: EnemyArray[i].position.x + 80, y: EnemyArray[i].position.y - 80))
                                     
                                     ally2.grade! = 1 //gradeをリセットする。
                                     ally2GradeLabel.text = "\(ally2.grade!)"
@@ -1242,7 +1237,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                     if ally3SkilledFlag {
                         
-                        if self.atPoint(location).name == "ally3Skill1" {//skill1の発動。斧をやりたい。まだできてません。
+                        if self.atPoint(location).name == "ally3Skill1" {//skill1の発動。斧を振る攻撃
                             
                             //Bullet作成
                             var bullet = Bullet()//skill1の四角
@@ -1482,10 +1477,13 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         if damage > 0 {
                             damage = 0
                         }
-                                            
+                        
+                        comboNumber = comboNumber + 1
+                        damage = self.damageAjust(damage: damage)
+                        
                         self.changeEnemyHp(change: damage, id: (nodeB as! Enemy).id!)
-                                            
                         self.damageEffect(damageposition: nodeA.position,damage: -damage)
+                        self.comboEffect(comboPosition: CGPoint(x: nodeA.position.x + 80,y: nodeA.position.y - 80))
                                             
                         if nodeA.name == "poison" {
                             if (nodeB as! Enemy).grade! >= 1 {
@@ -1520,10 +1518,13 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         if damage > 0 {
                             damage = 0
                         }
-                                            
+                        
+                        comboNumber = comboNumber + 1
+                        damage = self.damageAjust(damage: damage)
+                        
                         self.changeEnemyHp(change: damage, id: (nodeA as! Enemy).id!)
-                                            
                         self.damageEffect(damageposition: nodeB.position,damage: -damage)
+                        self.comboEffect(comboPosition: CGPoint(x: nodeA.position.x + 80,y: nodeA.position.y - 80))
 
                                             
                         if nodeB.name == "poison" {
@@ -1551,7 +1552,6 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     }
                     
                 }
-                
                 
                 //敵の弾と味方が当たる時の判定メソッド
                 if nodeA.physicsBody?.categoryBitMask == PhysicsCategory.Ally && nodeB.physicsBody?.categoryBitMask == PhysicsCategory.eBullet || nodeA.physicsBody?.categoryBitMask == PhysicsCategory.eBullet && nodeB.physicsBody?.categoryBitMask == PhysicsCategory.Ally {
@@ -2107,6 +2107,17 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
     }
     
+    func damageAjust(damage: Int) -> (Int) {
+        
+        var ajustdamage = damage
+        ajustdamage = Int(Double(ajustdamage) * (1 + Double(comboNumber) * 0.1)) //コンボ倍率を追加。
+        
+        let randomN = Double.random(in: 95.0..<105.0)
+        ajustdamage = Int(Double(ajustdamage) * randomN)
+        
+        return ajustdamage
+        
+    }
     func damageEffect(damageposition:CGPoint,damage:Int) { //ダメージを表示するためのエフェクトを作る。
         
         let damageEffectBack = SKSpriteNode(imageNamed: "damageEffect")
@@ -2139,6 +2150,34 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
         damageLabel.run(SKAction.sequence([wait,fadeout,remove]))
         damageEffectBack.run(SKAction.sequence([wait,fadeout,remove]))
+        
+    }
+    
+    func comboEffect(comboPosition:CGPoint) { //コンボを表示するためのエフェクトを作る。
+        
+        let comboEffectBack = SKSpriteNode(imageNamed: "damageEffect")
+        comboEffectBack.name = "comboEffectBack"
+        comboEffectBack.position = comboPosition
+        comboEffectBack.xScale = 0.5
+        comboEffectBack.yScale = 0.5
+        comboEffectBack.zPosition = 8
+        self.addChild(comboEffectBack)
+        
+        let comboLabel = SKLabelNode()
+        comboLabel.name = "damageLabel"
+        comboLabel.fontSize = 25 // フォントサイズを設定.
+        comboLabel.fontColor = UIColor.black// 色を指定
+        comboLabel.position = CGPoint(x: comboPosition.x,y: comboPosition.y - 8)// 表示するポジションを指定.
+        comboLabel.zPosition = 8
+        comboLabel.text = "\(comboNumber)Combo"
+        self.addChild(comboLabel)
+        
+        let wait = SKAction.wait(forDuration: 0.5)
+        let fadeout = SKAction.fadeOut(withDuration: 0.5)
+        let remove = SKAction.removeFromParent()
+        
+        comboLabel.run(SKAction.sequence([wait,fadeout,remove]))
+        comboEffectBack.run(SKAction.sequence([wait,fadeout,remove]))
         
     }
     
