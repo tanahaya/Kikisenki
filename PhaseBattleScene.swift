@@ -811,47 +811,75 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                         }
                         
-                        if self.atPoint(location).name == "ally1Skill2" {//skill2の発動。一番近い的に攻撃
+                        if self.atPoint(location).name == "ally1Skill2" {//skill2の発動、火炎放射
                             
-                            var shortestDistance:CGFloat = 50000.0 //大きい数字をとりあえず、代入します。
-                            var savei:Int = 0
                             
-                            for i in 0 ..< EnemyArray.count {
-                                if shortestDistance >= length(v: CGPoint(x: ally1.position.x - EnemyArray[i].position.x,y: ally1.position.y - EnemyArray[i].position.y)) {
-                                    shortestDistance = length(v: CGPoint(x: ally1.position.x - EnemyArray[i].position.x,y: ally1.position.y - EnemyArray[i].position.y))
-                                    savei = i
-                                }
-                            }
+//一番近い的に攻撃
+//                            var shortestDistance:CGFloat = 50000.0 //大きい数字をとりあえず、代入します。
+//                            var savei:Int = 0
+//
+//                            for i in 0 ..< EnemyArray.count {
+//                                if shortestDistance >= length(v: CGPoint(x: ally1.position.x - EnemyArray[i].position.x,y: ally1.position.y - EnemyArray[i].position.y)) {
+//                                    shortestDistance = length(v: CGPoint(x: ally1.position.x - EnemyArray[i].position.x,y: ally1.position.y - EnemyArray[i].position.y))
+//                                    savei = i
+//                                }
+//                            }
+//
+//                            print("targetenemy: \(EnemyArray[savei].id!)")
+//                            var damage = 0
+//                            if ally1.grade! == 0 {
+//                                damage = -( 10 + Int( 0.2 * shortestDistance )) + EnemyArray[savei].defence!
+//                                if damage > 0 {
+//                                    damage = 0
+//                                }
+//                                self.changeEnemyHp(change: damage, id: EnemyArray[savei].id!)
+//                                self.damageEffect(damageposition: EnemyArray[savei].position, damage: damage)
+//                            } else if ally1.grade! == 1 {
+//                                damage = -( 70 + Int( 0.25 * shortestDistance )) + EnemyArray[savei].defence!
+//                                if damage > 0 {
+//                                    damage = 0
+//                                }
+//                                self.changeEnemyHp(change: damage, id: EnemyArray[savei].id!)
+//                                self.damageEffect(damageposition: EnemyArray[savei].position, damage: damage)
+//                            } else if ally1.grade! == 2 {
+//                                print("ally2Skill1G1")
+//                                damage = -( 300 + Int( shortestDistance )) + EnemyArray[savei].defence!
+//                                if damage > 0 {
+//                                    damage = 0
+//                                }
+//                                self.changeEnemyHp(change: damage, id: EnemyArray[savei].id!)
+//                                self.damageEffect(damageposition: EnemyArray[savei].position, damage: damage)
+//                            } else if ally1.grade! == 3 {
+//                                print("ally2Skill1G2")
+//                                damage = -3000 //防御貫通攻撃。
+//                                self.changeEnemyHp(change: -3000, id: EnemyArray[savei].id!)
+//                                self.damageEffect(damageposition: EnemyArray[savei].position, damage: -3000)
+//                            }
                             
-                            print("targetenemy: \(EnemyArray[savei].id!)")
-                            var damage = 0
-                            if ally1.grade! == 0 {
-                                damage = -( 10 + Int( 0.2 * shortestDistance )) + EnemyArray[savei].defence!
-                                if damage > 0 {
-                                    damage = 0
+                            for i in 0 ..< 10 {
+                                
+                                let bullet = self.makeBullet(position: ally1.position, damage: 0, size: CGSize(width: 20, height: 20))
+                                
+                                self.addChild(bullet)
+                                
+                                if ally1.grade! == 0 {
+                                    bullet.damage = 5
+                                } else if ally1.grade! == 1 {
+                                    bullet.damage = 50
+                                } else if ally1.grade! == 2 {
+                                    bullet.damage = 100
+                                } else if ally1.grade! == 3 {
+                                    bullet.damage = 300
                                 }
-                                self.changeEnemyHp(change: damage, id: EnemyArray[savei].id!)
-                                self.damageEffect(damageposition: EnemyArray[savei].position, damage: damage)
-                            } else if ally1.grade! == 1 {
-                                damage = -( 70 + Int( 0.25 * shortestDistance )) + EnemyArray[savei].defence!
-                                if damage > 0 {
-                                    damage = 0
-                                }
-                                self.changeEnemyHp(change: damage, id: EnemyArray[savei].id!)
-                                self.damageEffect(damageposition: EnemyArray[savei].position, damage: damage)
-                            } else if ally1.grade! == 2 {
-                                print("ally2Skill1G1")
-                                damage = -( 300 + Int( shortestDistance )) + EnemyArray[savei].defence!
-                                if damage > 0 {
-                                    damage = 0
-                                }
-                                self.changeEnemyHp(change: damage, id: EnemyArray[savei].id!)
-                                self.damageEffect(damageposition: EnemyArray[savei].position, damage: damage)
-                            } else if ally1.grade! == 3 {
-                                print("ally2Skill1G2")
-                                damage = -3000 //防御貫通攻撃。
-                                self.changeEnemyHp(change: -3000, id: EnemyArray[savei].id!)
-                                self.damageEffect(damageposition: EnemyArray[savei].position, damage: -3000)
+                                
+                                let random = self.DegreeToRadian(Degree: Double.random(in: 0..<120) - 60.0)
+                                
+                                let wait = SKAction.wait(forDuration: Double(i) * 0.1)
+                                let randomGo = SKAction.move(to: CGPoint(x: Double(ally1.position.x) + 150 * cos(Double(random)),y: Double(ally1.position.y) + 150 * sin(Double(random))), duration: 1.0)
+                                let remove = SKAction.removeFromParent()
+                                
+                                bullet.run(SKAction.sequence([wait,randomGo,remove]))
+                                
                             }
                             
                             ally1.grade! = 1//gradeをリセットする。
@@ -962,40 +990,42 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             var syuriken1 = Bullet()
                             
                             syuriken1 = self.makeBullet(position: CGPoint(x: ally2.position.x,y: ally2.position.y), damage: 1, size: CGSize(width:  50.0, height: 50.0))
-                            
+                            syuriken1.name =  "syuriken"
                             self.addChild(syuriken1)//Bullet表示
                             
-                            let action1 = SKAction.move(to: CGPoint(x: ally2.position.x + 200, y: ally2.position.y + 200), duration: 0.5)//右上
-                            let backaction = SKAction.move(to: CGPoint(x: ally2.position.x, y: ally2.position.y), duration: 0.5)
+                            let action1 = SKAction.move(to: CGPoint(x: ally2.position.x + 200, y: ally2.position.y + 200), duration: 0.3)//右上
                             let actionDone = SKAction.removeFromParent()
-                            syuriken1.run(SKAction.sequence([action1,backaction,actionDone]))
+                            syuriken1.run(SKAction.sequence([action1,actionDone]))
                             
                             var syuriken2 = Bullet()
+                            syuriken2.name =  "syuriken"
                             
                             syuriken2 = self.makeBullet(position: CGPoint(x: ally2.position.x,y: ally2.position.y), damage: 1, size: CGSize(width:  50.0, height: 50.0))
                             
                             self.addChild(syuriken2)//Bullet表示
                             
-                            let action2 = SKAction.move(to: CGPoint(x: ally2.position.x + 200, y: ally2.position.y - 200), duration: 0.5)//右下
-                            syuriken2.run(SKAction.sequence([action2,backaction,actionDone]))
+                            let action2 = SKAction.move(to: CGPoint(x: ally2.position.x + 200, y: ally2.position.y - 200), duration: 0.3)//右下
+                            syuriken2.run(SKAction.sequence([action2,actionDone]))
                             
                             var syuriken3 = Bullet()
                             
                             syuriken3 = self.makeBullet(position: CGPoint(x: ally2.position.x,y: ally2.position.y), damage: 1, size: CGSize(width:  50.0, height: 50.0))
+                            syuriken3.name =  "syuriken"
                             
                             self.addChild(syuriken3)//Bullet表示
                             
-                            let action3 = SKAction.move(to: CGPoint(x: ally2.position.x - 200, y: ally2.position.y + 200), duration: 0.5)//左上
-                            syuriken3.run(SKAction.sequence([action3,backaction,actionDone]))
+                            let action3 = SKAction.move(to: CGPoint(x: ally2.position.x - 200, y: ally2.position.y + 200), duration: 0.3)//左上
+                            syuriken3.run(SKAction.sequence([action3,actionDone]))
                             
                             var syuriken4 = Bullet()
+                            syuriken4.name =  "syuriken"
                             
                             syuriken4 = self.makeBullet(position: CGPoint(x: ally2.position.x,y: ally2.position.y), damage: 1, size: CGSize(width:  50.0, height: 50.0))
                             
                             self.addChild(syuriken4)//Bullet表示
                             
-                            let action4 = SKAction.move(to: CGPoint(x: ally2.position.x - 200, y: ally2.position.y - 200), duration: 0.5)//左下
-                            syuriken4.run(SKAction.sequence([action4,backaction,actionDone]))
+                            let action4 = SKAction.move(to: CGPoint(x: ally2.position.x - 200, y: ally2.position.y - 200), duration: 0.3)//左下
+                            syuriken4.run(SKAction.sequence([action4,actionDone]))
                             
                             if ally2.grade! == 0 {
                                 print("ally2Skill1G0")
@@ -1005,26 +1035,25 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                                 syuriken4.damage = 5
                             } else if ally2.grade! == 1 {
                                 print("ally2Skill1")
-                                syuriken1.damage = 80
-                                syuriken2.damage = 80
-                                syuriken3.damage = 80
-                                syuriken4.damage = 80
+                                syuriken1.damage = 30
+                                syuriken2.damage = 30
+                                syuriken3.damage = 30
+                                syuriken4.damage = 30
                             } else if ally2.grade! == 2 {
                                 print("ally2Skill1G2")
-                                syuriken1.damage = 240
-                                syuriken2.damage = 240
-                                syuriken3.damage = 240
-                                syuriken4.damage = 240
+                                syuriken1.damage = 70
+                                syuriken2.damage = 70
+                                syuriken3.damage = 70
+                                syuriken4.damage = 70
                             } else if ally2.grade! == 3 {
                                 print("ally2Skill1G3")
-                                syuriken1.damage = 600
-                                syuriken2.damage = 600
-                                syuriken3.damage = 600
-                                syuriken4.damage = 600
+                                syuriken1.damage = 120
+                                syuriken2.damage = 120
+                                syuriken3.damage = 120
+                                syuriken4.damage = 120
                             }
                             
-                            ally2.grade! = 1 //gradeをリセットする。
-                            ally2GradeLabel.text = "\(ally2.grade!)"
+                            //この技はgradeを使用しない。
                             
                             ally2SkilledFlag = false//Skillを使ったこと判定
                             
@@ -1100,20 +1129,45 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         
                         if self.atPoint(location).name == "ally2Skill4" {//skill4の発動
                             
-                            print("ally2Skill4")
+                            let bullet1 =  self.makeBullet(position: CGPoint(x: ally2.position.x,y: ally2.position.y), damage: 30, size: CGSize(width:  30.0, height: 30.0))
                             
-                            //makeheart
-                            var heartX = 0
-                            var heartY = 0
+                            let bullet2 =  self.makeBullet(position: CGPoint(x: ally2.position.x,y: ally2.position.y), damage: 30, size: CGSize(width:  30.0, height: 30.0))
                             
-                            repeat { // repeat-while文のため、この処理は最低1回実行される
+                            self.addChild(bullet1)
+                            self.addChild(bullet2)
+                            
+                            let goup = SKAction.moveTo(y: ally2.position.y + 200, duration: 0.5)
+                            let godown = SKAction.moveTo(y: ally2.position.y - 200, duration: 0.5)
+                            let actionDone = SKAction.removeFromParent()
+                            bullet1.run(SKAction.sequence([goup,actionDone]))
+                            bullet2.run(SKAction.sequence([godown,actionDone]))
+                            
+                            
+                            if ally2.grade! == 0 {
+                                bullet1.damage = 10
+                                bullet2.damage = 10
+                            } else if ally2.grade! == 1 {
+                                bullet1.damage = 200
+                                bullet2.damage = 200
+                            } else if ally2.grade! == 2 {
+                                bullet1.damage = 500
+                                bullet2.damage = 500
+                            } else if ally2.grade! == 3 {
+                                bullet1.damage = 1000
+                                bullet2.damage = 1000
+                            }
+                            
+                            ally2.physicsBody?.categoryBitMask = 0
+                            ally2.physicsBody?.collisionBitMask = 0
+                            ally2.physicsBody?.contactTestBitMask = 0
+                            
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
                                 
-                                heartX = Int.random(in: 0 ..< 816)
-                                heartY = Int.random(in: 0 ..< 254)
+                                self.ally2.physicsBody?.categoryBitMask = PhysicsCategory.Ally
+                                self.ally2.physicsBody?.collisionBitMask = PhysicsCategory.eBullet | PhysicsCategory.Item | PhysicsCategory.Wall | PhysicsCategory.Ally | PhysicsCategory.Enemy
+                                self.ally2.physicsBody?.contactTestBitMask = PhysicsCategory.eBullet | PhysicsCategory.Item | PhysicsCategory.Wall | PhysicsCategory.Ally | PhysicsCategory.Enemy
                                 
-                            } while(overlap(location: CGPoint(x: heartX,y: heartY)))
-                            
-                            self.makeHeart(x: heartX, y: heartY)
+                            }
                             
                             ally2SkilledFlag = false
                             
@@ -1293,53 +1347,69 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                         }
                         
-                        if self.atPoint(location).name == "ally3Skill4" {//skill4の発動。範囲内にいる敵に攻撃する。攻撃したを移動しなくする。
+                        if self.atPoint(location).name == "ally3Skill4" {//skill4の発動。自分のHpを回復する。また、斧をも補充する。
                             
-                            for i in 0 ..< EnemyArray.count {
-                                if 200 >= length(v: CGPoint(x: ally3.position.x - EnemyArray[i].position.x,y: ally3.position.y - EnemyArray[i].position.y)) {
-                                    var damage = 0
-                                    
-                                    if ally3.grade! == 0 {
-                                        print("ally3Skill4G0")
-                                        damage = -10 + EnemyArray[i].defence!
-                                        if damage > 0 {
-                                            damage = 0
-                                        }
-                                        self.changeEnemyHp(change: damage, id: EnemyArray[i].id!)
-                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: damage)
-                                    } else if ally3.grade! == 1 {
-                                        print("ally3Skill4")
-                                        damage = -60 + EnemyArray[i].defence!
-                                        if damage > 0 {
-                                            damage = 0
-                                        }
-                                        self.changeEnemyHp(change: damage, id: EnemyArray[i].id!)
-                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: damage)
-                                    } else if ally3.grade! == 2 {
-                                        print("ally3Skill4G1")
-                                        damage = -160 + EnemyArray[i].defence!
-                                        if damage > 0 {
-                                            damage = 0
-                                        }
-                                        self.changeEnemyHp(change: damage, id: EnemyArray[i].id!)
-                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: damage)
-                                    } else if ally3.grade! == 3 {
-                                        print("ally3Skill4G2")
-                                        damage = -1000 + EnemyArray[i].defence!
-                                        if damage > 0 {
-                                            damage = 0
-                                        }
-                                        self.changeEnemyHp(change: damage, id: EnemyArray[i].id!)
-                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: damage)
-                                    }
-                                    
-                                    ally3.grade! = 1//gradeをリセットする。
-                                    ally3GradeLabel.text = "\(ally3.grade!)"
-                                    
-                                    EnemyArray[i].moveEnable = false
-                                    
-                                }
+//                      skill4の発動。範囲内にいる敵に攻撃する。攻撃したを移動しなくする。
+//                            for i in 0 ..< EnemyArray.count {
+//                                if 200 >= length(v: CGPoint(x: ally3.position.x - EnemyArray[i].position.x,y: ally3.position.y - EnemyArray[i].position.y)) {
+//                                    var damage = 0
+//
+//                                    if ally3.grade! == 0 {
+//                                        print("ally3Skill4G0")
+//                                        damage = -10 + EnemyArray[i].defence!
+//                                        if damage > 0 {
+//                                            damage = 0
+//                                        }
+//                                        self.changeEnemyHp(change: damage, id: EnemyArray[i].id!)
+//                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: damage)
+//                                    } else if ally3.grade! == 1 {
+//                                        print("ally3Skill4")
+//                                        damage = -60 + EnemyArray[i].defence!
+//                                        if damage > 0 {
+//                                            damage = 0
+//                                        }
+//                                        self.changeEnemyHp(change: damage, id: EnemyArray[i].id!)
+//                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: damage)
+//                                    } else if ally3.grade! == 2 {
+//                                        print("ally3Skill4G1")
+//                                        damage = -160 + EnemyArray[i].defence!
+//                                        if damage > 0 {
+//                                            damage = 0
+//                                        }
+//                                        self.changeEnemyHp(change: damage, id: EnemyArray[i].id!)
+//                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: damage)
+//                                    } else if ally3.grade! == 3 {
+//                                        print("ally3Skill4G2")
+//                                        damage = -1000 + EnemyArray[i].defence!
+//                                        if damage > 0 {
+//                                            damage = 0
+//                                        }
+//                                        self.changeEnemyHp(change: damage, id: EnemyArray[i].id!)
+//                                        self.damageEffect(damageposition: EnemyArray[i].position, damage: damage)
+//                                    }
+//
+//                                    ally3.grade! = 1//gradeをリセットする。
+//                                    ally3GradeLabel.text = "\(ally3.grade!)"
+//
+//                                    EnemyArray[i].moveEnable = false
+//
+//                                }
+//                            }
+                            
+                            axFlag = true //斧を補充する。
+                            
+                            if ally3.grade! == 0 {
+                                self.changeAllyHp(change: 100, id: 3)
+                            } else if ally3.grade! == 1 {
+                                self.changeAllyHp(change: 200, id: 3)
+                            } else if ally3.grade! == 2 {
+                                self.changeAllyHp(change: 400, id: 3)
+                            }else if ally3.grade! == 3 {
+                                self.changeAllyHp(change: 1000, id: 3)
                             }
+                            
+                            ally3.grade! = 1 //gradeをリセットする。
+                            ally3GradeLabel.text = "\(ally3.grade!)"
                             
                             ally3SkilledFlag = false
                             
@@ -1421,6 +1491,10 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             if (nodeB as! Enemy).grade! >= 1 {
                                     self.changeEnemyGrade(change: (nodeB as! Enemy).grade! - 1, id: (nodeB as! Enemy).id!)
                             }
+                        }
+                        
+                        if nodeA.name == "syuriken" {
+                            ally2SkilledFlag = true//Skillの使用を復活させる。
                         }
                                             
                         if nodeA.name == "charge" {
