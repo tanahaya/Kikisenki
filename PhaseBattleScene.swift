@@ -1105,7 +1105,24 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                                         damage = 0
                                     }
                                     
-                                    damage = self.damageAjust(damage: damage)
+                                    damage = self.damageAllyAjust(damage: damage)
+                                    
+                                    if EnemyArray[i].comboBarrier {//コンボバリア使用時、ダメージが十分の一になる。
+                                        if EnemyArray[i].comboBarrierNumber <= comboNumber { //コンボバリアの数よりもコンボ数が多ければバリアを排除する。
+                                            
+                                            EnemyArray[i].comboBarrier = false
+                                            
+                                            for i in EnemyArray[i].children {
+                                                if i.name == "Barrier" {//バリアを除去する。
+                                                    i.removeFromParent()
+                                                }
+                                            }
+                                            
+                                        } else {
+                                            damage = damage / 10 //ダメージを十分の１にする。
+                                        }
+                                        
+                                    }
                                     
                                     self.changeEnemyHp(change: damage, id: EnemyArray[i].id!)
                                     self.damageEffect(damageposition: EnemyArray[i].position, damage: damage)
@@ -1479,7 +1496,24 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         }
                         
                         comboNumber = comboNumber + 1
-                        damage = self.damageAjust(damage: damage)
+                        damage = self.damageAllyAjust(damage: damage)
+                        
+                        if (nodeB as! Enemy).comboBarrier {//コンボバリア使用時、ダメージが十分の一になる。
+                            if (nodeB as! Enemy).comboBarrierNumber <= comboNumber { //コンボバリアの数よりもコンボ数が多ければバリアを排除する。
+                                
+                                (nodeB as! Enemy).comboBarrier = false
+                                
+                                for i in (nodeB as! Enemy).children {
+                                    if i.name == "Barrier" {//バリアを除去する。
+                                        i.removeFromParent()
+                                    }
+                                }
+                                
+                            } else {
+                                damage = damage / 10 //ダメージを十分の１にする。
+                            }
+                            
+                        }
                         
                         self.changeEnemyHp(change: damage, id: (nodeB as! Enemy).id!)
                         self.damageEffect(damageposition: nodeA.position,damage: -damage)
@@ -1520,7 +1554,24 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         }
                         
                         comboNumber = comboNumber + 1
-                        damage = self.damageAjust(damage: damage)
+                        damage = self.damageAllyAjust(damage: damage)
+                        
+                        if (nodeA as! Enemy).comboBarrier {//コンボバリア使用時、ダメージが十分の一になる。
+                            if (nodeA as! Enemy).comboBarrierNumber <= comboNumber { //コンボバリアの数よりもコンボ数が多ければバリアを排除する。
+                                
+                                (nodeA as! Enemy).comboBarrier = false
+                                
+                                for i in (nodeB as! Enemy).children {
+                                    if i.name == "Barrier" {//バリアを除去する。
+                                        i.removeFromParent()
+                                    }
+                                }
+                                
+                            } else {
+                                damage = damage / 10 //ダメージを十分の１にする。
+                            }
+                            
+                        }
                         
                         self.changeEnemyHp(change: damage, id: (nodeA as! Enemy).id!)
                         self.damageEffect(damageposition: nodeB.position,damage: -damage)
@@ -1563,10 +1614,12 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         if nodeA.name == "camera" {
                             self.gameover(side: "ally")
                         } else {
-
-                            self.changeAllyHp(change: -(nodeA as! Bullet).damage!, id: (nodeB as! Ally).id!)
                             
-                            self.damageEffect(damageposition: nodeA.position,damage: (nodeA as! Bullet).damage!)
+                            let bulletDamage = self.damageEnemyAjust(damage: (nodeA as! Bullet).damage!)
+
+                            self.changeAllyHp(change: -bulletDamage, id: (nodeB as! Ally).id!)
+                            
+                            self.damageEffect(damageposition: nodeA.position,damage: bulletDamage)
                             
                         }
                         
@@ -1593,9 +1646,12 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                         if nodeB.name == "camera" {
                             self.gameover(side: "ally")
                         } else {
+                            
+                            let bulletDamage = self.damageEnemyAjust(damage: (nodeB as! Bullet).damage!)
 
-                            self.changeAllyHp(change: -(nodeB as! Bullet).damage!, id: (nodeA as! Ally).id!)
-                            self.damageEffect(damageposition: nodeB.position,damage: (nodeB as! Bullet).damage!)
+                            self.changeAllyHp(change: -bulletDamage, id: (nodeA as! Ally).id!)
+                            
+                            self.damageEffect(damageposition: nodeB.position,damage: bulletDamage)
                             
                         }
                         
@@ -1952,9 +2008,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 }
             }
             
-            
         }
-        
         
     }
     
@@ -2107,17 +2161,28 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
     }
     
-    func damageAjust(damage: Int) -> (Int) {
+    func damageAllyAjust(damage: Int) -> (Int) {
         
         var ajustdamage = damage
         ajustdamage = Int(Double(ajustdamage) * (1 + Double(comboNumber) * 0.1)) //コンボ倍率を追加。
         
-        let randomN = Double.random(in: 95.0..<105.0)
+        let randomN = Double.random(in: 0.90..<1.10)
         ajustdamage = Int(Double(ajustdamage) * randomN)
         
         return ajustdamage
         
     }
+    
+    func damageEnemyAjust(damage:Int ) -> (Int) {
+        
+        var ajustdamage = damage
+        
+        let randomN = Double.random(in: 0.90..<1.10)
+        ajustdamage = Int(Double(ajustdamage) * randomN)
+        
+        return ajustdamage
+    }
+    
     func damageEffect(damageposition:CGPoint,damage:Int) { //ダメージを表示するためのエフェクトを作る。
         
         let damageEffectBack = SKSpriteNode(imageNamed: "damageEffect")
@@ -2165,7 +2230,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
         let comboLabel = SKLabelNode()
         comboLabel.name = "damageLabel"
-        comboLabel.fontSize = 25 // フォントサイズを設定.
+        comboLabel.fontSize = 20 // フォントサイズを設定.
         comboLabel.fontColor = UIColor.black// 色を指定
         comboLabel.position = CGPoint(x: comboPosition.x,y: comboPosition.y - 8)// 表示するポジションを指定.
         comboLabel.zPosition = 8
@@ -2181,12 +2246,50 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
     }
     
+    func addPopmessage(message:String) {
+        
+        let textNumber:Double = Double(message.utf8.count)//文字数を数
+        
+        let popmessageBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 26.0 * textNumber , height: 10.0))
+        popmessageBack.name = "comboEffectBack"
+        popmessageBack.position = CGPoint(x: 448,y: 300)
+        popmessageBack.zPosition = 8
+        self.addChild(popmessageBack)
+        
+        let popmessageLabel = SKLabelNode()
+        popmessageLabel.name = "popmessageLabel"
+        popmessageLabel.fontSize = 25
+        popmessageLabel.fontColor = UIColor.white
+        popmessageLabel.position = CGPoint(x: 448,y: 292)
+        popmessageLabel.zPosition = 8
+        popmessageLabel.text = "\(message)"
+        self.addChild(popmessageLabel)
+        
+        let wait = SKAction.wait(forDuration: 3.0)
+        let fadeout = SKAction.fadeOut(withDuration: 3.0)
+        let remove = SKAction.removeFromParent()
+        
+        popmessageLabel.run(SKAction.sequence([wait,fadeout,remove]))
+        popmessageBack.run(SKAction.sequence([wait,fadeout,remove]))
+        
+    }
+    
     func addEnemy() {
         
         for enemy in Stage[waveNumber] {
             
             enemy.alpha = 0.0
             self.addChild(enemy)
+            
+            if enemy.comboBarrier {//コンボバリアを使う敵ならバリアを追加する。
+                
+                let Barrier = SKShapeNode(circleOfRadius: 60.0)
+                Barrier.name = "Barrier"
+                Barrier.fillColor = UIColor.cyan
+                Barrier.alpha = 0.3
+                enemy.addChild(Barrier)
+                
+            }
             
             let fadeIn = SKAction.fadeIn(withDuration: 0.8)
             enemy.run(fadeIn)
@@ -2357,6 +2460,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
                 let Senjin = self.makeSenjin(position: CGPoint(x: 750,y: 250))
                 Senjin.id = firstArray.count
+                Senjin.comboBarrier = true
+                Senjin.comboBarrierNumber = 3
                 firstArray.append(Senjin)
                 
                 stagearray.append(firstArray)

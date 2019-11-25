@@ -20,6 +20,8 @@ class Enemy : SKSpriteNode {
     var type: String?//敵の種類を把握する。
     var defence: Int?
     var needToKill:Bool = true//倒す必要があるかどうかを判定するメソッド
+    var comboBarrier:Bool = false//バリアを張っているかどうかを判定する。
+    var comboBarrierNumber:Int = 3//コンボバリアを剥がすのに必要なコンボ数を決める。
     
     func test() -> String {
         return "Hello"
