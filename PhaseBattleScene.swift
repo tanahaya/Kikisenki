@@ -114,6 +114,11 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
     var comboNumber:Int = 0
     var battleFlag1:Bool = false
     
+    let LifeSupport = SKSpriteNode(imageNamed: "LifeSupport")
+    let SupplySupport = SKSpriteNode(imageNamed: "SupplySupport")
+    let BreakArmor = SKSpriteNode(imageNamed: "BreakArmor")
+    
+    
     let settingButton = SKSpriteNode(imageNamed: "setting") //設定ボタン。
     
     //衝突判定のためのビットマスク作成
@@ -165,6 +170,37 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         settingButton.xScale = 0.1
         settingButton.yScale = 0.1
         self.addChild(settingButton)
+        
+        //支援系のボタンの配置
+        LifeSupport.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "setting"), size: LifeSupport.size)
+        LifeSupport.physicsBody?.categoryBitMask = 0b00000000
+        LifeSupport.physicsBody?.collisionBitMask = 0b00000000
+        LifeSupport.physicsBody?.contactTestBitMask = 0b00000000
+        LifeSupport.name = "LifeSupport"
+        LifeSupport.position = CGPoint(x: 200,y: 200)
+        LifeSupport.alpha = 0.0
+        LifeSupport.zPosition = 10
+        self.addChild(LifeSupport)
+        
+        SupplySupport.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "setting"), size: LifeSupport.size)
+        SupplySupport.physicsBody?.categoryBitMask = 0b00000000
+        SupplySupport.physicsBody?.collisionBitMask = 0b00000000
+        SupplySupport.physicsBody?.contactTestBitMask = 0b00000000
+        SupplySupport.name = "SupplySupport"
+        SupplySupport.position = CGPoint(x: 450,y: 200)
+        SupplySupport.alpha = 0.0
+        SupplySupport.zPosition = 10
+        self.addChild(SupplySupport)
+        
+        BreakArmor.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "setting"), size: LifeSupport.size)
+        BreakArmor.physicsBody?.categoryBitMask = 0b00000000
+        BreakArmor.physicsBody?.collisionBitMask = 0b00000000
+        BreakArmor.physicsBody?.contactTestBitMask = 0b00000000
+        BreakArmor.name = "BreakArmor"
+        BreakArmor.position = CGPoint(x: 700,y: 200)
+        BreakArmor.alpha = 0.0
+        BreakArmor.zPosition = 10
+        self.addChild(BreakArmor)
         
         
         self.MainTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.mainTimerupdate), userInfo: nil, repeats: true)
@@ -267,42 +303,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 ally3Skill5.alpha = 0.0
                 ally3LandSkill.alpha = 0.0
                 
-                if ItemCount <= 3 {
-                    
-                    if Int.random(in: 0 ..< 2) == 0 { //毎ターン回復アイテムかgradeupアイテムがフィールドに現れる。
-                        
-                        print("makeheart")
-                        
-                        var heartX = 0
-                        var heartY = 0
-                        
-                        repeat { // repeat-while文のため、この処理は最低1回実行される
-                            
-                            heartX = Int.random(in: 0 ..< 816)
-                            heartY = Int.random(in: 0 ..< 254)
-                            
-                        } while(overlap(location: CGPoint(x: heartX,y: heartY)))
-                        
-                        self.makeHeart(x: heartX, y: heartY)
-                        
-                    } else {
-                        
-                        print("makegrade")
-                        
-                        var gradeupX = 0
-                        var gradeupY = 0
-                        
-                        repeat { // repeat-while文のため、この処理は最低1回実行される
-                            
-                            gradeupX = Int.random(in: 0 ..< 816)
-                            gradeupY = Int.random(in: 0 ..< 254)
-                            
-                        } while(overlap(location: CGPoint(x: gradeupX,y: gradeupY)))
-                        
-                        self.makeGradeupItem(x: gradeupX, y: gradeupY)
-                        
-                    }
-                    
+                if turn % 2 == 0 { //二ターンに一度、サポートチョイスを行う。
+                    self.supportChoice()
                 }
                 
             }//movephaze
@@ -499,7 +501,60 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 
             }
             
-            if stopActionFlag {//途中動作
+            if self.atPoint(location).name == "LifeSupport" {
+                
+                print("LifeSupport")
+                LifeSupport.alpha = 0.0
+                SupplySupport.alpha = 0.0
+                BreakArmor.alpha = 0.0
+                
+                let randomN1 = Int.random(in: 80..<800)
+                let randomN2 = Int.random(in: 30..<300)
+                let randomN3 = Int.random(in: 80..<800)
+                let randomN4 = Int.random(in: 30..<300)
+                
+                self.makeHeart(x: randomN1, y: randomN2)
+                self.makeHeart(x: randomN3, y: randomN4)
+                
+                self.MainTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.mainTimerupdate), userInfo: nil, repeats: true)
+                
+            } else if self.atPoint(location).name == "SupplySupport" {
+                
+                print("SupplySupport")
+                LifeSupport.alpha = 0.0
+                SupplySupport.alpha = 0.0
+                BreakArmor.alpha = 0.0
+                
+                let randomN1 = Int.random(in: 80..<800)
+                let randomN2 = Int.random(in: 30..<300)
+                let randomN3 = Int.random(in: 80..<800)
+                let randomN4 = Int.random(in: 30..<300)
+                
+                self.makeGradeupItem(x: randomN1, y: randomN2)
+                self.makeGradeupItem(x: randomN3, y: randomN4)
+                
+                self.MainTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.mainTimerupdate), userInfo: nil, repeats: true)
+                
+            } else if self.atPoint(location).name == "BreakArmor" {
+                
+                print("BreakArmor")
+                LifeSupport.alpha = 0.0
+                SupplySupport.alpha = 0.0
+                BreakArmor.alpha = 0.0
+                
+                for i in EnemyArray {//全ての敵の防御力を減らす
+                    
+                    i.defence! = i.defence! - 50
+                    
+                    if i.defence! < 0 {
+                        i.defence = 0
+                    }
+                }
+                
+                self.MainTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.mainTimerupdate), userInfo: nil, repeats: true)
+            }
+            
+            if stopActionFlag {  //途中動作
                 
                 aimPosition = location
                 self.StopAction(actionNumber: 0)
@@ -995,7 +1050,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             syuriken1.name =  "syuriken"
                             self.addChild(syuriken1)//Bullet表示
                             
-                            let action1 = SKAction.move(to: CGPoint(x: ally2.position.x + 200, y: ally2.position.y + 200), duration: 0.3)//右上
+                            let action1 = SKAction.move(to: CGPoint(x: ally2.position.x + 150, y: ally2.position.y + 150), duration: 0.6)//右上
                             let actionDone = SKAction.removeFromParent()
                             syuriken1.run(SKAction.sequence([action1,actionDone]))
                             
@@ -1006,7 +1061,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                             self.addChild(syuriken2)//Bullet表示
                             
-                            let action2 = SKAction.move(to: CGPoint(x: ally2.position.x + 200, y: ally2.position.y - 200), duration: 0.3)//右下
+                            let action2 = SKAction.move(to: CGPoint(x: ally2.position.x + 150, y: ally2.position.y - 150), duration: 0.6)//右下
                             syuriken2.run(SKAction.sequence([action2,actionDone]))
                             
                             var syuriken3 = Bullet()
@@ -1016,7 +1071,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                             self.addChild(syuriken3)//Bullet表示
                             
-                            let action3 = SKAction.move(to: CGPoint(x: ally2.position.x - 200, y: ally2.position.y + 200), duration: 0.3)//左上
+                            let action3 = SKAction.move(to: CGPoint(x: ally2.position.x - 150, y: ally2.position.y + 150), duration: 0.6)//左上
                             syuriken3.run(SKAction.sequence([action3,actionDone]))
                             
                             var syuriken4 = Bullet()
@@ -1026,7 +1081,7 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                             
                             self.addChild(syuriken4)//Bullet表示
                             
-                            let action4 = SKAction.move(to: CGPoint(x: ally2.position.x - 200, y: ally2.position.y - 200), duration: 0.3)//左下
+                            let action4 = SKAction.move(to: CGPoint(x: ally2.position.x - 150, y: ally2.position.y - 150), duration: 0.6)//左下
                             syuriken4.run(SKAction.sequence([action4,actionDone]))
                             
                             if ally2.grade! == 0 {
@@ -2096,8 +2151,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Heart.physicsBody?.collisionBitMask = PhysicsCategory.Item | PhysicsCategory.Ally | PhysicsCategory.Wall | PhysicsCategory.Enemy
         Heart.physicsBody?.contactTestBitMask = PhysicsCategory.Item | PhysicsCategory.Ally | PhysicsCategory.Wall | PhysicsCategory.Enemy
         Heart.position = CGPoint(x: 50 + x,y: 50 + y)
-        Heart.xScale = 0.7
-        Heart.yScale = 0.7
+        Heart.xScale = 0.5
+        Heart.yScale = 0.5
         self.addChild(Heart)
         
         ItemCount = ItemCount + 1
@@ -2119,8 +2174,8 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         GradeItem.physicsBody?.collisionBitMask = PhysicsCategory.Item | PhysicsCategory.Ally | PhysicsCategory.Wall | PhysicsCategory.Enemy
         GradeItem.physicsBody?.contactTestBitMask = PhysicsCategory.Item | PhysicsCategory.Ally | PhysicsCategory.Wall | PhysicsCategory.Enemy
         GradeItem.position = CGPoint(x: 50 + x,y: 50 + y)
-        GradeItem.xScale = 0.7
-        GradeItem.yScale = 0.7
+        GradeItem.xScale = 0.5
+        GradeItem.yScale = 0.5
         self.addChild(GradeItem)
         
         ItemCount = ItemCount + 1
@@ -2271,6 +2326,18 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         
         popmessageLabel.run(SKAction.sequence([wait,fadeout,remove]))
         popmessageBack.run(SKAction.sequence([wait,fadeout,remove]))
+        
+    }
+    
+    func supportChoice() { //サポートを選択する。
+        
+        LifeSupport.alpha = 1.0
+        SupplySupport.alpha = 1.0
+        BreakArmor.alpha = 1.0
+        
+        if MainTimer?.isValid == true { //タイマーを止める。
+            MainTimer?.invalidate()
+        }
         
     }
     
@@ -2462,6 +2529,9 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 Senjin.id = firstArray.count
                 Senjin.comboBarrier = true
                 Senjin.comboBarrierNumber = 3
+                Senjin.physicsBody?.collisionBitMask = PhysicsCategory.Bullet | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
+                Senjin.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
+                //移動のためにBitMaskを変更
                 firstArray.append(Senjin)
                 
                 stagearray.append(firstArray)
@@ -3083,10 +3153,10 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
         Senjin.xScale = 1.0
         Senjin.yScale = 1.0
         Senjin.grade = 1
-        Senjin.hp = 1500
-        Senjin.defence = 100
+        Senjin.hp = 5000
+        Senjin.defence = 50
         Senjin.type = "senjin"
-        Senjin.maxHp = 1500//最大のHp
+        Senjin.maxHp = 5000 //最大のHp
         
         let HpBarBack = SKSpriteNode(color: UIColor.black, size: CGSize(width: 45.0, height: 14.0))
         
@@ -3852,37 +3922,37 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                                 MainTimer?.invalidate()
                             }
                             
-                            var ally1gotoright = SKAction.moveTo(x: ally1.position.x  + 400, duration: 1.8)
+                            var ally1gotoright = SKAction.moveTo(x: ally1.position.x  + 200, duration: 1.8)
                             
                             if ally1.position.x > 850 {
                                 ally1gotoright = SKAction.moveTo(x: ally1.position.x, duration: 0.1)
-                            } else if ally1.position.x + 400 > 850 {
-                                ally1gotoright = SKAction.moveTo(x: 850, duration: Double(1.8 * (850 - ally1.position.x) / 400))
+                            } else if ally1.position.x + 200 > 850 {
+                                ally1gotoright = SKAction.moveTo(x: 850, duration: Double(1.8 * (850 - ally1.position.x) / 200))
                             }
                             
                             ally1.run(ally1gotoright)
                             
-                            var ally2gotoright = SKAction.moveTo(x: ally2.position.x  + 400, duration: 1.8)
+                            var ally2gotoright = SKAction.moveTo(x: ally2.position.x  + 200, duration: 1.8)
                             
                             if ally2.position.x > 850 {
                                 ally2gotoright = SKAction.moveTo(x: ally2.position.x, duration: 0.1)
-                            } else if ally2.position.x + 400 > 850 {
-                                ally2gotoright = SKAction.moveTo(x: 850, duration: Double(1.8 * (850 - ally2.position.x) / 400))
+                            } else if ally2.position.x + 200 > 850 {
+                                ally2gotoright = SKAction.moveTo(x: 850, duration: Double(1.8 * (850 - ally2.position.x) / 200))
                             }
                             
                             ally2.run(ally2gotoright)
                             
-                            var ally3gotoright = SKAction.moveTo(x: ally3.position.x  + 400, duration: 1.8)
+                            var ally3gotoright = SKAction.moveTo(x: ally3.position.x  + 200, duration: 1.8)
                             
                             if ally3.position.x > 850 {
                                 ally3gotoright = SKAction.moveTo(x: ally3.position.x, duration: 0.1)
-                            } else if ally3.position.x + 400 > 850 {
-                                ally3gotoright = SKAction.moveTo(x: 850, duration: Double(1.8 * (850 - ally3.position.x) / 400))
+                            } else if ally3.position.x + 200 > 850 {
+                                ally3gotoright = SKAction.moveTo(x: 850, duration: Double(1.8 * (850 - ally3.position.x) / 200))
                             }
                             
                             ally3.run(ally3gotoright)
                             
-                            let Backmove = SKAction.moveTo(x: Background.position.x + 400, duration: 1.8)
+                            let Backmove = SKAction.moveTo(x: Background.position.x + 200, duration: 1.8)
                             Background.run(Backmove)
                             
                             let godown = SKAction.moveTo(y: -200.0, duration: 0.1)
@@ -3929,37 +3999,37 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                                 MainTimer?.invalidate()
                             }
                             
-                            var ally1gotoright = SKAction.moveTo(x: ally1.position.x  - 400, duration: 1.8)
+                            var ally1gotoright = SKAction.moveTo(x: ally1.position.x  - 200, duration: 1.8)
                             
                             if ally1.position.x < 50 {
                                 ally1gotoright = SKAction.moveTo(x: ally1.position.x, duration: 0.1)
-                            } else if ally1.position.x - 400 < 50 {
-                                ally1gotoright = SKAction.moveTo(x: 50, duration: Double(1.8 * (ally1.position.x - 50) / 400))
+                            } else if ally1.position.x - 200 < 50 {
+                                ally1gotoright = SKAction.moveTo(x: 50, duration: Double(1.8 * (ally1.position.x - 50) / 200))
                             }
                             
                             ally1.run(ally1gotoright)
                             
-                            var ally2gotoright = SKAction.moveTo(x: ally2.position.x  - 400, duration: 1.8)
+                            var ally2gotoright = SKAction.moveTo(x: ally2.position.x  - 200, duration: 1.8)
                             
                             if ally2.position.x < 50 {
                                 ally2gotoright = SKAction.moveTo(x: ally2.position.x, duration: 0.1)
-                            } else if ally2.position.x - 400 < 50 {
-                                ally2gotoright = SKAction.moveTo(x: 50, duration: Double(1.8 * (ally2.position.x - 50) / 400))
+                            } else if ally2.position.x - 200 < 50 {
+                                ally2gotoright = SKAction.moveTo(x: 50, duration: Double(1.8 * (ally2.position.x - 50) / 200))
                             }
                             
                             ally2.run(ally2gotoright)
                             
-                            var ally3gotoright = SKAction.moveTo(x: ally1.position.x  - 400, duration: 1.8)
+                            var ally3gotoright = SKAction.moveTo(x: ally1.position.x  - 200, duration: 1.8)
                             
                             if ally3.position.x  < 50 {
                                 ally3gotoright = SKAction.moveTo(x: ally3.position.x, duration: 0.1)
-                            } else if ally3.position.x - 400 < 50 {
-                                ally3gotoright = SKAction.moveTo(x: 50, duration: Double(1.8 * (ally3.position.x - 50) / 400))
+                            } else if ally3.position.x - 200 < 50 {
+                                ally3gotoright = SKAction.moveTo(x: 50, duration: Double(1.8 * (ally3.position.x - 50) / 200))
                             }
                             
                             ally3.run(ally3gotoright)
                             
-                            let Backmove = SKAction.moveTo(x: Background.position.x - 400, duration: 1.8)
+                            let Backmove = SKAction.moveTo(x: Background.position.x - 200, duration: 1.8)
                             Background.run(Backmove)
                             
                             let godown = SKAction.moveTo(y: -200.0, duration: 0.1)
