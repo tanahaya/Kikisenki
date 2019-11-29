@@ -3900,163 +3900,227 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                     
                     if phasenumber == 20 {
                         
-                        if turn % 6 == 1 {//右下に移動
-                            
-                            let godown = SKAction.moveTo(y: 100.0, duration: 5.0)
-                            enemy.run(godown)
-                            
-                        } else if turn % 6 == 2 {//右に行き、消える
-                            
-                            enemy.texture = SKTexture(imageNamed: "Senjin2.png")
-                            enemy.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Senjin2.png"), size: enemy.size)
-                            enemy.physicsBody?.categoryBitMask = PhysicsCategory.Enemy
-                            enemy.physicsBody?.collisionBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
-                            enemy.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
-                            
-                            let goright = SKAction.moveTo(x: 1000.0, duration: 5.0)
-                            enemy.run(goright)
-                            
-                        } else if turn % 6 == 3 {//左上に現れる
-                            
-                            if MainTimer?.isValid == true {
-                                MainTimer?.invalidate()
-                            }
-                            
-                            var ally1gotoright = SKAction.moveTo(x: ally1.position.x  + 200, duration: 1.8)
-                            
-                            if ally1.position.x > 850 {
-                                ally1gotoright = SKAction.moveTo(x: ally1.position.x, duration: 0.1)
-                            } else if ally1.position.x + 200 > 850 {
-                                ally1gotoright = SKAction.moveTo(x: 850, duration: Double(1.8 * (850 - ally1.position.x) / 200))
-                            }
-                            
-                            ally1.run(ally1gotoright)
-                            
-                            var ally2gotoright = SKAction.moveTo(x: ally2.position.x  + 200, duration: 1.8)
-                            
-                            if ally2.position.x > 850 {
-                                ally2gotoright = SKAction.moveTo(x: ally2.position.x, duration: 0.1)
-                            } else if ally2.position.x + 200 > 850 {
-                                ally2gotoright = SKAction.moveTo(x: 850, duration: Double(1.8 * (850 - ally2.position.x) / 200))
-                            }
-                            
-                            ally2.run(ally2gotoright)
-                            
-                            var ally3gotoright = SKAction.moveTo(x: ally3.position.x  + 200, duration: 1.8)
-                            
-                            if ally3.position.x > 850 {
-                                ally3gotoright = SKAction.moveTo(x: ally3.position.x, duration: 0.1)
-                            } else if ally3.position.x + 200 > 850 {
-                                ally3gotoright = SKAction.moveTo(x: 850, duration: Double(1.8 * (850 - ally3.position.x) / 200))
-                            }
-                            
-                            ally3.run(ally3gotoright)
-                            
-                            let Backmove = SKAction.moveTo(x: Background.position.x + 200, duration: 1.8)
-                            Background.run(Backmove)
-                            
-                            let godown = SKAction.moveTo(y: -200.0, duration: 0.1)
-                            let goleft = SKAction.moveTo(x: -200.0, duration: 0.1)
-                            let goup = SKAction.moveTo(y: 250.0, duration: 0.1)
-                            enemy.run(SKAction.sequence([godown,goleft,goup]))
-                            
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                                let goright = SKAction.moveTo(x: 100, duration: 0.3)
+                        if Double(enemy.hp!) / Double(enemy.maxHp!) > 0.2 {//hpが20~60%
+                            if enemy.battleFlag {//バトルフラグ、大攻撃をする前
                                 
+                            } else {//バトルフラグ、大攻撃をした後
+                                
+                                if turn  % 6 == 1 {
+                                    
+                                    let goone = SKAction.move(to: CGPoint(x: 448,y: 175), duration: 5.0)
+                                    enemy.run(goone)
+                                    
+                                } else if turn  % 6 == 2 {
+                                    
+                                    let gotwo = SKAction.move(to: CGPoint(x: 198,y: 270), duration: 5.0)
+                                    enemy.run(gotwo)
+                                    
+                                } else if turn  % 6 == 3 {
+                                    
+                                    let gothree = SKAction.move(to: CGPoint(x: 198,y: 80), duration: 5.0)
+                                    enemy.run(gothree)
+                                    
+                                } else if turn  % 6 == 4 {
+                                    
+                                    let gofour = SKAction.move(to: CGPoint(x: 448,y: 175), duration: 5.0)
+                                    enemy.run(gofour)
+                                    
+                                } else if turn  % 6 == 5 {
+                                    
+                                    let gofive = SKAction.move(to: CGPoint(x: 698,y: 80), duration: 5.0)
+                                    enemy.run(gofive)
+                                    
+                                } else if turn  % 6 == 6 {
+                                    
+                                    let gosix = SKAction.move(to: CGPoint(x: 698,y: 270), duration: 5.0)
+                                    enemy.run(gosix)
+                                    
+                                }
+                                
+                            }
+                        } else if Double(enemy.hp!) / Double(enemy.maxHp!) > 0.6 {//hpが60%以上、
+                            
+                            if turn % 6 == 1 {//右下に移動
+                                
+                                let godown = SKAction.moveTo(y: 100.0, duration: 5.0)
+                                enemy.run(godown)
+                                
+                            } else if turn % 6 == 2 {//右に行き、消える
+                                
+                                enemy.texture = SKTexture(imageNamed: "Senjin2.png")
+                                enemy.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Senjin2.png"), size: enemy.size)
+                                enemy.physicsBody?.categoryBitMask = PhysicsCategory.Enemy
+                                enemy.physicsBody?.collisionBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
+                                enemy.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
+                                
+                                let goright = SKAction.moveTo(x: 1000.0, duration: 5.0)
                                 enemy.run(goright)
-                            }
-                            
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
                                 
-                                self.MoveMarker1.position = self.ally1.position
-                                self.MoveMarker2.position = self.ally2.position
-                                self.MoveMarker3.position = self.ally3.position
+                            } else if turn % 6 == 3 {//左上に現れる
                                 
-                                self.MainTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.mainTimerupdate), userInfo: nil, repeats: true)
+                                if MainTimer?.isValid == true {
+                                    MainTimer?.invalidate()
+                                }
                                 
-                            }
-                            
-                            
-                        } else if turn % 6 == 4 {//左下に移動
-                            
-                            let godown = SKAction.moveTo(y: 100, duration: 5.0)
-                            enemy.run(godown)
-                            
-                        } else if turn % 6 == 5 {//左に行き、消える
-                            
-                            enemy.texture = SKTexture(imageNamed: "Senjin.png")
-                            enemy.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Senjin.png"), size: enemy.size)
-                            enemy.physicsBody?.categoryBitMask = PhysicsCategory.Enemy
-                            enemy.physicsBody?.collisionBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
-                            enemy.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
-                            
-                            let goleft = SKAction.moveTo(x: -200, duration: 5.0)
-                            enemy.run(goleft)
-                            
-                        } else if turn % 6 == 0 {//右上に現れる
-                            
-                            if MainTimer?.isValid == true {
-                                MainTimer?.invalidate()
-                            }
-                            
-                            var ally1gotoright = SKAction.moveTo(x: ally1.position.x  - 200, duration: 1.8)
-                            
-                            if ally1.position.x < 50 {
-                                ally1gotoright = SKAction.moveTo(x: ally1.position.x, duration: 0.1)
-                            } else if ally1.position.x - 200 < 50 {
-                                ally1gotoright = SKAction.moveTo(x: 50, duration: Double(1.8 * (ally1.position.x - 50) / 200))
-                            }
-                            
-                            ally1.run(ally1gotoright)
-                            
-                            var ally2gotoright = SKAction.moveTo(x: ally2.position.x  - 200, duration: 1.8)
-                            
-                            if ally2.position.x < 50 {
-                                ally2gotoright = SKAction.moveTo(x: ally2.position.x, duration: 0.1)
-                            } else if ally2.position.x - 200 < 50 {
-                                ally2gotoright = SKAction.moveTo(x: 50, duration: Double(1.8 * (ally2.position.x - 50) / 200))
-                            }
-                            
-                            ally2.run(ally2gotoright)
-                            
-                            var ally3gotoright = SKAction.moveTo(x: ally1.position.x  - 200, duration: 1.8)
-                            
-                            if ally3.position.x  < 50 {
-                                ally3gotoright = SKAction.moveTo(x: ally3.position.x, duration: 0.1)
-                            } else if ally3.position.x - 200 < 50 {
-                                ally3gotoright = SKAction.moveTo(x: 50, duration: Double(1.8 * (ally3.position.x - 50) / 200))
-                            }
-                            
-                            ally3.run(ally3gotoright)
-                            
-                            let Backmove = SKAction.moveTo(x: Background.position.x - 200, duration: 1.8)
-                            Background.run(Backmove)
-                            
-                            let godown = SKAction.moveTo(y: -200.0, duration: 0.1)
-                            let goright = SKAction.moveTo(x: 1000.0, duration: 0.1)
-                            let goup = SKAction.moveTo(y: 250.0, duration: 0.1)
-                            enemy.run(SKAction.sequence([godown,goright,goup]))
-                            
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                                var ally1gotoright = SKAction.moveTo(x: ally1.position.x  + 200, duration: 1.8)
                                 
-                                let goleft = SKAction.moveTo(x: 750, duration: 0.3)
+                                if ally1.position.x > 850 {
+                                    ally1gotoright = SKAction.moveTo(x: ally1.position.x, duration: 0.1)
+                                } else if ally1.position.x + 200 > 850 {
+                                    ally1gotoright = SKAction.moveTo(x: 850, duration: Double(1.8 * (850 - ally1.position.x) / 200))
+                                }
+                                
+                                ally1.run(ally1gotoright)
+                                
+                                var ally2gotoright = SKAction.moveTo(x: ally2.position.x  + 200, duration: 1.8)
+                                
+                                if ally2.position.x > 850 {
+                                    ally2gotoright = SKAction.moveTo(x: ally2.position.x, duration: 0.1)
+                                } else if ally2.position.x + 200 > 850 {
+                                    ally2gotoright = SKAction.moveTo(x: 850, duration: Double(1.8 * (850 - ally2.position.x) / 200))
+                                }
+                                
+                                ally2.run(ally2gotoright)
+                                
+                                var ally3gotoright = SKAction.moveTo(x: ally3.position.x  + 200, duration: 1.8)
+                                
+                                if ally3.position.x > 850 {
+                                    ally3gotoright = SKAction.moveTo(x: ally3.position.x, duration: 0.1)
+                                } else if ally3.position.x + 200 > 850 {
+                                    ally3gotoright = SKAction.moveTo(x: 850, duration: Double(1.8 * (850 - ally3.position.x) / 200))
+                                }
+                                
+                                ally3.run(ally3gotoright)
+                                
+                                let Backmove = SKAction.moveTo(x: Background.position.x + 200, duration: 1.8)
+                                Background.run(Backmove)
+                                
+                                let godown = SKAction.moveTo(y: -200.0, duration: 0.1)
+                                let goleft = SKAction.moveTo(x: -200.0, duration: 0.1)
+                                let goup = SKAction.moveTo(y: 250.0, duration: 0.1)
+                                enemy.run(SKAction.sequence([godown,goleft,goup]))
+                                
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                                    let goright = SKAction.moveTo(x: 100, duration: 0.3)
+                                    
+                                    enemy.run(goright)
+                                }
+                                
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
+                                    
+                                    self.MoveMarker1.position = self.ally1.position
+                                    self.MoveMarker2.position = self.ally2.position
+                                    self.MoveMarker3.position = self.ally3.position
+                                    
+                                    self.MainTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.mainTimerupdate), userInfo: nil, repeats: true)
+                                    
+                                }
+                                
+                                
+                            } else if turn % 6 == 4 {//左下に移動
+                                
+                                let godown = SKAction.moveTo(y: 100, duration: 5.0)
+                                enemy.run(godown)
+                                
+                            } else if turn % 6 == 5 {//左に行き、消える
+                                
+                                enemy.texture = SKTexture(imageNamed: "Senjin.png")
+                                enemy.physicsBody = SKPhysicsBody(texture: SKTexture(imageNamed: "Senjin.png"), size: enemy.size)
+                                enemy.physicsBody?.categoryBitMask = PhysicsCategory.Enemy
+                                enemy.physicsBody?.collisionBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
+                                enemy.physicsBody?.contactTestBitMask = PhysicsCategory.Bullet | PhysicsCategory.Wall | PhysicsCategory.Enemy | PhysicsCategory.Ally | PhysicsCategory.Item
+                                
+                                let goleft = SKAction.moveTo(x: -200, duration: 5.0)
                                 enemy.run(goleft)
                                 
+                            } else if turn % 6 == 0 {//右上に現れる
+                                
+                                if MainTimer?.isValid == true {
+                                    MainTimer?.invalidate()
+                                }
+                                
+                                var ally1gotoright = SKAction.moveTo(x: ally1.position.x  - 200, duration: 1.8)
+                                
+                                if ally1.position.x < 50 {
+                                    ally1gotoright = SKAction.moveTo(x: ally1.position.x, duration: 0.1)
+                                } else if ally1.position.x - 200 < 50 {
+                                    ally1gotoright = SKAction.moveTo(x: 50, duration: Double(1.8 * (ally1.position.x - 50) / 200))
+                                }
+                                
+                                ally1.run(ally1gotoright)
+                                
+                                var ally2gotoright = SKAction.moveTo(x: ally2.position.x  - 200, duration: 1.8)
+                                
+                                if ally2.position.x < 50 {
+                                    ally2gotoright = SKAction.moveTo(x: ally2.position.x, duration: 0.1)
+                                } else if ally2.position.x - 200 < 50 {
+                                    ally2gotoright = SKAction.moveTo(x: 50, duration: Double(1.8 * (ally2.position.x - 50) / 200))
+                                }
+                                
+                                ally2.run(ally2gotoright)
+                                
+                                var ally3gotoright = SKAction.moveTo(x: ally1.position.x  - 200, duration: 1.8)
+                                
+                                if ally3.position.x  < 50 {
+                                    ally3gotoright = SKAction.moveTo(x: ally3.position.x, duration: 0.1)
+                                } else if ally3.position.x - 200 < 50 {
+                                    ally3gotoright = SKAction.moveTo(x: 50, duration: Double(1.8 * (ally3.position.x - 50) / 200))
+                                }
+                                
+                                ally3.run(ally3gotoright)
+                                
+                                let Backmove = SKAction.moveTo(x: Background.position.x - 200, duration: 1.8)
+                                Background.run(Backmove)
+                                
+                                let godown = SKAction.moveTo(y: -200.0, duration: 0.1)
+                                let goright = SKAction.moveTo(x: 1000.0, duration: 0.1)
+                                let goup = SKAction.moveTo(y: 250.0, duration: 0.1)
+                                enemy.run(SKAction.sequence([godown,goright,goup]))
+                                
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                                    
+                                    let goleft = SKAction.moveTo(x: 750, duration: 0.3)
+                                    enemy.run(goleft)
+                                    
+                                }
+                                
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
+                                    
+                                    self.MoveMarker1.position = self.ally1.position
+                                    self.MoveMarker2.position = self.ally2.position
+                                    self.MoveMarker3.position = self.ally3.position
+                                    
+                                    self.MainTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.mainTimerupdate), userInfo: nil, repeats: true)
+                                    
+                                }
+                                
                             }
                             
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) {
+                        } else { //hpが20%以下、大攻撃を繰り返す。
+                            
+                        }
+                        
+                    } else if phasenumber == 100 {
+                        if Double(enemy.hp!) / Double(enemy.maxHp!) > 0.2 {//hpが20~60%
+                            if enemy.battleFlag {//バトルフラグ、大攻撃をする前
                                 
-                                self.MoveMarker1.position = self.ally1.position
-                                self.MoveMarker2.position = self.ally2.position
-                                self.MoveMarker3.position = self.ally3.position
+                                let goout = SKAction.move(to: CGPoint(x: 1000,y: 200), duration: 0.3)
+                                enemy.run(goout)
                                 
-                                self.MainTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.mainTimerupdate), userInfo: nil, repeats: true)
+                            } else {
                                 
                             }
+                        } else if Double(enemy.hp!) / Double(enemy.maxHp!) > 0.6 {//hpが60%以上、
+                            
+                        } else {//hpが20%以下
+                            
+                            let goout = SKAction.move(to: CGPoint(x: 1000,y: 200), duration: 0.3)
+                            enemy.run(goout)
                             
                         }
                         
                     }
+                    
                     
                 }
                 
@@ -4589,408 +4653,364 @@ class PhaseBattleScene : SKScene, SKPhysicsContactDelegate{//PhazeBattle実装�
                 let fadeIn = SKAction.fadeIn(withDuration: 0.2)
                 let fadeOut = SKAction.fadeOut(withDuration: 0.2)
                 
-                if phasenumber == 24 {
+                if Double(enemy.hp!) / Double(enemy.maxHp!) > 0.2 {//hpが20~60%
+                    if enemy.battleFlag {//バトルフラグ、大攻撃をする前
+                        if phasenumber == 24 {
+                            
+                            let alert = self.makeAlert(position: CGPoint(x: 448,y: 170), size: CGSize(width: 896, height: 340))
+                            self.addChild(alert)
+                            
+                            alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
+                            
+                        } else if phasenumber == 40 {
+                            
+                            let bulletdamage = 400
+                            
+                            let bullet1 = self.makeeBullet(position: CGPoint(x: 1000,y: 40), damage: bulletdamage, size: CGSize(width:  40.0, height: 80.0))
+                            let bullet2 = self.makeeBullet(position: CGPoint(x: 1000,y: 120), damage: bulletdamage, size: CGSize(width:  40.0, height: 80.0))
+                            let bullet3 = self.makeeBullet(position: CGPoint(x: 1000,y: 200), damage: bulletdamage, size: CGSize(width:  40.0, height: 80.0))
+                            let bullet4 = self.makeeBullet(position: CGPoint(x: 1000,y: 280), damage: bulletdamage, size: CGSize(width:  40.0, height: 80.0))
+                            let bullet5 = self.makeeBullet(position: CGPoint(x: 1000,y: 360), damage: bulletdamage, size: CGSize(width:  40.0, height: 80.0))
+                            
+                            self.addChild(bullet1)
+                            self.addChild(bullet2)
+                            self.addChild(bullet3)
+                            self.addChild(bullet4)
+                            self.addChild(bullet5)
+                            
+                            let travelTime = SKAction.moveTo(x: 0, duration: 2.0)
+                            
+                            bullet1.run(SKAction.sequence([travelTime,remove]))
+                            bullet2.run(SKAction.sequence([travelTime,remove]))
+                            bullet3.run(SKAction.sequence([travelTime,remove]))
+                            bullet4.run(SKAction.sequence([travelTime,remove]))
+                            bullet5.run(SKAction.sequence([travelTime,remove]))
+                            
+                        }
+                        
+                    } else {
+                        
+                        if phasenumber == 24 {
+                            
+                            let alert1 = self.makeAlert(position: enemy.position, size: CGSize(width: 1600, height: 100))
+                            let alert2 = self.makeAlert(position: enemy.position, size: CGSize(width: 100, height: 800))
+                            
+                            self.addChild(alert1)
+                            self.addChild(alert2)
+                            
+                            alert1.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
+                            alert2.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
+                            
+                            
+                        } else if phasenumber == 40 {
+                            
+                            let bulletdamage = 200
+                            
+                            let bullet1 = self.makeeBullet(position: enemy.position, damage: bulletdamage, size: CGSize(width:  80.0, height: 80.0))
+                            let bullet2 = self.makeeBullet(position: enemy.position, damage: bulletdamage, size: CGSize(width:  80.0, height: 80.0))
+                            let bullet3 = self.makeeBullet(position: enemy.position, damage: bulletdamage, size: CGSize(width:  80.0, height: 80.0))
+                            let bullet4 = self.makeeBullet(position: enemy.position, damage: bulletdamage, size: CGSize(width:  80.0, height: 80.0))
+                            
+                            self.addChild(bullet1)
+                            self.addChild(bullet2)
+                            self.addChild(bullet3)
+                            self.addChild(bullet4)
+                            
+                            let travelTime1 = SKAction.moveTo(x: 0, duration: 2.0)
+                            let travelTime2 = SKAction.moveTo(x: 1000, duration: 2.0)
+                            let travelTime3 = SKAction.moveTo(y: 0, duration: 2.0)
+                            let travelTime4 = SKAction.moveTo(y: 350, duration: 2.0)
+                            
+                            bullet1.run(SKAction.sequence([travelTime1,remove]))
+                            bullet2.run(SKAction.sequence([travelTime2,remove]))
+                            bullet3.run(SKAction.sequence([travelTime3,remove]))
+                            bullet4.run(SKAction.sequence([travelTime4,remove]))
+                            
+                        }
+                        
+                    }
+                } else if Double(enemy.hp!) / Double(enemy.maxHp!) > 0.6 {//hpが60%以上、
                     
-                    if turn % 6 == 1 {//右上
+                    if phasenumber == 24 {
                         
-                        if Double(enemy.hp!) / Double(enemy.maxHp!) > 0.3 {//hpが30%より多い時の攻撃
-                            let alert = self.makeAlert(position: CGPoint(x: (enemy.position.x - 10 - (enemy.size.width / 2)) / 2,y: enemy.position.y), size: CGSize(width: enemy.position.x - 10 - (enemy.size.width / 2), height: 50.0))
-                            self.addChild(alert)
-                            
-                            alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
-                            
-                        } else {//hpが30%より少ない時の攻撃
-                            
-                        }
-                        
-                    } else if turn % 6 == 2 {//右下
-                        
-                        if Double(enemy.hp!) / Double(enemy.maxHp!) > 0.3 {//hpが30%より多い時の攻撃
+                        if turn % 6 == 1 {//右上
                             
                             let alert = self.makeAlert(position: CGPoint(x: (enemy.position.x - 10 - (enemy.size.width / 2)) / 2,y: enemy.position.y), size: CGSize(width: enemy.position.x - 10 - (enemy.size.width / 2), height: 50.0))
                             self.addChild(alert)
                             
                             alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
                             
-                        } else {//hpが30%より少ない時の攻撃
+                        } else if turn % 6 == 2 {//右下
                             
-                        }
-                        
-                    } else if turn % 6 == 3 {//画面外
-                        
-                        let alert1 = self.makeAlert(position: CGPoint(x: 170,y: 177), size: CGSize(width: 50, height: 334))
-                        self.addChild(alert1)
-                        
-                        alert1.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
-                        
-                        let alert2 = self.makeAlert(position: CGPoint(x: 340,y: 177), size: CGSize(width: 50, height: 334))
-                        self.addChild(alert2)
-                        
-                        alert2.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
-                        
-                        let alert3 = self.makeAlert(position: CGPoint(x: 510,y: 177), size: CGSize(width: 50, height: 334))
-                        self.addChild(alert3)
-                        
-                        alert3.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
-                        
-                        let alert4 = self.makeAlert(position: CGPoint(x: 680,y: 177), size: CGSize(width: 50, height: 334))
-                        self.addChild(alert4)
-                        
-                        alert4.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
-                        
-                    } else if turn % 6 == 4 {//左上
-                        
-                        if Double(enemy.hp!) / Double(enemy.maxHp!) > 0.3 {//hpが30%より多い時の攻撃
-                            let alert = self.makeAlert(position: CGPoint(x: 443 + enemy.position.x / 2 + enemy.size.width / 4 ,y: enemy.position.y), size: CGSize(width: 886 - enemy.position.x - enemy.size.width / 2, height: 50.0))
+                            let alert = self.makeAlert(position: CGPoint(x: (enemy.position.x - 10 - (enemy.size.width / 2)) / 2,y: enemy.position.y), size: CGSize(width: enemy.position.x - 10 - (enemy.size.width / 2), height: 50.0))
                             self.addChild(alert)
                             
                             alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
-                        } else {//hpが30%より少ない時の攻撃
                             
-                        }
-                        
-                    } else if turn % 6 == 5 {//左下
-                        
-                        if Double(enemy.hp!) / Double(enemy.maxHp!) > 0.3 {//hpが30%より多い時の攻撃
+                        } else if turn % 6 == 3 {//画面外
+                            
+                            let alert1 = self.makeAlert(position: CGPoint(x: 170,y: 177), size: CGSize(width: 50, height: 334))
+                            self.addChild(alert1)
+                            
+                            alert1.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
+                            
+                            let alert2 = self.makeAlert(position: CGPoint(x: 340,y: 177), size: CGSize(width: 50, height: 334))
+                            self.addChild(alert2)
+                            
+                            alert2.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
+                            
+                            let alert3 = self.makeAlert(position: CGPoint(x: 510,y: 177), size: CGSize(width: 50, height: 334))
+                            self.addChild(alert3)
+                            
+                            alert3.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
+                            
+                            let alert4 = self.makeAlert(position: CGPoint(x: 680,y: 177), size: CGSize(width: 50, height: 334))
+                            self.addChild(alert4)
+                            
+                            alert4.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
+                            
+                        } else if turn % 6 == 4 {//左上
                             
                             let alert = self.makeAlert(position: CGPoint(x: 443 + enemy.position.x / 2 + enemy.size.width / 4 ,y: enemy.position.y), size: CGSize(width: 886 - enemy.position.x - enemy.size.width / 2, height: 50.0))
                             self.addChild(alert)
                             
                             alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
                             
-                        } else {//hpが30%より少ない時の攻撃
+                        } else if turn % 6 == 5 {//左下
+                            
+                            let alert = self.makeAlert(position: CGPoint(x: 443 + enemy.position.x / 2 + enemy.size.width / 4 ,y: enemy.position.y), size: CGSize(width: 886 - enemy.position.x - enemy.size.width / 2, height: 50.0))
+                            self.addChild(alert)
+                            
+                            alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
+                            
+                        } else if turn % 6 == 0 {//画面外
+                            
+                            let alert1 = self.makeAlert(position: CGPoint(x: 260,y: 177), size: CGSize(width: 50, height: 334))
+                            self.addChild(alert1)
+                            
+                            alert1.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
+                            
+                            let alert2 = self.makeAlert(position: CGPoint(x: 430,y: 177), size: CGSize(width: 50, height: 334))
+                            self.addChild(alert2)
+                            
+                            alert2.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
+                            
+                            let alert3 = self.makeAlert(position: CGPoint(x: 600,y: 177), size: CGSize(width: 50, height: 334))
+                            self.addChild(alert3)
+                            
+                            alert3.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
+                            
+                            let alert4 = self.makeAlert(position: CGPoint(x: 770,y: 177), size: CGSize(width: 50, height: 334))
+                            self.addChild(alert4)
+                            
+                            alert4.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
                             
                         }
-                        
-                    } else if turn % 6 == 0 {//画面外
-                        
-                        let alert1 = self.makeAlert(position: CGPoint(x: 260,y: 177), size: CGSize(width: 50, height: 334))
-                        self.addChild(alert1)
-                        
-                        alert1.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
-                        
-                        let alert2 = self.makeAlert(position: CGPoint(x: 430,y: 177), size: CGSize(width: 50, height: 334))
-                        self.addChild(alert2)
-                        
-                        alert2.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
-                        
-                        let alert3 = self.makeAlert(position: CGPoint(x: 600,y: 177), size: CGSize(width: 50, height: 334))
-                        self.addChild(alert3)
-                        
-                        alert3.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
-                        
-                        let alert4 = self.makeAlert(position: CGPoint(x: 770,y: 177), size: CGSize(width: 50, height: 334))
-                        self.addChild(alert4)
-                        
-                        alert4.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
                         
                     }
                     
-                }
-                
-                if phasenumber == 40 {
+                    if phasenumber == 40 {
+                        
+                        if turn % 6 == 1 {//右上
+                            
+                            var bulletdamage:Int = 400
+                            if enemy.grade == 0 {
+                                bulletdamage = 10
+                            } else if enemy.grade == 1 {
+                                bulletdamage = 400
+                            } else if enemy.grade == 2 {
+                                bulletdamage = 600
+                            } else if enemy.grade == 3 {
+                                bulletdamage = 1000
+                            }
+                            self.changeEnemyGrade(change: 1, id: enemy.id!)
+                            
+                            let bullet1 = self.makeeBullet(position: CGPoint(x: enemy.position.x,y: enemy.position.y), damage: bulletdamage, size: CGSize(width:  30.0, height: 15.0))
+                            
+                            self.addChild(bullet1)//Bullet表示
+                            
+                            let travelTime = SKAction.moveTo(x: enemy.position.x - self.size.width, duration: 0.6)
+                            
+                            bullet1.run(SKAction.sequence([travelTime,remove]))
+                            
+                        } else if turn % 6 == 2 {//右下
+                            
+                            var bulletdamage:Int = 400
+                            if enemy.grade == 0 {
+                                bulletdamage = 10
+                            } else if enemy.grade == 1 {
+                                bulletdamage = 400
+                            } else if enemy.grade == 2 {
+                                bulletdamage = 600
+                            } else if enemy.grade == 3 {
+                                bulletdamage = 1000
+                            }
+                            self.changeEnemyGrade(change: 1, id: enemy.id!)
+                            
+                            let bullet1 = self.makeeBullet(position: CGPoint(x: enemy.position.x,y: enemy.position.y), damage: bulletdamage, size: CGSize(width:  30.0, height: 15.0))
+                            
+                            self.addChild(bullet1)//Bullet表示
+                            
+                            let travelTime = SKAction.moveTo(x: enemy.position.x - self.size.width, duration: 0.6)
+                            bullet1.run(SKAction.sequence([travelTime,remove]))
+                            
+                        } else if turn % 6 == 3 {//画面外
+                            
+                            var bulletdamage:Int = 200
+                            if enemy.grade == 0 {
+                                bulletdamage = 10
+                            } else if enemy.grade == 1 {
+                                bulletdamage = 200
+                            } else if enemy.grade == 2 {
+                                bulletdamage = 500
+                            } else if enemy.grade == 3 {
+                                bulletdamage = 1000
+                            }
+                            self.changeEnemyGrade(change: 1, id: enemy.id!)
+                            
+                            
+                            let goup = SKAction.moveTo(y: 500, duration: 1.5)
+                            let godown = SKAction.moveTo(y: 0, duration: 1.5)
+                            
+                            let bullet1 = self.makeeBullet(position: CGPoint(x: 170,y: -100), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
+                            self.addChild(bullet1)
+                            
+                            bullet1.run(SKAction.sequence([goup,remove]))
+                            
+                            let bullet2 = self.makeeBullet(position: CGPoint(x: 340,y: 500), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
+                            self.addChild(bullet2)
+                            
+                            bullet2.run(SKAction.sequence([godown,remove]))
+                            
+                            let bullet3 = self.makeeBullet(position: CGPoint(x: 510,y: -100), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
+                            self.addChild(bullet3)
+                            
+                            bullet3.run(SKAction.sequence([goup,remove]))
+                            
+                            let bullet4 = self.makeeBullet(position: CGPoint(x: 680,y: 500), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
+                            self.addChild(bullet4)
+                            
+                            bullet4.run(SKAction.sequence([godown,remove]))
+                            
+                            
+                        } else if turn % 6 == 4 {//左上
+                            
+                            var bulletdamage:Int = 400
+                            if enemy.grade == 0 {
+                                bulletdamage = 10
+                            } else if enemy.grade == 1 {
+                                bulletdamage = 400
+                            } else if enemy.grade == 2 {
+                                bulletdamage = 500
+                            } else if enemy.grade == 3 {
+                                bulletdamage = 1000
+                            }
+                            self.changeEnemyGrade(change: 1, id: enemy.id!)
+                            
+                            let bullet1 = self.makeeBullet(position: CGPoint(x: enemy.position.x,y: enemy.position.y), damage: bulletdamage, size: CGSize(width:  30.0, height: 15.0))
+                            
+                            self.addChild(bullet1)//Bullet表示
+                            
+                            let travelTime = SKAction.moveTo(x: self.size.width - enemy.position.x, duration: 0.6)
+                            bullet1.run(SKAction.sequence([travelTime,remove]))
+                            
+                        } else if turn % 6 == 5 {//左下
+                            
+                            var bulletdamage:Int = 400
+                            if enemy.grade == 0 {
+                                bulletdamage = 10
+                            } else if enemy.grade == 1 {
+                                bulletdamage = 400
+                            } else if enemy.grade == 2 {
+                                bulletdamage = 500
+                            } else if enemy.grade == 3 {
+                                bulletdamage = 1000
+                            }
+                            self.changeEnemyGrade(change: 1, id: enemy.id!)
+                            
+                            let bullet1 = self.makeeBullet(position: CGPoint(x: enemy.position.x,y: enemy.position.y), damage: bulletdamage, size: CGSize(width:  30.0, height: 15.0))
+                            
+                            self.addChild(bullet1)//Bullet表示
+                            
+                            let travelTime = SKAction.moveTo(x: self.size.width - enemy.position
+                            .x, duration: 0.6)
+                            
+                            bullet1.run(SKAction.sequence([travelTime,remove]))
+                            
+                        } else if turn % 6 == 0 {//画面外
+                            
+                            var bulletdamage:Int = 200
+                            if enemy.grade == 0 {
+                                bulletdamage = 10
+                            } else if enemy.grade == 1 {
+                                bulletdamage = 200
+                            } else if enemy.grade == 2 {
+                                bulletdamage = 500
+                            } else if enemy.grade == 3 {
+                                bulletdamage = 1000
+                            }
+                            self.changeEnemyGrade(change: 1, id: enemy.id!)
+                            
+                            
+                            let goup = SKAction.moveTo(y: 500, duration: 1.5)
+                            let godown = SKAction.moveTo(y: 0, duration: 1.5)
+                            
+                            let bullet1 = self.makeeBullet(position: CGPoint(x: 260,y: 500), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
+                            self.addChild(bullet1)
+                            
+                            bullet1.run(SKAction.sequence([godown,remove]))
+                            
+                            let bullet2 = self.makeeBullet(position: CGPoint(x: 430,y: -100), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
+                            self.addChild(bullet2)
+                            
+                            bullet2.run(SKAction.sequence([goup,remove]))
+                            
+                            let bullet3 = self.makeeBullet(position: CGPoint(x: 600,y: 500), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
+                            self.addChild(bullet3)
+                            
+                            bullet3.run(SKAction.sequence([godown,remove]))
+                            
+                            let bullet4 = self.makeeBullet(position: CGPoint(x: 770,y: -100), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
+                            self.addChild(bullet4)
+                            
+                            bullet4.run(SKAction.sequence([goup,remove]))
+                            
+                        }
+                        
+                    }
                     
-                    if turn % 6 == 1 {//右上
+                } else {//hpが20%以下
+                    
+                    if phasenumber == 24 {
                         
-                        if Double(enemy.hp!) / Double(enemy.maxHp!) > 0.3 {//hpが30%より多い時の攻撃
-                            
-                            var bulletdamage:Int = 400
-                            if enemy.grade == 0 {
-                                bulletdamage = 10
-                            } else if enemy.grade == 1 {
-                                bulletdamage = 400
-                            } else if enemy.grade == 2 {
-                                bulletdamage = 600
-                            } else if enemy.grade == 3 {
-                                bulletdamage = 1000
-                            }
-                            self.changeEnemyGrade(change: 1, id: enemy.id!)
-                            
-                            let bullet1 = self.makeeBullet(position: CGPoint(x: enemy.position.x,y: enemy.position.y), damage: bulletdamage, size: CGSize(width:  30.0, height: 15.0))
-                            
-                            self.addChild(bullet1)//Bullet表示
-                            
-                            let travelTime = SKAction.moveTo(x: enemy.position
-                                .x - self.size.width, duration: 0.6)
-                            
-                            bullet1.run(SKAction.sequence([travelTime,remove]))
-                            
-                        } else {//hpが30%より少ない時の攻撃
-                            
-                            var bulletdamage:Int = 200
-                            if enemy.grade == 0 {
-                                bulletdamage = 10
-                            } else if enemy.grade == 1 {
-                                bulletdamage = 200
-                            } else if enemy.grade == 2 {
-                                bulletdamage = 500
-                            } else if enemy.grade == 3 {
-                                bulletdamage = 1000
-                            }
-                            self.changeEnemyGrade(change: 1, id: enemy.id!)
-                            
-                            let bullet1 = self.makeeBullet(position: CGPoint(x: enemy.position.x,y: enemy.position.y), damage: bulletdamage, size: CGSize(width: 70,height: 50))
-                            self.addChild(bullet1)
-                            
-                            let goleft = SKAction.moveTo(x: 10, duration: 15.0)
-                            
-                            bullet1.run(SKAction.sequence([goleft,remove]))
-                            
-                            
-                            let bullet2 = self.makeeBullet(position: CGPoint(x: enemy.position.x,y: enemy.position.y), damage: bulletdamage, size: CGSize(width: 70,height: 50))
-                            self.addChild(bullet2)
-                            
-                            let gozero = SKAction.move(to: CGPoint(x:10,y:10), duration: 15.0)
-                            
-                            bullet2.run(SKAction.sequence([gozero,remove]))
-                            
-                        }
+                        let alert = self.makeAlert(position: CGPoint(x: 448,y: 170), size: CGSize(width: 896, height: 340))
+                        self.addChild(alert)
                         
-                    } else if turn % 6 == 2 {//右下
+                        alert.run(SKAction.sequence([fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeOut,fadeIn,fadeIn,fadeOut,remove]))
                         
-                        if Double(enemy.hp!) / Double(enemy.maxHp!) > 0.3 {//hpが30%より多い時の攻撃
-                            
-                            var bulletdamage:Int = 400
-                            if enemy.grade == 0 {
-                                bulletdamage = 10
-                            } else if enemy.grade == 1 {
-                                bulletdamage = 400
-                            } else if enemy.grade == 2 {
-                                bulletdamage = 600
-                            } else if enemy.grade == 3 {
-                                bulletdamage = 1000
-                            }
-                            self.changeEnemyGrade(change: 1, id: enemy.id!)
-                            
-                            let bullet1 = self.makeeBullet(position: CGPoint(x: enemy.position.x,y: enemy.position.y), damage: bulletdamage, size: CGSize(width:  30.0, height: 15.0))
-                            
-                            self.addChild(bullet1)//Bullet表示
-                            
-                            let travelTime = SKAction.moveTo(x: enemy.position
-                                .x - self.size.width, duration: 0.6)
-                            
-                            bullet1.run(SKAction.sequence([travelTime,remove]))
-                            
-                        } else {//hpが30%より少ない時の攻撃
-                            
-                            var bulletdamage:Int = 200
-                            if enemy.grade == 0 {
-                                bulletdamage = 10
-                            } else if enemy.grade == 1 {
-                                bulletdamage = 200
-                            } else if enemy.grade == 2 {
-                                bulletdamage = 500
-                            } else if enemy.grade == 3 {
-                                bulletdamage = 1000
-                            }
-                            self.changeEnemyGrade(change: 1, id: enemy.id!)
-                            
-                            let bullet1 = self.makeeBullet(position: CGPoint(x: enemy.position.x,y: enemy.position.y), damage: bulletdamage, size: CGSize(width: 70,height: 50))
-                            self.addChild(bullet1)
-                            
-                            let goleft = SKAction.moveTo(x: 10, duration: 15.0)
-                            
-                            bullet1.run(SKAction.sequence([goleft,remove]))
-                            
-                            
-                            let bullet2 = self.makeeBullet(position: CGPoint(x: enemy.position.x,y: enemy.position.y), damage: bulletdamage, size: CGSize(width: 70,height: 50))
-                            self.addChild(bullet2)
-                            
-                            let gozero = SKAction.move(to: CGPoint(x: 330,y:10), duration: 15.0)
-                            
-                            bullet2.run(SKAction.sequence([gozero,remove]))
-                            
-                        }
+                    } else if phasenumber == 40 {
                         
-                    } else if turn % 6 == 3 {//画面外
+                        let bulletdamage = 400
                         
-                        var bulletdamage:Int = 200
-                        if enemy.grade == 0 {
-                            bulletdamage = 10
-                        } else if enemy.grade == 1 {
-                            bulletdamage = 200
-                        } else if enemy.grade == 2 {
-                            bulletdamage = 500
-                        } else if enemy.grade == 3 {
-                            bulletdamage = 1000
-                        }
-                        self.changeEnemyGrade(change: 1, id: enemy.id!)
+                        let bullet1 = self.makeeBullet(position: CGPoint(x: 1000,y: 40), damage: bulletdamage, size: CGSize(width:  40.0, height: 80.0))
+                        let bullet2 = self.makeeBullet(position: CGPoint(x: 1000,y: 120), damage: bulletdamage, size: CGSize(width:  40.0, height: 80.0))
+                        let bullet3 = self.makeeBullet(position: CGPoint(x: 1000,y: 200), damage: bulletdamage, size: CGSize(width:  40.0, height: 80.0))
+                        let bullet4 = self.makeeBullet(position: CGPoint(x: 1000,y: 280), damage: bulletdamage, size: CGSize(width:  40.0, height: 80.0))
+                        let bullet5 = self.makeeBullet(position: CGPoint(x: 1000,y: 360), damage: bulletdamage, size: CGSize(width:  40.0, height: 80.0))
                         
-                        
-                        let goup = SKAction.moveTo(y: 500, duration: 1.5)
-                        let godown = SKAction.moveTo(y: 0, duration: 1.5)
-                        
-                        let bullet1 = self.makeeBullet(position: CGPoint(x: 170,y: -100), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
                         self.addChild(bullet1)
-                        
-                        bullet1.run(SKAction.sequence([goup,remove]))
-                        
-                        let bullet2 = self.makeeBullet(position: CGPoint(x: 340,y: 500), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
                         self.addChild(bullet2)
-                        
-                        bullet2.run(SKAction.sequence([godown,remove]))
-                        
-                        let bullet3 = self.makeeBullet(position: CGPoint(x: 510,y: -100), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
                         self.addChild(bullet3)
-                        
-                        bullet3.run(SKAction.sequence([goup,remove]))
-                        
-                        let bullet4 = self.makeeBullet(position: CGPoint(x: 680,y: 500), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
                         self.addChild(bullet4)
+                        self.addChild(bullet5)
                         
-                        bullet4.run(SKAction.sequence([godown,remove]))
+                        let travelTime = SKAction.moveTo(x: 0, duration: 2.0)
                         
-                        
-                    } else if turn % 6 == 4 {//左上
-                        
-                        if Double(enemy.hp!) / Double(enemy.maxHp!) > 0.3 {//hpが30%より多い時の攻撃
-                            
-                            var bulletdamage:Int = 400
-                            if enemy.grade == 0 {
-                                bulletdamage = 10
-                            } else if enemy.grade == 1 {
-                                bulletdamage = 400
-                            } else if enemy.grade == 2 {
-                                bulletdamage = 500
-                            } else if enemy.grade == 3 {
-                                bulletdamage = 1000
-                            }
-                            self.changeEnemyGrade(change: 1, id: enemy.id!)
-                            
-                            let bullet1 = self.makeeBullet(position: CGPoint(x: enemy.position.x,y: enemy.position.y), damage: bulletdamage, size: CGSize(width:  30.0, height: 15.0))
-                            
-                            self.addChild(bullet1)//Bullet表示
-                            
-                            let travelTime = SKAction.moveTo(x: self.size.width - enemy.position
-                            .x, duration: 0.6)
-                            
-                            bullet1.run(SKAction.sequence([travelTime,remove]))
-                            
-                        } else {//hpが30%より少ない時の攻撃
-                            
-                            var bulletdamage:Int = 200
-                            if enemy.grade == 0 {
-                                bulletdamage = 10
-                            } else if enemy.grade == 1 {
-                                bulletdamage = 200
-                            } else if enemy.grade == 2 {
-                                bulletdamage = 500
-                            } else if enemy.grade == 3 {
-                                bulletdamage = 1000
-                            }
-                            self.changeEnemyGrade(change: 1, id: enemy.id!)
-                            
-                            let bullet1 = self.makeeBullet(position: CGPoint(x: enemy.position.x,y: enemy.position.y), damage: bulletdamage, size: CGSize(width: 70,height: 50))
-                            self.addChild(bullet1)
-                            
-                            let goright = SKAction.moveTo(x: 880, duration: 15.0)
-                            
-                            bullet1.run(SKAction.sequence([goright,remove]))
-                            
-                            
-                            let bullet2 = self.makeeBullet(position: CGPoint(x: enemy.position.x,y: enemy.position.y), damage: bulletdamage, size: CGSize(width: 70,height: 50))
-                            self.addChild(bullet2)
-                            
-                            let gozero = SKAction.move(to: CGPoint(x: 880,y: 10), duration: 15.0)
-                            
-                            bullet2.run(SKAction.sequence([gozero,remove]))
-                            
-                        }
-                        
-                    } else if turn % 6 == 5 {//左下
-                        
-                        if Double(enemy.hp!) / Double(enemy.maxHp!) > 0.3 {//hpが30%より多い時の攻撃
-                            
-                            var bulletdamage:Int = 400
-                            if enemy.grade == 0 {
-                                bulletdamage = 10
-                            } else if enemy.grade == 1 {
-                                bulletdamage = 400
-                            } else if enemy.grade == 2 {
-                                bulletdamage = 500
-                            } else if enemy.grade == 3 {
-                                bulletdamage = 1000
-                            }
-                            self.changeEnemyGrade(change: 1, id: enemy.id!)
-                            
-                            let bullet1 = self.makeeBullet(position: CGPoint(x: enemy.position.x,y: enemy.position.y), damage: bulletdamage, size: CGSize(width:  30.0, height: 15.0))
-                            
-                            self.addChild(bullet1)//Bullet表示
-                            
-                            let travelTime = SKAction.moveTo(x: self.size.width - enemy.position
-                            .x, duration: 0.6)
-                            
-                            bullet1.run(SKAction.sequence([travelTime,remove]))
-                            
-                        } else {//hpが30%より少ない時の攻撃
-                            
-                            var bulletdamage:Int = 200
-                            if enemy.grade == 0 {
-                                bulletdamage = 10
-                            } else if enemy.grade == 1 {
-                                bulletdamage = 200
-                            } else if enemy.grade == 2 {
-                                bulletdamage = 500
-                            } else if enemy.grade == 3 {
-                                bulletdamage = 1000
-                            }
-                            self.changeEnemyGrade(change: 1, id: enemy.id!)
-                            
-                            
-                            let bullet1 = self.makeeBullet(position: CGPoint(x: enemy.position.x,y: enemy.position.y), damage: bulletdamage, size: CGSize(width: 70,height: 50))
-                            self.addChild(bullet1)
-                            
-                            let goright = SKAction.moveTo(x: 880, duration: 15.0)
-                            
-                            bullet1.run(SKAction.sequence([goright,remove]))
-                            
-                            
-                            let bullet2 = self.makeeBullet(position: CGPoint(x: enemy.position.x,y: enemy.position.y), damage: bulletdamage, size: CGSize(width: 70,height: 50))
-                            self.addChild(bullet2)
-                            
-                            let gozero = SKAction.move(to: CGPoint(x: 880,y: 330), duration: 15.0)
-                            
-                            bullet2.run(SKAction.sequence([gozero,remove]))
-                            
-                        }
-                        
-                    } else if turn % 6 == 0 {//画面外
-                        
-                        var bulletdamage:Int = 200
-                        if enemy.grade == 0 {
-                            bulletdamage = 10
-                        } else if enemy.grade == 1 {
-                            bulletdamage = 200
-                        } else if enemy.grade == 2 {
-                            bulletdamage = 500
-                        } else if enemy.grade == 3 {
-                            bulletdamage = 1000
-                        }
-                        self.changeEnemyGrade(change: 1, id: enemy.id!)
-                        
-                        
-                        let goup = SKAction.moveTo(y: 500, duration: 1.5)
-                        let godown = SKAction.moveTo(y: 0, duration: 1.5)
-                        
-                        let bullet1 = self.makeeBullet(position: CGPoint(x: 260,y: 500), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
-                        self.addChild(bullet1)
-                        
-                        bullet1.run(SKAction.sequence([godown,remove]))
-                        
-                        let bullet2 = self.makeeBullet(position: CGPoint(x: 430,y: -100), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
-                        self.addChild(bullet2)
-                        
-                        bullet2.run(SKAction.sequence([goup,remove]))
-                        
-                        let bullet3 = self.makeeBullet(position: CGPoint(x: 600,y: 500), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
-                        self.addChild(bullet3)
-                        
-                        bullet3.run(SKAction.sequence([godown,remove]))
-                        
-                        let bullet4 = self.makeeBullet(position: CGPoint(x: 770,y: -100), damage: bulletdamage, size: CGSize(width:  30.0, height: 30.0))
-                        self.addChild(bullet4)
-                        
-                        bullet4.run(SKAction.sequence([goup,remove]))
+                        bullet1.run(SKAction.sequence([travelTime,remove]))
+                        bullet2.run(SKAction.sequence([travelTime,remove]))
+                        bullet3.run(SKAction.sequence([travelTime,remove]))
+                        bullet4.run(SKAction.sequence([travelTime,remove]))
+                        bullet5.run(SKAction.sequence([travelTime,remove]))
                         
                     }
                     
